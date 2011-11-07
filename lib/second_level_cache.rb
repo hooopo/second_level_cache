@@ -1,16 +1,14 @@
 # encoding: utf-8
 
-require 'arel'
 require 'active_record'
-require 'active_record/persistence'
 require 'redis'
 
 require File.expand_path('../marshal_fix', __FILE__) unless ENV['RAILS_ENV'] == 'production'
-require File.expand_path("../arel/wheres", __FILE__)
-require File.expand_path("../active_record/base", __FILE__)
-require File.expand_path("../active_record/finder_methods", __FILE__)
-require File.expand_path("../active_record/persistence", __FILE__)
-require File.expand_path("../redis_wraper", __FILE__)
+require File.expand_path("../second_level_cache/arel/wheres", __FILE__)
+require File.expand_path("../second_level_cache/active_record/base", __FILE__)
+require File.expand_path("../second_level_cache/active_record/finder_methods", __FILE__)
+require File.expand_path("../second_level_cache/active_record/persistence", __FILE__)
+require File.expand_path("../second_level_cache/redis_wraper", __FILE__)
 
 module SecondLevelCache
 
