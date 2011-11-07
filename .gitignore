@@ -1,0 +1,11 @@
+/.bundle
+/nbproject/*
+/.rvmrc
+/doc
+/pkg
+/tags
+/spec/log
+*.log
+*.gem
+*.sqlite3
+
