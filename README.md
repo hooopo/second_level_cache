@@ -7,13 +7,19 @@ Read-Through: Queries by ID, like current_user.articles.find(params[:id]), will 
 Write-Through: As objects are created, updated, and deleted, all of the caches are automatically kept up-to-date and coherent.
 
 ## 使用
+初始化redis：
 
+``````ruby
 # config/initializers/redis.rb
 $redis = Redis.new
+``````
+在model里设置是否使用缓存:
 
+``````ruby
 class User < ActiveRecord::Base
   acts_as_cached(:ttl => 3.day)
 end
+``````
 
 ## 原理
 
