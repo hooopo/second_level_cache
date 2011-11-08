@@ -31,4 +31,4 @@ end
 
 如果满足以上条件，则先从缓存中读取记录，如果缓存中不存在记录，再到数据库中获取记录，并将得到的记录更新到缓存里。
 
-after_commit, :on => :create/:update/:destroy 对记录的创建、更新、删除做监控。保证缓存内记录与数据库一致。
+在 after_commit, :on => :create/:update/:destroy 对记录的创建、更新、删除做监控。保证缓存内记录与数据库一致。
