@@ -8,6 +8,7 @@ require File.expand_path("../second_level_cache/arel/wheres", __FILE__)
 require File.expand_path("../second_level_cache/active_record/base", __FILE__)
 require File.expand_path("../second_level_cache/active_record/finder_methods", __FILE__)
 require File.expand_path("../second_level_cache/active_record/persistence", __FILE__)
+require File.expand_path("../second_level_cache/active_record/singular_association", __FILE__)
 require File.expand_path("../second_level_cache/redis_wraper", __FILE__)
 
 module SecondLevelCache
@@ -55,4 +56,5 @@ end
 ActiveRecord::FinderMethods.send(:include, SecondLevelCache::ActiveRecord::FinderMethods)
 ActiveRecord::Persistence.send(:include, SecondLevelCache::ActiveRecord::Persistence)
 ActiveRecord::Base.send(:include, SecondLevelCache::ActiveRecord::Base)
+ActiveRecord::Associations::SingularAssociation.send(:include, SecondLevelCache::ActiveRecord::Associations::SingularAssociation)
 ActiveRecord::Base.send(:include, SecondLevelCache::Mixin)
