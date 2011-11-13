@@ -20,6 +20,12 @@ class User < ActiveRecord::Base
   acts_as_cached(:ttl => 3.day)
 end
 ``````
+## 支持查询
+
+* User.find(1)
+* User.find_by_id(1), User.find_by_id!(1), User.find_by_id_and_name(1, "Hooopo"), User.where(:status => 1).find_by_id(1), user.articles.find_by_id(1)
+* user.articles.find(1), user.where(:status => 1).find(1), user.where("status = 1").find(1)
+* article.user
 
 ## 原理
 
