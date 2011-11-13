@@ -7,6 +7,7 @@ module SecondLevelCache
         base.send(:include, InstanceMethods)
         base.class_eval do
           alias_method_chain :find_one, :second_level_cache
+          alias_method_chain :find_by_attributes, :second_level_cache
         end
       end
 
@@ -14,7 +15,7 @@ module SecondLevelCache
         #TODO fetch multi ids
         def find_one_with_second_level_cache(id)
           return find_one_without_second_level_cache(id) unless second_level_cache_enabled?
-          
+
           id = id.id if ActiveRecord::Base === id
           if ::ActiveRecord::IdentityMap.enabled? && cachable? && record = from_identity_map(id)
             return record
@@ -29,14 +30,35 @@ module SecondLevelCache
               return record if where_match_with_cache?(where_values, record)
             end
           end
-          
+
           record = find_one_without_second_level_cache(id)
           @klass.cache_store.set(generate_cache_key(id), record)
           record
         end
 
+        # TODO cache find_or_create_by_id
+        def find_by_attributes_with_second_level_cache(match, attributes, *args)
+          conditions = Hash[attributes.map {|a| [a, args[attributes.index(a)]]}]
+
+          if conditions.has_key?("id")
+            return wrap_bang(match.bang?) do
+              if conditions.size == 1
+                find_one_with_second_level_cache(conditions["id"])
+              else
+                where(conditions.except("id")).find_one_with_second_level_cache(conditions["id"])
+              end
+            end
+          end
+
+          find_by_attributes_without_second_level_cache(match, attributes, *args)
+        end
+
         private
-        
+
+        def wrap_bang(bang)
+          bang ? yield : (yield rescue nil)
+        end
+
         def generate_cache_key(id)
           "#{cache_name}/#{id}"
         end
@@ -44,7 +66,7 @@ module SecondLevelCache
         def cache_name
           @cache_name ||= table_name
         end
-        
+
         def cachable?
           where_values.blank? &&
             limit_one? && order_values.blank? &&
