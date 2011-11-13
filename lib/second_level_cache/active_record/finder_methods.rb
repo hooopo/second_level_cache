@@ -38,16 +38,21 @@ module SecondLevelCache
 
         # TODO cache find_or_create_by_id
         def find_by_attributes_with_second_level_cache(match, attributes, *args)
+          return find_by_attributes_without_second_level_cache(match, attributes, *args) unless second_level_cache_enabled?
+
           conditions = Hash[attributes.map {|a| [a, args[attributes.index(a)]]}]
 
           if conditions.has_key?("id")
-            return wrap_bang(match.bang?) do
+            result = wrap_bang(match.bang?) do
               if conditions.size == 1
                 find_one_with_second_level_cache(conditions["id"])
               else
                 where(conditions.except("id")).find_one_with_second_level_cache(conditions["id"])
               end
             end
+            yield(result) if block_given? #edge rails do this bug rails3.1.0 not
+
+            return result
           end
 
           find_by_attributes_without_second_level_cache(match, attributes, *args)
