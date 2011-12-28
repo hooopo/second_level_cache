@@ -13,6 +13,14 @@ Write-Through: As objects are created, updated, and deleted, all of the caches a
 # config/initializers/redis.rb
 $redis = Redis.new
 ``````
+Gemfile
+
+```
+gem "hiredis", "~> 0.3.1"
+gem "redis", "~> 2.2.0", :require =>redis ["redis/connection/hiredis", "redis"]
+gem "second_level_cache"gem, :git => "git@github.com:hooopo/second_level_cache.git"
+```
+
 在model里设置是否使用缓存:
 
 ``````ruby
