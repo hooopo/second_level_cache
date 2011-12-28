@@ -15,7 +15,9 @@ module SecondLevelCache
             return find_target_without_second_level_cache unless association_class.second_level_cache_enabled?
             cache_record = association_class.cache_store.get(second_level_cache_key)
             return cache_record.tap{|record| set_inverse_instance(record)} if cache_record
-            return find_target_without_second_level_cache
+            record = find_target_without_second_level_cache
+            association_class.cache_store.set(second_level_cache_key, record)
+            record
           end
 
           private
