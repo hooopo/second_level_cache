@@ -31,7 +31,7 @@ module SecondLevelCache
 
         # Write Throuht
         def create_second_level_cache
-          self.calss.cache_store.set(second_level_cache_key, self) if self.class.second_level_cache_enabled?
+          self.class.cache_store.set(second_level_cache_key, self) if self.class.second_level_cache_enabled?
           true
         end
 
