@@ -8,4 +8,6 @@
 *.log
 *.gem
 *.sqlite3
+*.swp
+*.swo
 
