@@ -22,17 +22,17 @@ module SecondLevelCache
           end
 
           if cachable?
-            return record if record = @klass.cache_store.get(generate_cache_key(id))
+            return record if record = @klass.cache_store.read(generate_cache_key(id))
           end
 
           if cachable_without_conditions?
-            if record = @klass.cache_store.get(generate_cache_key(id))
+            if record = @klass.cache_store.read(generate_cache_key(id))
               return record if where_match_with_cache?(where_values, record)
             end
           end
 
           record = find_one_without_second_level_cache(id)
-          @klass.cache_store.set(generate_cache_key(id), record)
+          @klass.cache_store.write(generate_cache_key(id), record)
           record
         end
 

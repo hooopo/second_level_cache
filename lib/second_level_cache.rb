@@ -1,17 +1,14 @@
 # encoding: utf-8
 
 require 'active_record'
-require 'redis'
 
-require File.expand_path('../marshal_fix', __FILE__) unless ENV['RAILS_ENV'] == 'production'
-require File.expand_path("../second_level_cache/arel/wheres", __FILE__)
-require File.expand_path("../second_level_cache/active_record/base", __FILE__)
-require File.expand_path("../second_level_cache/active_record/finder_methods", __FILE__)
-require File.expand_path("../second_level_cache/active_record/persistence", __FILE__)
-require File.expand_path("../second_level_cache/active_record/singular_association", __FILE__)
-require File.expand_path("../second_level_cache/redis_wraper", __FILE__)
+require 'second_level_cache/config'
+require 'second_level_cache/marshal'
 
 module SecondLevelCache
+  def self.configure
+    block_given? ? yield(Config) : Config
+  end
 
   module Mixin
     def self.included(base)
@@ -32,15 +29,7 @@ module SecondLevelCache
     end
 
     def cache_store
-      @cache_store ||= SecondLevelCache::Redis.new($redis, :logger => logger, :default_ttl => ttl)
-    end
-
-    def cache_store=(store)
-      if store.is_a?(::Redis)
-        @cache_store =  SecondLevelCache::Redis.new(store, logger, ttl)
-      else
-        @cache_store = store
-      end
+      Config.cache_store
     end
 
     def logger
@@ -53,8 +42,5 @@ module SecondLevelCache
   end
 end
 
-ActiveRecord::FinderMethods.send(:include, SecondLevelCache::ActiveRecord::FinderMethods)
-ActiveRecord::Persistence.send(:include, SecondLevelCache::ActiveRecord::Persistence)
-ActiveRecord::Base.send(:include, SecondLevelCache::ActiveRecord::Base)
-ActiveRecord::Associations::SingularAssociation.send(:include, SecondLevelCache::ActiveRecord::Associations::SingularAssociation)
-ActiveRecord::Base.send(:include, SecondLevelCache::Mixin)
+require 'second_level_cache/active_record' if defined?(ActiveRecord)
+require 'second_level_cache/arel' if defined?(Arel)

@@ -1,4 +1,3 @@
-# encoding: utf-8
 module Marshal
   class << self
     def load_with_constantize(value)
@@ -14,3 +13,4 @@ module Marshal
     alias_method_chain :load, :constantize
   end
 end
+

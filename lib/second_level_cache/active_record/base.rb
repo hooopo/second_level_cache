@@ -1,4 +1,3 @@
-# encoding: utf-8
 module SecondLevelCache
   module ActiveRecord
     module Base
@@ -25,13 +24,13 @@ module SecondLevelCache
 
         # 记录更改时不直接删除缓存，而是更新缓存
         def update_second_level_cache
-          self.class.cache_store.set(second_level_cache_key, self) if self.class.second_level_cache_enabled?
+          self.class.cache_store.write(second_level_cache_key, self) if self.class.second_level_cache_enabled?
           true
         end
 
         # Write Throuht
         def create_second_level_cache
-          self.class.cache_store.set(second_level_cache_key, self) if self.class.second_level_cache_enabled?
+          self.class.cache_store.write(second_level_cache_key, self) if self.class.second_level_cache_enabled?
           true
         end
 
