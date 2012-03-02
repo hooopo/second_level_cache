@@ -1,30 +1,27 @@
-# encoding: utf-8
 module SecondLevelCache
   module ActiveRecord
     module Associations
       module SingularAssociation
-        def self.included(base)
-          base.send(:include, InstanceMethods)
+        extend ActiveSupport::Concern
+        included do |base|
           base.class_eval do
             alias_method_chain :find_target, :second_level_cache
           end
         end
 
-        module InstanceMethods
-          def find_target_with_second_level_cache
-            return find_target_without_second_level_cache unless association_class.second_level_cache_enabled?
-            cache_record = association_class.cache_store.read(second_level_cache_key)
-            return cache_record.tap{|record| set_inverse_instance(record)} if cache_record
-            record = find_target_without_second_level_cache
-            association_class.cache_store.write(second_level_cache_key, record)
-            record
-          end
+        def find_target_with_second_level_cache
+          return find_target_without_second_level_cache unless association_class.second_level_cache_enabled?
+          cache_record = association_class.read_second_level_cache(second_level_cache_key)
+          return cache_record.tap{|record| set_inverse_instance(record)} if cache_record
+          record = find_target_without_second_level_cache
+          association_class.write_cache(second_level_cache_key, record)
+          record
+        end
 
-          private
+        private
 
-          def second_level_cache_key
-            "#{aliased_table_name}/#{owner[reflection.foreign_key]}"
-          end
+        def second_level_cache_key
+          owner[reflection.foreign_key]
         end
       end
     end

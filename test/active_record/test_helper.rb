@@ -1,5 +1,6 @@
 require 'test_helper'
 require 'active_record'
+require 'second_level_cache/active_record'
 
 def open_test_db_connect
   ActiveRecord::Base.establish_connection(

@@ -1,7 +1,4 @@
-# encoding: utf-8
-
-require 'active_record'
-
+require 'active_support/core_ext'
 require 'second_level_cache/config'
 require 'second_level_cache/marshal'
 
@@ -10,34 +7,53 @@ module SecondLevelCache
     block_given? ? yield(Config) : Config
   end
 
-  module Mixin
-    def self.included(base)
-      base.extend ClassMethods
-    end
+  def self.logger
+    Config.logger
   end
 
-  module ClassMethods
-    def acts_as_cached(options = {})
-      @second_level_cache_status = true
-      @second_level_cache_logger = options[:logger] || ::ActiveRecord::Base.logger
-      @second_level_cache_ttl = options[:ttl] || 2.day
-      second_level_cache_init
+  def self.cache_store
+    Config.cache_store
+  end
+
+  module Mixin
+    extend ActiveSupport::Concern
+
+    module ClassMethods
+      attr_reader :second_level_cache_options
+
+      def acts_as_cached(options = {})
+        @second_level_cache_enabled = true
+        @second_level_cache_options = options
+        @second_level_cache_options[:expires_in] ||= 1.day
+      end
+
+      def second_level_cache_enabled?
+        !!@second_level_cache_enabled
+      end
+
+      def cache_store
+        Config.cache_store
+      end
+
+      def second_level_cache_key(key)
+        "#{name}/#{key}"
+      end
+
+      def read_second_level_cache(id)
+        SecondLevelCache.cache_store.read(second_level_cache_key(id))
+      end
     end
 
-    def second_level_cache_enabled?
-      defined?(@second_level_cache_status) && @second_level_cache_status
+    def second_level_cache_key
+      self.class.second_level_cache_key(id)
     end
 
-    def cache_store
-      Config.cache_store
+    def expire_second_level_cache
+      SecondLevelCache.cache_store.delete(second_level_cache_key) if self.class.second_level_cache_enabled?
     end
 
-    def logger
-      @second_level_cache_logger
-    end
-
-    def ttl
-      @second_level_cache_ttl
+    def write_second_level_cache
+      SecondLevelCache.cache_store.write(second_level_cache_key, self, second_level_cache_options) if self.class.second_level_cache_enabled?
     end
   end
 end

@@ -13,4 +13,3 @@ module Marshal
     alias_method_chain :load, :constantize
   end
 end
-
