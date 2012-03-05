@@ -21,6 +21,10 @@ class Test::Unit::TestCase
   ensure
     open_test_db_connect
   end
+
+  def teardown
+    User.delete_all
+  end
 end
 
 require 'active_record/model/user'
