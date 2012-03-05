@@ -31,6 +31,10 @@ module SecondLevelCache
         !!@second_level_cache_enabled
       end
 
+      def second_level_cache_options
+        @second_level_cache_options
+      end
+
       def cache_store
         Config.cache_store
       end
@@ -53,7 +57,7 @@ module SecondLevelCache
     end
 
     def write_second_level_cache
-      SecondLevelCache.cache_store.write(second_level_cache_key, self, second_level_cache_options) if self.class.second_level_cache_enabled?
+      SecondLevelCache.cache_store.write(second_level_cache_key, self, self.class.second_level_cache_options) if self.class.second_level_cache_enabled?
     end
   end
 end
