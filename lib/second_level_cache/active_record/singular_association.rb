@@ -14,7 +14,7 @@ module SecondLevelCache
           cache_record = association_class.read_second_level_cache(second_level_cache_key)
           return cache_record.tap{|record| set_inverse_instance(record)} if cache_record
           record = find_target_without_second_level_cache
-          association_class.write_cache(second_level_cache_key, record)
+          record.write_second_level_cache
           record
         end
 

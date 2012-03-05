@@ -44,6 +44,14 @@ class ActiveRecord::SecondLevelCacheTest < Test::Unit::TestCase
     end
   end
 
+  def test_should_write_singular_association_cache
+    book = @user.books.create
+    @user.expire_second_level_cache
+    assert_nil User.read_second_level_cache(@user.id)
+    assert_equal @user, book.user
+    assert_not_nil User.read_second_level_cache(@user.id)
+  end
+
   def test_should_expire_cache_when_destroy
     @user.destroy
     assert_nil User.read_second_level_cache(@user.id)
