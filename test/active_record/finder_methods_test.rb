@@ -10,4 +10,10 @@ class ActiveRecord::FinderMethodsTest < Test::Unit::TestCase
       assert_equal @user, User.find(@user.id)
     end
   end
+
+  def test_should_find_with_condition
+    no_connection do
+      assert_equal @user, User.where(:name => @user.name).find(@user.id)
+    end
+  end
 end

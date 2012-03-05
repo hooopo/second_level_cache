@@ -1,3 +1,5 @@
+require 'second_level_cache/arel/wheres'
+
 module SecondLevelCache
   module ActiveRecord
     module FinderMethods
