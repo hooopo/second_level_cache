@@ -31,10 +31,6 @@ module SecondLevelCache
         !!@second_level_cache_enabled
       end
 
-      def second_level_cache_options
-        @second_level_cache_options
-      end
-
       def cache_store
         Config.cache_store
       end
