@@ -59,4 +59,3 @@ module SecondLevelCache
 end
 
 require 'second_level_cache/active_record' if defined?(ActiveRecord)
-require 'second_level_cache/rails' if defined?(Rails)
