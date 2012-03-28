@@ -1,4 +1,4 @@
-require 'active_support/core_ext'
+require 'active_support/all'
 require 'second_level_cache/config'
 require 'second_level_cache/marshal'
 
@@ -33,6 +33,10 @@ module SecondLevelCache
 
       def cache_store
         Config.cache_store
+      end
+
+      def logger
+        Config.logger
       end
 
       def second_level_cache_key(key)

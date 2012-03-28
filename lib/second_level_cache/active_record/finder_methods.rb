@@ -32,7 +32,7 @@ module SecondLevelCache
         end
 
         record = find_one_without_second_level_cache(id)
-        @klass.write_cache(id, record)
+        record.write_second_level_cache
         record
       end
 

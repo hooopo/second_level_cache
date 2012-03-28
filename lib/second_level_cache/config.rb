@@ -10,7 +10,8 @@ module SecondLevelCache
     end
 
     def logger
-      @logger ||= Rails.logger if defined(Rails)
+      @logger ||= Rails.logger if defined?(Rails)
+      @logger ||= Logger.new(STDOUT)
       @logger
     end
   end

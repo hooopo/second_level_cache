@@ -6,3 +6,5 @@ require 'test/unit'
 SecondLevelCache.configure do |config|
   config.cache_store = ActiveSupport::Cache::MemoryStore.new
 end
+
+SecondLevelCache.logger.level = Logger::INFO
