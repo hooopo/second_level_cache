@@ -7,12 +7,8 @@ module SecondLevelCache
     block_given? ? yield(Config) : Config
   end
 
-  def self.logger
-    Config.logger
-  end
-
-  def self.cache_store
-    Config.cache_store
+  class << self
+    delegate :logger, :cache_store, :cache_key_prefix, :to => Config
   end
 
   module Mixin
@@ -39,8 +35,12 @@ module SecondLevelCache
         Config.logger
       end
 
-      def second_level_cache_key(key)
-        "#{name}/#{key}"
+      def cache_key_prefix
+        Config.cache_key_prefix
+      end
+
+      def second_level_cache_key(id)
+        "#{cache_key_prefix}/#{name.downcase}/#{id}"
       end
 
       def read_second_level_cache(id)

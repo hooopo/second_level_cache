@@ -2,7 +2,7 @@ module SecondLevelCache
   module Config
     extend self
 
-    attr_accessor :cache_store, :logger
+    attr_accessor :cache_store, :logger, :cache_key_prefix
 
     def cache_store
       @cache_store ||= Rails.cache if defined?(Rails)
@@ -12,7 +12,10 @@ module SecondLevelCache
     def logger
       @logger ||= Rails.logger if defined?(Rails)
       @logger ||= Logger.new(STDOUT)
-      @logger
+    end
+
+    def cache_key_prefix
+      @cache_key_prefix ||= 'slc'
     end
   end
 end

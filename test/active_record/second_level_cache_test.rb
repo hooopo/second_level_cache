@@ -6,7 +6,7 @@ class ActiveRecord::SecondLevelCacheTest < Test::Unit::TestCase
   end
 
   def test_should_get_cache_key
-    assert_equal "User/#{@user.id}", @user.second_level_cache_key
+    assert_equal "slc/user/#{@user.id}", @user.second_level_cache_key
   end
 
   def test_should_write_and_read_cache

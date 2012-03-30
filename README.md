@@ -38,6 +38,13 @@ user.articles.find(1), user.where(:status => 1).find(1)
 article.user
 ```
 
+Cache key:
+
+```ruby
+user = User.find 1
+user.second_level_cache_key  # We will get the key looks like "slc/user/1"
+```
+
 Notice:
 
 * SecondLevelCache cache by model name and id, so only find_one query will work.
@@ -45,7 +52,9 @@ Notice:
 
 ## configure
 
-By default, SecondLevelCache use Rails.cache and Rails.logger as cache store and logger when loaded in rails enviroment.
+cache_store: Default is Rails.cache
+logger: Default is Rails.logger
+cache_key_prefix: Avoid cache key conflict with other application, Default is 'slc'
 
 You can config like this:
 
@@ -54,5 +63,6 @@ You can config like this:
 SecondLevelCache.configure do |config|
   config.cache_store = ActiveSupport::Cache::MemoryStore.new
   config.logger = Logger.new($stdout)
+  config.cache_key_prefix = 'domain'
 end
 ```
