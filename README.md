@@ -16,7 +16,6 @@ In your gem file:
 
 ```ruby
 gem "second_level_cache", :git => "git://github.com/csdn-dev/second_level_cache.git"
-
 ```
 
 ## Usage
@@ -52,9 +51,9 @@ Notice:
 
 ## configure
 
-cache_store: Default is Rails.cache
-logger: Default is Rails.logger
-cache_key_prefix: Avoid cache key conflict with other application, Default is 'slc'
+cache_store: Default is Rails.cache  
+logger: Default is Rails.logger  
+cache_key_prefix: Avoid cache key conflict with other application, Default is 'slc'  
 
 You can config like this:
 
