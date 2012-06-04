@@ -5,8 +5,8 @@ module SecondLevelCache
     module FinderMethods
       extend ActiveSupport::Concern
 
-      included do |base|
-        base.class_eval do
+      included do
+        class_eval do
           alias_method_chain :find_one, :second_level_cache
           alias_method_chain :find_by_attributes, :second_level_cache
         end

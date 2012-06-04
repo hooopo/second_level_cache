@@ -3,8 +3,8 @@ module SecondLevelCache
     module Associations
       module SingularAssociation
         extend ActiveSupport::Concern
-        included do |base|
-          base.class_eval do
+        included do
+          class_eval do
             alias_method_chain :find_target, :second_level_cache
           end
         end
