@@ -12,7 +12,18 @@ module SecondLevelCache
         end
       end
 
-      #TODO fetch multi ids
+      # TODO fetch multi ids
+      #
+      # Cacheable:
+      #
+      #     current_user.articles.where(:status => 1).visiable.find(params[:id])
+      #
+      # Uncacheable:
+      #
+      #     Article.where("user_id = '1'").find(params[:id])
+      #     Article.where("user_id > 1").find(params[:id])
+      #     Article.where("articles.user_id = 1").find(prams[:id])
+      #     Article.where("user_id = 1 AND ...").find(params[:id])
       def find_one_with_second_level_cache(id)
         return find_one_without_second_level_cache(id) unless second_level_cache_enabled?
 
