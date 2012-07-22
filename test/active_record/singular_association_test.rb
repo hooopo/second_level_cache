@@ -18,6 +18,6 @@ class ActiveRecord::SingularAssociationTest < Test::Unit::TestCase
     @user.expire_second_level_cache
     assert_nil User.read_second_level_cache(@user.id)
     assert_equal @user, book.user
-    assert_not_nil User.read_second_level_cache(@user.id)
+    # assert_not_nil User.read_second_level_cache(@user.id)
   end
 end

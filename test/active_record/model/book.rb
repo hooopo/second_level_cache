@@ -7,5 +7,5 @@ end
 class Book < ActiveRecord::Base
   acts_as_cached
 
-  belongs_to :user
+  belongs_to :user, :counter_cache => true
 end

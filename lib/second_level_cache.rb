@@ -44,7 +44,11 @@ module SecondLevelCache
       end
 
       def read_second_level_cache(id)
-        SecondLevelCache.cache_store.read(second_level_cache_key(id))
+        SecondLevelCache.cache_store.read(second_level_cache_key(id)) if self.second_level_cache_enabled?
+      end
+
+      def expire_second_level_cache(id)
+        SecondLevelCache.cache_store.delete(second_level_cache_key(id)) if self.second_level_cache_enabled?
       end
     end
 
