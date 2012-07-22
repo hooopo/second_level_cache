@@ -32,7 +32,11 @@ Then it will fetch cached object in this situations:
 
 ```ruby
 User.find(1)
-User.find_by_id(1), User.find_by_id!(1), User.find_by_id_and_name(1, "Hooopo"), User.where(:status => 1).find_by_id(1), user.articles.find_by_id(1)
+User.find_by_id(1)
+User.find_by_id!(1)
+User.find_by_id_and_name(1, "Hooopo")
+User.where(:status => 1).find_by_id(1)
+user.articles.find_by_id(1)
 user.articles.find(1), user.where(:status => 1).find(1)
 article.user
 ```
