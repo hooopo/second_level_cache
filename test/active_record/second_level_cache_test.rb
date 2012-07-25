@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
 class ActiveRecord::SecondLevelCacheTest < Test::Unit::TestCase

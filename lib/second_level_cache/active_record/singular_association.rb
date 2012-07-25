@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module SecondLevelCache
   module ActiveRecord
     module Associations
@@ -10,8 +11,8 @@ module SecondLevelCache
         end
 
         def find_target_with_second_level_cache
-          return find_target_without_second_level_cache unless association_class.second_level_cache_enabled?
-          cache_record = association_class.read_second_level_cache(second_level_cache_key)
+          return find_target_without_second_level_cache unless klass.second_level_cache_enabled?
+          cache_record = klass.read_second_level_cache(second_level_cache_key)
           return cache_record.tap{|record| set_inverse_instance(record)} if cache_record
           record = find_target_without_second_level_cache
           record.write_second_level_cache

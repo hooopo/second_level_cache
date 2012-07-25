@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
 require 'active_record'
 require 'second_level_cache/active_record'
@@ -29,3 +30,4 @@ end
 
 require 'active_record/model/user'
 require 'active_record/model/book'
+require 'active_record/model/image'

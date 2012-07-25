@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module SecondLevelCache
   module ActiveRecord
     module Base

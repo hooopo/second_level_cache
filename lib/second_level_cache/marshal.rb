@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Marshal
   class << self
     def load_with_constantize(value)

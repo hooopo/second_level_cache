@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'second_level_cache/arel/wheres'
 
 module SecondLevelCache
