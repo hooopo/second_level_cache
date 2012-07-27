@@ -31,3 +31,5 @@ end
 require 'active_record/model/user'
 require 'active_record/model/book'
 require 'active_record/model/image'
+require 'active_record/model/topic'
+require 'active_record/model/post'
