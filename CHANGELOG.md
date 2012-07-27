@@ -5,3 +5,7 @@
 1.2.1
 -----
 * [fix polymorphic association bug]
+
+1.3.0
+-----
+* [clean cache after touch]
