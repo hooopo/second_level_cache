@@ -9,3 +9,7 @@
 1.3.0
 -----
 * [clean cache after touch]
+
+1.3.1
+-----
+* [clean cache after update_column/increment!/decrement!]
