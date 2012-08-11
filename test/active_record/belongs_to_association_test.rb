@@ -1,12 +1,12 @@
 # -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
-class ActiveRecord::SingularAssociationTest < Test::Unit::TestCase
+class ActiveRecord::BelongsToAssociationTest < Test::Unit::TestCase
   def setup
     @user = User.create :name => 'csdn', :email => 'test@csdn.com'
   end
 
-  def test_should_get_cache_when_use_singular_association
+  def test_should_get_cache_when_use_belongs_to_association
     book = @user.books.create
 
     no_connection do
@@ -14,7 +14,7 @@ class ActiveRecord::SingularAssociationTest < Test::Unit::TestCase
     end
   end
 
-  def test_should_write_singular_association_cache
+  def test_should_write_belongs_to_association_cache
     book = @user.books.create
     @user.expire_second_level_cache
     assert_nil User.read_second_level_cache(@user.id)

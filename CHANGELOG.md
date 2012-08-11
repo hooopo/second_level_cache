@@ -13,3 +13,7 @@
 1.3.1
 -----
 * [clean cache after update_column/increment!/decrement!]
+
+1.3.2
+-----
+* [fix has one assciation issue]

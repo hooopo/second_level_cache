@@ -2,7 +2,7 @@
 module SecondLevelCache
   module ActiveRecord
     module Associations
-      module SingularAssociation
+      module BelongsToAssociation
         extend ActiveSupport::Concern
         included do
           class_eval do
