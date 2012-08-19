@@ -1,5 +1,6 @@
 /.bundle
 /nbproject/*
+/Gemfile.lock
 /.rvmrc
 /doc
 /pkg
