@@ -17,3 +17,7 @@
 1.3.2
 -----
 * [fix has one assciation issue]
+
+1.4.0
+-----
+* [cache has one assciation]
