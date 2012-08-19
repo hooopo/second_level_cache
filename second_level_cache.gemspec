@@ -4,9 +4,16 @@ require File.expand_path('../lib/second_level_cache/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["wangxz"]
   gem.email         = ["wangxz@csdn.net"]
-  gem.description   = %q{second level cache for rails3}
-  gem.summary       = %q{second level cache for rails3}
-  gem.homepage      = ""
+  gem.description   = %q{Write Through and Read Through caching library inspired by CacheMoney and cache_fu, support only Rails3 and ActiveRecord.}
+  gem.summary       = <<-SUMMARY
+  SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu, support only Rails3 and ActiveRecord.
+
+  Read-Through: Queries by ID, like current_user.articles.find(params[:id]), will first look in cache store and then look in the database for the results of that query. If there is a cache miss, it will populate the cache.
+
+  Write-Through: As objects are created, updated, and deleted, all of the caches are automatically kept up-to-date and coherent.
+  SUMMARY
+
+  gem.homepage      = "https://github.com/csdn-dev/second_level_cache"
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
