@@ -7,7 +7,7 @@ module SecondLevelCache
           self.find_by_id(iid)
         else
           record = self.where(uniq_key_name => value).first
-          record.tap{|record| SecondLevelCache.cache_store.write(cache_uniq_key(value, uniq_key_name), record.id)} if record
+          record.tap{|record| SecondLevelCache.cache_store.write(cache_uniq_key(value, uniq_key_name), record.id)}
         end
       end
 
