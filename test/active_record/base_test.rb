@@ -19,6 +19,8 @@ class ActiveRecord::BaseTest < Test::Unit::TestCase
     no_connection do
       assert_equal 'change', User.find(@user.id).name
     end
+
+    assert_equal 'change', @user.reload.name
   end
 
   def test_should_expire_cache_when_destroy
@@ -40,5 +42,10 @@ class ActiveRecord::BaseTest < Test::Unit::TestCase
     topic.update_column :body, 'change'
     assert_equal 'change', Post.read_second_level_cache(p.id).topic.body
     assert Post.read_second_level_cache(p.id).association_cache.empty?
+  end
+
+  def test_should_have_no_changed_attributes_when_read_from_cache
+    @user.update_attribute :name, 'change'
+    assert !User.find(@user.id).changed?, "should be clear"
   end
 end
