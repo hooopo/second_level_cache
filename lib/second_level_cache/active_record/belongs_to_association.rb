@@ -14,9 +14,7 @@ module SecondLevelCache
           return find_target_without_second_level_cache unless klass.second_level_cache_enabled?
           cache_record = klass.read_second_level_cache(second_level_cache_key)
           return cache_record.tap{|record| set_inverse_instance(record)} if cache_record
-          record = find_target_without_second_level_cache
-          record.write_second_level_cache
-          record
+          find_target_without_second_level_cache.tap{|record| record.write_second_level_cache}
         end
 
         private
