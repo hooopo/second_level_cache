@@ -62,7 +62,10 @@ module SecondLevelCache
     end
 
     def write_second_level_cache
-      SecondLevelCache.cache_store.write(second_level_cache_key, self, self.class.second_level_cache_options) if self.class.second_level_cache_enabled?
+      if self.class.second_level_cache_enabled?
+        self.clear_association_cache
+        SecondLevelCache.cache_store.write(second_level_cache_key, self, self.class.second_level_cache_options)
+      end
     end
   end
 end

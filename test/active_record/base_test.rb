@@ -33,4 +33,12 @@ class ActiveRecord::BaseTest < Test::Unit::TestCase
     user = User.find(@user.id)
     assert_equal user.books_count, @user.books_count + 1
   end
+
+  def test_should_clear_association_cache_before_write_cache
+    topic = Topic.create :title => 'title', :body => 'text'
+    p = Post.create :topic => topic, :body => 'body'
+    topic.update_column :body, 'change'
+    assert_equal 'change', Post.read_second_level_cache(p.id).topic.body
+    assert Post.read_second_level_cache(p.id).association_cache.empty?
+  end
 end

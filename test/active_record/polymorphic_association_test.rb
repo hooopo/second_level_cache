@@ -9,6 +9,8 @@ class ActiveRecord::PolymorphicAssociationTest < Test::Unit::TestCase
   def test_should_get_cache_when_use_polymorphic_association
     image = @user.images.create
 
+    @user.write_second_level_cache
+    image.clear_association_cache
     no_connection do
       assert_equal @user, image.imagable
     end
