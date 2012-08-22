@@ -21,3 +21,7 @@
 1.4.0
 -----
 * [cache has one assciation]
+
+1.4.1
+-----
+* [fix errors when belongs_to association return nil]
