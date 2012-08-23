@@ -7,7 +7,8 @@ ActiveRecord::Base.connection.create_table(:users, :force => true) do |t|
 end
 
 class User < ActiveRecord::Base
-  acts_as_cached
+  CacheVersion = 3
+  acts_as_cached(:version => CacheVersion, :expires_in => 3.day)
 
   has_many :books
   has_many :images, :as => :imagable
