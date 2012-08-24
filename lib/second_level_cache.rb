@@ -22,6 +22,7 @@ module SecondLevelCache
         @second_level_cache_enabled = true
         @second_level_cache_options = options
         @second_level_cache_options[:expires_in] ||= 1.day
+        @second_level_cache_options[:version] ||= 0
       end
 
       def second_level_cache_enabled?
@@ -40,8 +41,12 @@ module SecondLevelCache
         Config.cache_key_prefix
       end
 
+      def cache_version
+        second_level_cache_options[:version]
+      end
+
       def second_level_cache_key(id)
-        "#{cache_key_prefix}/#{name.downcase}/#{id}"
+        "#{cache_key_prefix}/#{name.downcase}/#{id}/#{cache_version}"
       end
 
       def read_second_level_cache(id)
@@ -62,7 +67,10 @@ module SecondLevelCache
     end
 
     def write_second_level_cache
-      SecondLevelCache.cache_store.write(second_level_cache_key, self, self.class.second_level_cache_options) if self.class.second_level_cache_enabled?
+      if self.class.second_level_cache_enabled?
+        self.clear_association_cache
+        SecondLevelCache.cache_store.write(second_level_cache_key, self, :expires_in => self.class.second_level_cache_options[:expires_in])
+      end
     end
   end
 end

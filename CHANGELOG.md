@@ -17,3 +17,14 @@
 1.3.2
 -----
 * [fix has one assciation issue]
+
+1.4.0
+-----
+* [cache has one assciation]
+
+1.4.1
+-----
+* [fix errors when belongs_to association return nil]
+
+1.5.0
+* [add cache version to quick clear cache for special model]

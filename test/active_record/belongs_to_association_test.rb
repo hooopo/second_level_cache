@@ -9,6 +9,8 @@ class ActiveRecord::BelongsToAssociationTest < Test::Unit::TestCase
   def test_should_get_cache_when_use_belongs_to_association
     book = @user.books.create
 
+    @user.write_second_level_cache
+    book.clear_association_cache
     no_connection do
       assert_equal @user, book.user
     end
