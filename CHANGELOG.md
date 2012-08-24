@@ -25,3 +25,6 @@
 1.4.1
 -----
 * [fix errors when belongs_to association return nil]
+
+1.5.0
+* [add cache version to quick clear cache for special model]
