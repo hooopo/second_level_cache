@@ -12,7 +12,7 @@ module SecondLevelCache
       end
 
       def fetch_by_uniq_key!(value, uniq_key_name)
-        fetch_by_uniq_key(value, uniq_key_name) || raise(ActiveRecord::RecordNotFound)
+        fetch_by_uniq_key(value, uniq_key_name) || raise(::ActiveRecord::RecordNotFound)
       end
 
       private
