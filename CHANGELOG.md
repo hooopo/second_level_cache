@@ -27,4 +27,10 @@
 * [fix errors when belongs_to association return nil]
 
 1.5.0
+-----
 * [add cache version to quick clear cache for special model]
+
+1.5.1
+-----
+* [use new marshal machanism to avoid clear assocation cache manually]
+
