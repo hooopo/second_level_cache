@@ -50,7 +50,7 @@ module SecondLevelCache
       end
 
       def read_second_level_cache(id)
-        SecondLevelCache.cache_store.read(second_level_cache_key(id)) if self.second_level_cache_enabled?
+        RecordMarshal.load(SecondLevelCache.cache_store.read(second_level_cache_key(id))) if self.second_level_cache_enabled?
       end
 
       def expire_second_level_cache(id)
@@ -68,8 +68,7 @@ module SecondLevelCache
 
     def write_second_level_cache
       if self.class.second_level_cache_enabled?
-        self.clear_association_cache
-        SecondLevelCache.cache_store.write(second_level_cache_key, self, :expires_in => self.class.second_level_cache_options[:expires_in])
+        SecondLevelCache.cache_store.write(second_level_cache_key, RecordMarshal.dump(self), :expires_in => self.class.second_level_cache_options[:expires_in])
       end
     end
   end

@@ -10,7 +10,6 @@ class ActiveRecord::PolymorphicAssociationTest < Test::Unit::TestCase
     image = @user.images.create
 
     @user.write_second_level_cache
-    image.clear_association_cache
     no_connection do
       assert_equal @user, image.imagable
     end
@@ -18,7 +17,6 @@ class ActiveRecord::PolymorphicAssociationTest < Test::Unit::TestCase
 
   def test_should_write_polymorphic_association_cache
     image = @user.images.create
-    @user.expire_second_level_cache
     assert_nil User.read_second_level_cache(@user.id)
     assert_equal @user, image.imagable
   end
