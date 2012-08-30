@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'active_support/all'
 require 'second_level_cache/config'
-require 'second_level_cache/marshal'
+require 'second_level_cache/record_marshal'
 
 module SecondLevelCache
   def self.configure
