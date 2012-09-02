@@ -4,6 +4,7 @@ ActiveRecord::Base.connection.create_table(:users, :force => true) do |t|
   t.string  :email
   t.integer :books_count, :default => 0
   t.integer :images_count, :default => 0
+  t.timestamps
 end
 
 class User < ActiveRecord::Base
