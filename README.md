@@ -15,7 +15,7 @@ SecondLevelCache is not fully test and verify in production enviroment right now
 In your gem file:
 
 ```ruby
-gem "second_level_cache", :git => "git://github.com/csdn-dev/second_level_cache.git"
+gem "second_level_cache", "~> 1.5"
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ For example, cache User objects:
 
 ```ruby
 class User < ActiveRecord::Base
-  acts_as_cached
+  acts_as_cached(:version => 1, :expires_in => 1.week)
 end
 ```
 
@@ -45,7 +45,7 @@ Cache key:
 
 ```ruby
 user = User.find 1
-user.second_level_cache_key  # We will get the key looks like "slc/user/1"
+user.second_level_cache_key  # We will get the key looks like "slc/user/1/0"
 ```
 
 Notice:
