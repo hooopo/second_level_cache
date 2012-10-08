@@ -71,6 +71,8 @@ module SecondLevelCache
         SecondLevelCache.cache_store.write(second_level_cache_key, RecordMarshal.dump(self), :expires_in => self.class.second_level_cache_options[:expires_in])
       end
     end
+
+    alias update_second_level_cache write_second_level_cache
   end
 end
 

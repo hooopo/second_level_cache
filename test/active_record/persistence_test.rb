@@ -13,12 +13,18 @@ class ActiveRecord::PersistenceTest < Test::Unit::TestCase
     assert_equal 1, @user.reload.books_count
   end
 
-  def test_should_clean_cache_after_touch
-    post = @topic.posts.create
-    post.body = "body"
-    post.save
-    new_topic = Topic.find @topic.id
-    assert !(new_topic.updated_at == @topic.updated_at)
+  def test_should_update_cache_after_touch
+    old_updated_time = @user.updated_at
+    @user.touch
+    assert !(old_updated_time == @user.updated_at)
+    new_user = User.find @user.id
+    assert_equal new_user, @user
+  end
+
+  def test_should_update_cache_after_update_column
+    @user.update_column :name, "new_name"
+    new_user = User.find @user.id
+    assert_equal new_user, @user
   end
 
   def test_should_return_true_if_touch_ok

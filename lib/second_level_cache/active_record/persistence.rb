@@ -13,18 +13,15 @@ module SecondLevelCache
       end
 
       def update_column_with_second_level_cache(name, value)
-        expire_second_level_cache
-        update_column_without_second_level_cache(name, value)
+        update_column_without_second_level_cache(name, value).tap{update_second_level_cache}
       end
 
       def reload_with_second_level_cache(options = nil)
-        expire_second_level_cache
-        reload_without_second_level_cache(options)
+        reload_without_second_level_cache(options).tap{expire_second_level_cache}
       end
 
       def touch_with_second_level_cache(name = nil)
-        expire_second_level_cache
-        touch_without_second_level_cache(name)
+        touch_without_second_level_cache(name).tap{update_second_level_cache}
       end
     end
   end
