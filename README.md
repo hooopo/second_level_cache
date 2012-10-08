@@ -37,7 +37,8 @@ User.find_by_id!(1)
 User.find_by_id_and_name(1, "Hooopo")
 User.where(:status => 1).find_by_id(1)
 user.articles.find_by_id(1)
-user.articles.find(1), user.where(:status => 1).find(1)
+user.articles.find(1)
+User.where(:status => 1).find(1)
 article.user
 ```
 
@@ -46,6 +47,22 @@ Cache key:
 ```ruby
 user = User.find 1
 user.second_level_cache_key  # We will get the key looks like "slc/user/1/0"
+```
+
+Disable SecondLevelCache:
+
+```ruby
+  User.without_second_level_cache do
+    user = User.find 1
+    # ...
+  end
+```
+
+Only `SELECT *` query will be cached:
+
+```ruby
+  # this query will NOT be cached
+  User.select("id, name").find(1)
 ```
 
 Notice:
