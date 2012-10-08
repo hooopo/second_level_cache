@@ -29,6 +29,14 @@ module SecondLevelCache
         !!@second_level_cache_enabled
       end
 
+      def without_second_level_cache
+        old, @second_level_cache_enabled = @second_level_cache_enabled, false
+
+        yield if block_given?
+      ensure
+        @second_level_cache_enabled = old
+      end
+
       def cache_store
         Config.cache_store
       end
