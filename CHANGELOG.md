@@ -34,3 +34,8 @@
 -----
 * [use new marshal machanism to avoid clear assocation cache manually]
 
+1.6.0
+-----
+* [write through cache]
+* [disable SecondLevelCache for spicial model]
+* [only cache `SELECT *` query]
