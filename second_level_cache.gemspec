@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
 require File.expand_path('../lib/second_level_cache/version', __FILE__)
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |gem|
   gem.authors       = ["wangxz"]
@@ -15,9 +17,16 @@ Gem::Specification.new do |gem|
 
   gem.homepage      = "https://github.com/csdn-dev/second_level_cache"
 
-  gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
-  gem.files         = `git ls-files`.split("\n")
-  gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  gem.files         = Dir.glob("lib/**/*.rb") + [
+    "README.md",
+    "Rakefile",
+    "Gemfile",
+    "init.rb",
+    "CHANGELOG.md",
+    "second_level_cache.gemspec"
+  ]
+  gem.test_files    = Dir.glob("test/**/*.rb")
+  gem.executables   = gem.files.grep(%r{^bin/})
   gem.name          = "second_level_cache"
   gem.require_paths = ["lib"]
   gem.version       = SecondLevelCache::VERSION
