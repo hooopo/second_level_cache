@@ -21,7 +21,7 @@ module SecondLevelCache
       def acts_as_cached(options = {})
         @second_level_cache_enabled = true
         @second_level_cache_options = options
-        @second_level_cache_options[:expires_in] ||= 1.day
+        @second_level_cache_options[:expires_in] ||= 1.week
         @second_level_cache_options[:version] ||= 0
       end
 
