@@ -6,9 +6,6 @@ Read-Through: Queries by ID, like `current_user.articles.find(params[:id])`, wil
 
 Write-Through: As objects are created, updated, and deleted, all of the caches are automatically kept up-to-date and coherent.
 
-## Risk
-
-SecondLevelCache is not fully test and verify in production enviroment right now. Use it at your own risk.
 
 ## Install
 
