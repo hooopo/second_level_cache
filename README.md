@@ -46,20 +46,31 @@ user = User.find 1
 user.second_level_cache_key  # We will get the key looks like "slc/user/1/0"
 ```
 
+Expires cache:
+
+```ruby
+user = User.find(1)
+user.expire_second_level_cache
+```
+or expires cache using class method:
+```ruby
+User.expire_second_level_cache(1)
+```
+
 Disable SecondLevelCache:
 
 ```ruby
-  User.without_second_level_cache do
-    user = User.find 1
-    # ...
-  end
+User.without_second_level_cache do
+  user = User.find 1
+  # ...
+end
 ```
 
 Only `SELECT *` query will be cached:
 
 ```ruby
-  # this query will NOT be cached
-  User.select("id, name").find(1)
+# this query will NOT be cached
+User.select("id, name").find(1)
 ```
 
 Notice:
@@ -67,19 +78,27 @@ Notice:
 * SecondLevelCache cache by model name and id, so only find_one query will work.
 * only equal conditions query WILL get cache; and SQL string query like `User.where("name = 'Hooopo'").find(1)` WILL NOT work.
 
-## configure
+## Configure
 
-cache_store: Default is Rails.cache  
-logger: Default is Rails.logger  
-cache_key_prefix: Avoid cache key conflict with other application, Default is 'slc'  
+In production env, we recommend to use [Dalli](https://github.com/mperham/dalli) as Rails cache store.
+```ruby
+ config.cache_store = [:dalli_store, APP_CONFIG["memcached_host"], {:namespace => "ns", :compress => true}]
+```
 
-You can config like this:
+## Tips: 
+
+* When you want to clear only second level cache apart from other cache for example fragment cache in cache store,
+you can only change the `cache_key_prefix`:
 
 ```ruby
-# config/initializers/second_level_cache.rb
-SecondLevelCache.configure do |config|
-  config.cache_store = ActiveSupport::Cache::MemoryStore.new
-  config.logger = Logger.new($stdout)
-  config.cache_key_prefix = 'domain'
+SecondLevelCache.configure.cache_key_prefix = "slc1"
+```
+* When schema of your model changed, just change the `version` of the speical model, avoding clear all the cache.
+
+```ruby
+class User < ActiveRecord::Base
+  acts_as_cached(:version => 2, :expires_in => 1.week)
 end
 ```
+
+
