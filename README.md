@@ -100,7 +100,9 @@ class User < ActiveRecord::Base
   acts_as_cached(:version => 2, :expires_in => 1.week)
 end
 ```
+
 * It provides a great feature, not hits db when fetching record via unique key(not premery key). 
+* 
 ```ruby
 # this will fetch from cache
 user = User.fetch_by_uniq_key("hooopo", :nick_name)
