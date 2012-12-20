@@ -101,7 +101,7 @@ class User < ActiveRecord::Base
 end
 ```
 
-* It provides a great feature, not hits db when fetching record via unique key(not premery key). 
+* It provides a great feature, not hits db when fetching record via unique key(not primary key). 
 
 ```ruby
 # this will fetch from cache
