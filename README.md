@@ -1,6 +1,7 @@
 # SecondLevelCache
 
 [![Gem Version](https://badge.fury.io/rb/second_level_cache.png)](http://badge.fury.io/rb/second_level_cache)
+[![Dependency Status](https://gemnasium.com/csdn-dev/second_level_cache.png)](https://gemnasium.com/csdn-dev/second_level_cache)
 
 SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu, support only Rails3 and ActiveRecord.
 
