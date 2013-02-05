@@ -1,5 +1,7 @@
 # SecondLevelCache
 
+[![Gem Version](https://badge.fury.io/rb/second_level_cache.png)](http://badge.fury.io/rb/second_level_cache)
+
 SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu, support only Rails3 and ActiveRecord.
 
 Read-Through: Queries by ID, like `current_user.articles.find(params[:id])`, will first look in cache store and then look in the database for the results of that query. If there is a cache miss, it will populate the cache.
