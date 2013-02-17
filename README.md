@@ -116,4 +116,10 @@ user = User.fetch_by_uniq_key("hooopo", :nick_name)
 user = User.fetch_by_uniq_key!("hooopo", :nick_name) # this will raise `ActiveRecord::RecordNotFound` Exception when nick name not exists.
 ```
 
+## Contributors
+
+* [chloerei](https://github.com/chloerei)
+* [reyesyang](https://github.com/reyesyang)
+* [hooopo](https://github.com/hooopo)
+
 
