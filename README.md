@@ -81,7 +81,24 @@ User.select("id, name").find(1)
 Notice:
 
 * SecondLevelCache cache by model name and id, so only find_one query will work.
-* only equal conditions query WILL get cache; and SQL string query like `User.where("name = 'Hooopo'").find(1)` WILL NOT work.
+* Only equal conditions query WILL get cache; and SQL string query like `User.where("name = 'Hooopo'").find(1)` WILL NOT work.
+* SecondLevelCache sync cache after transaction commit:
+
+```ruby
+# user and account's write_second_level_cache operation will invoke after the logger.
+ActiveRecord::Base.transaction do
+   user.save
+   account.save
+   Rails.logger.info "info"
+end # <- Cache write 
+
+# if you want to do something after user and account's write_second_level_cache operation, do this way:
+ActiveRecord::Base.transaction do
+   user.save
+   account.save
+end # <- Cache write 
+Rails.logger.info "info"
+```
 
 ## Configure
 
