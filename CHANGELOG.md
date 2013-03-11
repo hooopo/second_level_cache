@@ -39,3 +39,7 @@
 * [write through cache]
 * [disable SecondLevelCache for spicial model]
 * [only cache `SELECT *` query]
+
+1.6.1
+-----
+* [Fix bug: undefined method `select_all_column?' for []:ActiveRecord::Relation] by sishen
