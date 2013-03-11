@@ -9,7 +9,7 @@ require 'second_level_cache/active_record/has_one_association'
 ActiveRecord::Base.send(:include, SecondLevelCache::Mixin)
 ActiveRecord::Base.send(:include, SecondLevelCache::ActiveRecord::Base)
 ActiveRecord::Base.send(:extend, SecondLevelCache::ActiveRecord::FetchByUniqKey)
-ActiveRecord::FinderMethods.send(:include, SecondLevelCache::ActiveRecord::FinderMethods)
+ActiveRecord::Relation.send(:include, SecondLevelCache::ActiveRecord::FinderMethods)
 ActiveRecord::Base.send(:include, SecondLevelCache::ActiveRecord::Persistence)
 ActiveRecord::Associations::BelongsToAssociation.send(:include, SecondLevelCache::ActiveRecord::Associations::BelongsToAssociation)
 ActiveRecord::Associations::HasOneAssociation.send(:include, SecondLevelCache::ActiveRecord::Associations::HasOneAssociation)
