@@ -12,7 +12,7 @@ module RecordMarshal
     def dump(record)
       [
        record.class.name,
-       record.instance_variable_get(:@attributes)
+       record.attributes
       ]
     end
 
