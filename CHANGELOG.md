@@ -43,3 +43,8 @@
 1.6.1
 -----
 * [Fix bug: undefined method `select_all_column?' for []:ActiveRecord::Relation] by sishen
+
+1.6.2
+-----
+* [can disable/enable fetch_by_uinq_key method]
+* [Fix Bug: serialized attribute columns marshal issue #11]
