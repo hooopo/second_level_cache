@@ -1,4 +1,4 @@
 # -*- encoding : utf-8 -*-
 module SecondLevelCache 
-  VERSION = "1.6.2"
+  VERSION = "2.0.0.beta"
 end

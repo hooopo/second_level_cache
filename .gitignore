@@ -1,6 +1,5 @@
 /.bundle
 /nbproject/*
-/Gemfile.lock
 /.rvmrc
 /doc
 /pkg
@@ -11,4 +10,4 @@
 *.sqlite3
 *.swp
 *.swo
-
+*~

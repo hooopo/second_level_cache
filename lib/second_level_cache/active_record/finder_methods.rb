@@ -9,11 +9,11 @@ module SecondLevelCache
       included do
         class_eval do
           alias_method_chain :find_one, :second_level_cache
-          alias_method_chain :find_by_attributes, :second_level_cache
         end
       end
 
-      # TODO fetch multi ids
+      # TODO find_some
+      # https://github.com/rails/rails/blob/master/activerecord/lib/active_record/relation/finder_methods.rb#L289-L309
       #
       # Cacheable:
       #
@@ -28,55 +28,27 @@ module SecondLevelCache
       def find_one_with_second_level_cache(id)
         return find_one_without_second_level_cache(id) unless second_level_cache_enabled?
         return find_one_without_second_level_cache(id) unless select_all_column?
-
+        
         id = id.id if ActiveRecord::Base === id
-        if ::ActiveRecord::IdentityMap.enabled? && cachable? && record = from_identity_map(id)
-          return record
-        end
 
         if cachable?
-          return record if record = @klass.read_second_level_cache(id)
+          if record = @klass.read_second_level_cache(id)
+            return record
+          end
         end
-
+       
         if cachable_without_conditions?
           if record = @klass.read_second_level_cache(id)
             return record if where_match_with_cache?(where_values, record)
           end
         end
-
+ 
         record = find_one_without_second_level_cache(id)
         record.write_second_level_cache
         record
       end
 
-      # TODO cache find_or_create_by_id
-      def find_by_attributes_with_second_level_cache(match, attributes, *args)
-        return find_by_attributes_without_second_level_cache(match, attributes, *args) unless second_level_cache_enabled?
-        return find_by_attributes_without_second_level_cache(match, attributes, *args) unless select_all_column?
-
-        conditions = Hash[attributes.map {|a| [a, args[attributes.index(a)]]}]
-
-        if conditions.has_key?("id")
-          result = wrap_bang(match.bang?) do
-            if conditions.size == 1
-              find_one_with_second_level_cache(conditions["id"])
-            else
-              where(conditions.except("id")).find_one_with_second_level_cache(conditions["id"])
-            end
-          end
-          yield(result) if block_given? #edge rails do this bug rails3.1.0 not
-
-          return result
-        end
-
-        find_by_attributes_without_second_level_cache(match, attributes, *args)
-      end
-
       private
-
-      def wrap_bang(bang)
-        bang ? yield : (yield rescue nil)
-      end
 
       def cachable?
         where_values.blank? &&
@@ -105,10 +77,6 @@ module SecondLevelCache
 
       def select_all_column?
         select_values.blank?
-      end
-
-      def from_identity_map(id)
-        ::ActiveRecord::IdentityMap.get(@klass, id)
       end
     end
   end

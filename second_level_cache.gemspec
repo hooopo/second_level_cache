@@ -4,9 +4,9 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["wangxz"]
-  gem.email         = ["wangxz@csdn.net"]
-  gem.description   = %q{Write Through and Read Through caching library inspired by CacheMoney and cache_fu, support only Rails3 and ActiveRecord.}
+  gem.authors       = ["Hooopo"]
+  gem.email         = ["hoooopo@gmail.com"]
+  gem.description   = %q{Write Through and Read Through caching library inspired by CacheMoney and cache_fu, support  ActiveRecord 4.}
   gem.summary       = <<-SUMMARY
   SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu, support only Rails3 and ActiveRecord.
 
@@ -21,7 +21,6 @@ Gem::Specification.new do |gem|
     "README.md",
     "Rakefile",
     "Gemfile",
-    "init.rb",
     "CHANGELOG.md",
     "second_level_cache.gemspec"
   ]
@@ -31,9 +30,10 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = SecondLevelCache::VERSION
 
-  gem.add_runtime_dependency "activesupport", ["~> 3.2.0"]
+  gem.add_runtime_dependency "activesupport", ["~> 4.0.0.beta1"]
 
-  gem.add_development_dependency "activerecord", ["~> 3.2.0"]
+  gem.add_development_dependency "activerecord", ["~> 4.0.0.beta1"]
   gem.add_development_dependency "sqlite3"
   gem.add_development_dependency "rake"
+  gem.add_development_dependency "database_cleaner", "~> 1.0.0.RC1"
 end

@@ -24,7 +24,20 @@ class Test::Unit::TestCase
   end
 
   def teardown
-    User.delete_all
+    $sql_logger = nil
+    DatabaseCleaner[:active_record].clean
+  end
+end
+
+module ActiveRecord
+  module Querying
+    def find_by_sql_with_test(sql, binds = [])
+      $sql_logger ||= ""
+      $sql_logger << sql.to_sql
+      $sql_logger << "\n"
+      find_by_sql_without_test(sql, binds)
+    end
+    alias_method_chain :find_by_sql, :test
   end
 end
 

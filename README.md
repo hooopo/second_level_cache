@@ -1,11 +1,11 @@
 # SecondLevelCache
 
 [![Gem Version](https://badge.fury.io/rb/second_level_cache.png)](http://badge.fury.io/rb/second_level_cache)
-[![Dependency Status](https://gemnasium.com/csdn-dev/second_level_cache.png)](https://gemnasium.com/csdn-dev/second_level_cache)
-[![Build Status](https://travis-ci.org/csdn-dev/second_level_cache.png?branch=master)](https://travis-ci.org/csdn-dev/second_level_cache)
-[![Code Climate](https://codeclimate.com/github/csdn-dev/second_level_cache.png)](https://codeclimate.com/github/csdn-dev/second_level_cache)
+[![Dependency Status](https://gemnasium.com/hooopo/second_level_cache.png)](https://gemnasium.com/hooopo/second_level_cache)
+[![Build Status](https://travis-ci.org/hooopo/second_level_cache.png?branch=master)](https://travis-ci.org/hooopo/second_level_cache)
+[![Code Climate](https://codeclimate.com/github/hooopo/second_level_cache.png)](https://codeclimate.com/github/hooopo/second_level_cache)
 
-SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu, support only Rails3 and ActiveRecord.
+SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu, support ActiveRecord 4.
 
 Read-Through: Queries by ID, like `current_user.articles.find(params[:id])`, will first look in cache store and then look in the database for the results of that query. If there is a cache miss, it will populate the cache.
 
@@ -17,7 +17,7 @@ Write-Through: As objects are created, updated, and deleted, all of the caches a
 In your gem file:
 
 ```ruby
-gem "second_level_cache", "~> 1.5"
+gem "second_level_cache", "~> 2.0.0"
 ```
 
 ## Usage
@@ -34,9 +34,6 @@ Then it will fetch cached object in this situations:
 
 ```ruby
 User.find(1)
-User.find_by_id(1)
-User.find_by_id!(1)
-User.find_by_id_and_name(1, "Hooopo")
 User.where(:status => 1).find_by_id(1)
 user.articles.find_by_id(1)
 user.articles.find(1)
@@ -143,23 +140,3 @@ user = User.fetch_by_uniq_key!("hooopo", :nick_name) # this will raise `ActiveRe
 ## License
 
 MIT License
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
