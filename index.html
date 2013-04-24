@@ -4,7 +4,7 @@
   <head>
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Second level cache : " />
+    <meta name="description" content="Second level cache : Write Through and Read Through caching library inspired by CacheMoney and cache_fu, support ActiveRecord 4." />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
@@ -19,7 +19,7 @@
           <a id="forkme_banner" href="https://github.com/hooopo/second_level_cache">View on GitHub</a>
 
           <h1 id="project_title">Second level cache</h1>
-          <h2 id="project_tagline"></h2>
+          <h2 id="project_tagline">Write Through and Read Through caching library inspired by CacheMoney and cache_fu, support ActiveRecord 4.</h2>
 
             <section id="downloads">
               <a class="zip_download_link" href="https://github.com/hooopo/second_level_cache/zipball/master">Download this project as a .zip file</a>
@@ -31,9 +31,133 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h3>Unmaintained</h3>
+        <h1>SecondLevelCache</h1>
 
-<p>Moved to <a href="https://github.com/csdn-dev/second_level_cache">https://github.com/csdn-dev/second_level_cache</a></p>
+<p>SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu, support ActiveRecord 4.</p>
+
+<p>Read-Through: Queries by ID, like <code>current_user.articles.find(params[:id])</code>, will first look in cache store and then look in the database for the results of that query. If there is a cache miss, it will populate the cache.</p>
+
+<p>Write-Through: As objects are created, updated, and deleted, all of the caches are automatically kept up-to-date and coherent.</p>
+
+<h2>Install</h2>
+
+<p>In your gem file:</p>
+
+<div class="highlight"><pre><span class="n">gem</span> <span class="s2">"second_level_cache"</span><span class="p">,</span> <span class="s2">"~&gt; 2.0.0"</span>
+</pre></div>
+
+<h2>Usage</h2>
+
+<p>For example, cache User objects:</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">acts_as_cached</span><span class="p">(</span><span class="ss">:version</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="ss">:expires_in</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="o">.</span><span class="n">week</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Then it will fetch cached object in this situations:</p>
+
+<div class="highlight"><pre><span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="no">User</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">find_by_id</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">user</span><span class="o">.</span><span class="n">articles</span><span class="o">.</span><span class="n">find_by_id</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">user</span><span class="o">.</span><span class="n">articles</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="no">User</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:status</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">article</span><span class="o">.</span><span class="n">user</span>
+</pre></div>
+
+<p>Cache key:</p>
+
+<div class="highlight"><pre><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span> <span class="mi">1</span>
+<span class="n">user</span><span class="o">.</span><span class="n">second_level_cache_key</span>  <span class="c1"># We will get the key looks like "slc/user/1/0"</span>
+</pre></div>
+
+<p>Expires cache:</p>
+
+<div class="highlight"><pre><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">user</span><span class="o">.</span><span class="n">expire_second_level_cache</span>
+</pre></div>
+
+<p>or expires cache using class method:</p>
+
+<div class="highlight"><pre><span class="no">User</span><span class="o">.</span><span class="n">expire_second_level_cache</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+<p>Disable SecondLevelCache:</p>
+
+<div class="highlight"><pre><span class="no">User</span><span class="o">.</span><span class="n">without_second_level_cache</span> <span class="k">do</span>
+  <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span> <span class="mi">1</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>Only <code>SELECT *</code> query will be cached:</p>
+
+<div class="highlight"><pre><span class="c1"># this query will NOT be cached</span>
+<span class="no">User</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"id, name"</span><span class="p">)</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+<p>Notice:</p>
+
+<ul>
+<li>SecondLevelCache cache by model name and id, so only find_one query will work.</li>
+<li>Only equal conditions query WILL get cache; and SQL string query like <code>User.where("name = 'Hooopo'").find(1)</code> WILL NOT work.</li>
+<li>SecondLevelCache sync cache after transaction commit:</li>
+</ul><div class="highlight"><pre><span class="c1"># user and account's write_second_level_cache operation will invoke after the logger.</span>
+<span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">transaction</span> <span class="k">do</span>
+   <span class="n">user</span><span class="o">.</span><span class="n">save</span>
+   <span class="n">account</span><span class="o">.</span><span class="n">save</span>
+   <span class="no">Rails</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span> <span class="s2">"info"</span>
+<span class="k">end</span> <span class="c1"># &lt;- Cache write </span>
+
+<span class="c1"># if you want to do something after user and account's write_second_level_cache operation, do this way:</span>
+<span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span><span class="o">.</span><span class="n">transaction</span> <span class="k">do</span>
+   <span class="n">user</span><span class="o">.</span><span class="n">save</span>
+   <span class="n">account</span><span class="o">.</span><span class="n">save</span>
+<span class="k">end</span> <span class="c1"># &lt;- Cache write </span>
+<span class="no">Rails</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span> <span class="s2">"info"</span>
+</pre></div>
+
+<h2>Configure</h2>
+
+<p>In production env, we recommend to use <a href="https://github.com/mperham/dalli">Dalli</a> as Rails cache store.</p>
+
+<div class="highlight"><pre> <span class="n">config</span><span class="o">.</span><span class="n">cache_store</span> <span class="o">=</span> <span class="o">[</span><span class="ss">:dalli_store</span><span class="p">,</span> <span class="no">APP_CONFIG</span><span class="o">[</span><span class="s2">"memcached_host"</span><span class="o">]</span><span class="p">,</span> <span class="p">{</span><span class="ss">:namespace</span> <span class="o">=&gt;</span> <span class="s2">"ns"</span><span class="p">,</span> <span class="ss">:compress</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">}</span><span class="o">]</span>
+</pre></div>
+
+<h2>Tips:</h2>
+
+<ul>
+<li>When you want to clear only second level cache apart from other cache for example fragment cache in cache store,
+you can only change the <code>cache_key_prefix</code>:</li>
+</ul><div class="highlight"><pre><span class="no">SecondLevelCache</span><span class="o">.</span><span class="n">configure</span><span class="o">.</span><span class="n">cache_key_prefix</span> <span class="o">=</span> <span class="s2">"slc1"</span>
+</pre></div>
+
+<ul>
+<li>When schema of your model changed, just change the <code>version</code> of the speical model, avoding clear all the cache.</li>
+</ul><div class="highlight"><pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+  <span class="n">acts_as_cached</span><span class="p">(</span><span class="ss">:version</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span> <span class="ss">:expires_in</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="o">.</span><span class="n">week</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+
+<ul>
+<li>It provides a great feature, not hits db when fetching record via unique key(not primary key). </li>
+</ul><div class="highlight"><pre><span class="c1"># this will fetch from cache</span>
+<span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">fetch_by_uniq_key</span><span class="p">(</span><span class="s2">"hooopo"</span><span class="p">,</span> <span class="ss">:nick_name</span><span class="p">)</span>
+
+<span class="c1"># this also fetch from cache</span>
+<span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">fetch_by_uniq_key!</span><span class="p">(</span><span class="s2">"hooopo"</span><span class="p">,</span> <span class="ss">:nick_name</span><span class="p">)</span> <span class="c1"># this will raise `ActiveRecord::RecordNotFound` Exception when nick name not exists.</span>
+</pre></div>
+
+<h2>Contributors</h2>
+
+<ul>
+<li><a href="https://github.com/chloerei">chloerei</a></li>
+<li><a href="https://github.com/reyesyang">reyesyang</a></li>
+<li><a href="https://github.com/hooopo">hooopo</a></li>
+<li><a href="https://github.com/sishen">sishen</a></li>
+</ul><h2>License</h2>
+
+<p>MIT License</p>
       </section>
     </div>
 
