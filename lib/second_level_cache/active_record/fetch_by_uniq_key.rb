@@ -5,7 +5,7 @@ module SecondLevelCache
       def fetch_by_uniq_key(value, uniq_key_name)
         return self.where(uniq_key_name => value).first unless self.second_level_cache_enabled?
         if _id = SecondLevelCache.cache_store.read(cache_uniq_key(value, uniq_key_name))
-          self.find_by_id(_id)
+          self.find(_id) rescue nil
         else
           record = self.where(uniq_key_name => value).first
           record.tap{|record| SecondLevelCache.cache_store.write(cache_uniq_key(value, uniq_key_name), record.id)} if record

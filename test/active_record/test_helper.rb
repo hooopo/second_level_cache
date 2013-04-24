@@ -25,6 +25,7 @@ class Test::Unit::TestCase
 
   def teardown
     $sql_logger = nil
+    SecondLevelCache.cache_store.clear
     DatabaseCleaner[:active_record].clean
   end
 end
@@ -46,3 +47,4 @@ require 'active_record/model/book'
 require 'active_record/model/image'
 require 'active_record/model/topic'
 require 'active_record/model/post'
+require 'active_record/model/account'
