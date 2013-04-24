@@ -1,3 +1,10 @@
+2.0.0.rc1
+-----
+* ActiveRecord 4 ready!
+* read multi support for preloading. `Article.includes(:user).limit(5).to_a` will fetch all articles' users from cache preferentially.
+* remove dependency warning
+* remove support for find_by_xx which will be removed in Rails 4.1
+
 1.6.2
 -----
 * [can disable/enable fetch_by_uinq_key method]
