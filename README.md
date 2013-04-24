@@ -17,7 +17,7 @@ Write-Through: As objects are created, updated, and deleted, all of the caches a
 In your gem file:
 
 ```ruby
-gem "second_level_cache", "~> 2.0.0"
+gem "second_level_cache", "~> 2.0.0.rc1"
 ```
 
 ## Usage
@@ -34,8 +34,6 @@ Then it will fetch cached object in this situations:
 
 ```ruby
 User.find(1)
-User.where(:status => 1).find_by_id(1)
-user.articles.find_by_id(1)
 user.articles.find(1)
 User.where(:status => 1).find(1)
 article.user
