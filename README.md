@@ -34,8 +34,6 @@ Then it will fetch cached object in this situations:
 
 ```ruby
 User.find(1)
-User.where(:status => 1).find_by_id(1)
-user.articles.find_by_id(1)
 user.articles.find(1)
 User.where(:status => 1).find(1)
 article.user
