@@ -20,6 +20,12 @@ In your gem file:
 gem "second_level_cache", "~> 2.0.0.rc1"
 ```
 
+For ActiveRecord 3:
+
+```ruby
+gem "second_level_cache", "~> 1.6"
+```
+
 ## Usage
 
 For example, cache User objects:
