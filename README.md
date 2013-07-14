@@ -134,6 +134,14 @@ user = User.fetch_by_uniq_key("hooopo", :nick_name)
 user = User.fetch_by_uniq_key!("hooopo", :nick_name) # this will raise `ActiveRecord::RecordNotFound` Exception when nick name not exists.
 ```
 
+* You can use Rails's [Eager Loading](http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) feature as normal. Even better, second_level_cache will transform the `IN` query into a Rails.cache.multi_read operation. For example:
+
+```ruby
+Answer.includes(:question).limit(10).order("id DESC").each{|answer| answer.question.title}
+Answer Load (0.2ms)  SELECT `answers`.* FROM `answers` ORDER BY id DESC LIMIT 10 # Only one SQL query and one Rails.cache.read_multi fetching operation.
+```
+[Details for read_multi feature](http://hooopo.writings.io/articles/a9cae5e0).
+
 ## Contributors
 
 * [chloerei](https://github.com/chloerei)
