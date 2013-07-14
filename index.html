@@ -39,7 +39,8 @@
         <ul></ul>
       </nav>
       <section>
-        <h1>SecondLevelCache</h1>
+        <h1>
+<a name="secondlevelcache" class="anchor" href="#secondlevelcache"><span class="octicon octicon-link"></span></a>SecondLevelCache</h1>
 
 <p><a href="http://badge.fury.io/rb/second_level_cache"><img src="https://badge.fury.io/rb/second_level_cache.png" alt="Gem Version"></a>
 <a href="https://gemnasium.com/hooopo/second_level_cache"><img src="https://gemnasium.com/hooopo/second_level_cache.png" alt="Dependency Status"></a>
@@ -52,14 +53,16 @@
 
 <p>Write-Through: As objects are created, updated, and deleted, all of the caches are automatically kept up-to-date and coherent.</p>
 
-<h2>Install</h2>
+<h2>
+<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h2>
 
 <p>In your gem file:</p>
 
 <div class="highlight"><pre><span class="n">gem</span> <span class="s2">"second_level_cache"</span><span class="p">,</span> <span class="s2">"~&gt; 2.0.0.rc1"</span>
 </pre></div>
 
-<h2>Usage</h2>
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <p>For example, cache User objects:</p>
 
@@ -128,14 +131,16 @@
 <span class="no">Rails</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span> <span class="s2">"info"</span>
 </pre></div>
 
-<h2>Configure</h2>
+<h2>
+<a name="configure" class="anchor" href="#configure"><span class="octicon octicon-link"></span></a>Configure</h2>
 
 <p>In production env, we recommend to use <a href="https://github.com/mperham/dalli">Dalli</a> as Rails cache store.</p>
 
 <div class="highlight"><pre> <span class="n">config</span><span class="o">.</span><span class="n">cache_store</span> <span class="o">=</span> <span class="o">[</span><span class="ss">:dalli_store</span><span class="p">,</span> <span class="no">APP_CONFIG</span><span class="o">[</span><span class="s2">"memcached_host"</span><span class="o">]</span><span class="p">,</span> <span class="p">{</span><span class="ss">:namespace</span> <span class="o">=&gt;</span> <span class="s2">"ns"</span><span class="p">,</span> <span class="ss">:compress</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">}</span><span class="o">]</span>
 </pre></div>
 
-<h2>Tips:</h2>
+<h2>
+<a name="tips" class="anchor" href="#tips"><span class="octicon octicon-link"></span></a>Tips:</h2>
 
 <ul>
 <li>When you want to clear only second level cache apart from other cache for example fragment cache in cache store,
@@ -159,25 +164,36 @@ you can only change the <code>cache_key_prefix</code>:</li>
 <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">fetch_by_uniq_key!</span><span class="p">(</span><span class="s2">"hooopo"</span><span class="p">,</span> <span class="ss">:nick_name</span><span class="p">)</span> <span class="c1"># this will raise `ActiveRecord::RecordNotFound` Exception when nick name not exists.</span>
 </pre></div>
 
-<h2>Contributors</h2>
+<ul>
+<li>You can use Rails's <a href="http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations">Eager Loading</a> feature as normal. Even better, second_level_cache will transform the <code>IN</code> query into a Rails.cache.multi_read operation. For example:</li>
+</ul><div class="highlight"><pre><span class="no">Answer</span><span class="o">.</span><span class="n">includes</span><span class="p">(</span><span class="ss">:question</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s2">"id DESC"</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">{</span><span class="o">|</span><span class="n">answer</span><span class="o">|</span> <span class="n">answer</span><span class="o">.</span><span class="n">question</span><span class="o">.</span><span class="n">title</span><span class="p">}</span>
+<span class="no">Answer</span> <span class="no">Load</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">2</span><span class="n">ms</span><span class="p">)</span>  <span class="no">SELECT</span> <span class="sb">`answers`</span><span class="o">.</span><span class="n">*</span> <span class="no">FROM</span> <span class="sb">`answers`</span> <span class="no">ORDER</span> <span class="no">BY</span> <span class="nb">id</span> <span class="no">DESC</span> <span class="no">LIMIT</span> <span class="mi">10</span> <span class="c1"># Only one SQL query and one Rails.cache.read_multi fetching operation.</span>
+</pre></div>
+
+<p><a href="http://hooopo.writings.io/articles/a9cae5e0">Details for read_multi feature</a>.</p>
+
+<h2>
+<a name="contributors" class="anchor" href="#contributors"><span class="octicon octicon-link"></span></a>Contributors</h2>
 
 <ul>
 <li><a href="https://github.com/chloerei">chloerei</a></li>
 <li><a href="https://github.com/reyesyang">reyesyang</a></li>
 <li><a href="https://github.com/hooopo">hooopo</a></li>
 <li><a href="https://github.com/sishen">sishen</a></li>
-</ul><h2>License</h2>
+</ul><h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p>MIT License</p>
 
-<h2>Donate</h2>
+<h2>
+<a name="donate" class="anchor" href="#donate"><span class="octicon octicon-link"></span></a>Donate</h2>
 
 <p>If you find my work useful and you want to encourage the development of more free resources, you can do it by donating...
 <a href="https://me.alipay.com/hooopo"><img src="http://style.neoease.org/doc/donate-with-alipay.png" alt="alipay"></a></p>
       </section>
       <footer>
         <p>Project maintained by <a href="https://github.com/hooopo">hooopo</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
       </footer>
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
