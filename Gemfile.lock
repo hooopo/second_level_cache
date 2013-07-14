@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    second_level_cache (2.0.0.rc1)
+    second_level_cache (2.0.0)
       activesupport (~> 4.0.0.beta1)
 
 GEM
