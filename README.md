@@ -79,7 +79,7 @@ Only `SELECT *` query will be cached:
 User.select("id, name").find(1)
 ```
 
-Notice:
+## Notice
 
 * SecondLevelCache cache by model name and id, so only find_one query will work.
 * Only equal conditions query WILL get cache; and SQL string query like `User.where("name = 'Hooopo'").find(1)` WILL NOT work.
@@ -99,6 +99,12 @@ ActiveRecord::Base.transaction do
    account.save
 end # <- Cache write 
 Rails.logger.info "info"
+```
+
+* If you are using SecondLevelCache with database_cleaner, you should set cleaning strategy to `:truncation`:
+
+```ruby
+DatabaseCleaner.strategy = :truncation
 ```
 
 ## Configure
