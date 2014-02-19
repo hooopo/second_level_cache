@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     second_level_cache (2.1.0.rc1)
+      activerecord (> 4.0.0, < 5.0)
       activesupport (> 4.0.0, < 5.0)
 
 GEM
@@ -91,7 +92,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord (> 4.0.0, < 5.0)
   database_cleaner (~> 1.2.0)
   rails (= 4.1.0.rc1)
   rake
