@@ -2,7 +2,6 @@ language: ruby
 rvm:
   - 2.0.0
   - 1.9.3
-  - rbx-19mode
   - ruby-head
 matrix:
   allow_failures:
