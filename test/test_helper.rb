@@ -2,7 +2,7 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'second_level_cache'
-require 'test/unit'
+require 'minitest/autorun'
 require 'database_cleaner'
 
 DatabaseCleaner[:active_record].strategy = :transaction

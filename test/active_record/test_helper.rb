@@ -15,12 +15,17 @@ def close_test_db_connect
   ActiveRecord::Base.connection.disconnect!
 end
 
-class Test::Unit::TestCase
+class Minitest::Test
   def no_connection
     close_test_db_connect
     assert_nothing_raised { yield }
   ensure
     open_test_db_connect
+  end
+  
+  
+  def assert_nothing_raised(*)
+    yield
   end
 
   def teardown

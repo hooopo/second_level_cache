@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
-class ActiveRecord::HasOneAssociationTest < Test::Unit::TestCase
+class ActiveRecord::HasOneAssociationTest < Minitest::Test
   def setup
     @user = User.create :name => 'hooopo', :email => 'hoooopo@gmail.com'
     @account = @user.create_account
