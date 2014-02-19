@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
-class RecordMarshalTest < Test::Unit::TestCase
+class RecordMarshalTest < Minitest::Test
   def setup
     @user = User.create :name => 'csdn', :email => 'test@csdn.com'
   end

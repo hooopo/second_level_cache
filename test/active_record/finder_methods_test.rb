@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
-class ActiveRecord::FinderMethodsTest < Test::Unit::TestCase
+class ActiveRecord::FinderMethodsTest < Minitest::Test
   def setup
     @user = User.create :name => 'csdn', :email => 'test@csdn.com'
   end
@@ -28,7 +28,7 @@ class ActiveRecord::FinderMethodsTest < Test::Unit::TestCase
   def test_should_NOT_find_from_cache_when_select_speical_columns
     @user.write_second_level_cache
     only_id_user = User.select("id").find(@user.id)
-    assert_raise(ActiveModel::MissingAttributeError) do
+    assert_raises(ActiveModel::MissingAttributeError) do
       only_id_user.name
     end
   end
@@ -39,6 +39,6 @@ class ActiveRecord::FinderMethodsTest < Test::Unit::TestCase
     User.without_second_level_cache do
       @from_db = User.find(@user.id)
     end
-    assert_not_equal @user.name, @from_db.name
+    refute_equal @user.name, @from_db.name
   end
 end
