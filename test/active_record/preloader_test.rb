@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
-class ActiveRecord::PreloaderTest < Test::Unit::TestCase
+class ActiveRecord::PreloaderTest < Minitest::Test
   def setup
     DatabaseCleaner[:active_record].start
     @topic1 = Topic.create :title => "title1", :body => "body1"

@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
-class ActiveRecord::FetchByUinqKeyTest < Test::Unit::TestCase
+class ActiveRecord::FetchByUinqKeyTest < Minitest::Test
   def setup
     DatabaseCleaner[:active_record].start
     @user = User.create :name => 'hooopo', :email => 'hoooopo@gmail.com'
@@ -23,7 +23,7 @@ class ActiveRecord::FetchByUinqKeyTest < Test::Unit::TestCase
   end
 
   def test_should_fail_when_fetch_by_uniq_key_with_bang_method
-    assert_raise(ActiveRecord::RecordNotFound) do
+    assert_raises(ActiveRecord::RecordNotFound) do
       User.fetch_by_uniq_key!(@user.name + "not_exist", :name)
     end
   end

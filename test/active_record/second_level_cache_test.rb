@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
-class ActiveRecord::SecondLevelCacheTest < Test::Unit::TestCase
+class ActiveRecord::SecondLevelCacheTest < Minitest::Test
   def setup
     @user = User.create :name => 'csdn', :email => 'test@csdn.com'
   end
@@ -12,7 +12,7 @@ class ActiveRecord::SecondLevelCacheTest < Test::Unit::TestCase
 
   def test_should_write_and_read_cache
     @user.write_second_level_cache
-    assert_not_nil User.read_second_level_cache(@user.id)
+    refute_nil User.read_second_level_cache(@user.id)
     @user.expire_second_level_cache
     assert_nil User.read_second_level_cache(@user.id)
   end

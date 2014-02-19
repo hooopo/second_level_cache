@@ -2,7 +2,7 @@
 require 'test_helper'
 require 'active_record'
 
-class RequireTest < Test::Unit::TestCase
+class RequireTest < Minitest::Test
   def setup
     ActiveRecord::Relation
     require 'active_record/test_helper'

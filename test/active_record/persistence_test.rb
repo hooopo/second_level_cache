@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
-class ActiveRecord::PersistenceTest < Test::Unit::TestCase
+class ActiveRecord::PersistenceTest < Minitest::Test
   def setup
     @user = User.create :name => 'csdn', :email => 'test@csdn.com'
     @topic = Topic.create :title => "csdn"
