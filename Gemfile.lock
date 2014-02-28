@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    second_level_cache (2.1.0.rc1)
+    second_level_cache (2.1.0.rc2)
       activerecord (> 4.0.0, < 5.0)
       activesupport (> 4.0.0, < 5.0)
 
