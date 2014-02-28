@@ -134,10 +134,11 @@ end
 
 ```ruby
 # this will fetch from cache
-user = User.fetch_by_uniq_key("hooopo", :nick_name)
+user = User.fetch_by_uniq_keys(nick_name: "hooopo")
+post = Post.fetch_by_uniq_keys(user_id: 2, slug: "foo")
 
 # this also fetch from cache
-user = User.fetch_by_uniq_key!("hooopo", :nick_name) # this will raise `ActiveRecord::RecordNotFound` Exception when nick name not exists.
+user = User.fetch_by_uniq_keys!(nick_name: "hooopo") # this will raise `ActiveRecord::RecordNotFound` Exception when nick name not exists.
 ```
 
 * You can use Rails's [Eager Loading](http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) feature as normal. Even better, second_level_cache will transform the `IN` query into a Rails.cache.multi_read operation. For example:

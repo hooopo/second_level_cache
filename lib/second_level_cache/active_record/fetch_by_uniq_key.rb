@@ -2,24 +2,38 @@
 module SecondLevelCache
   module ActiveRecord
     module FetchByUniqKey
-      def fetch_by_uniq_key(value, uniq_key_name)
-        return self.where(uniq_key_name => value).first unless self.second_level_cache_enabled?
-        if _id = SecondLevelCache.cache_store.read(cache_uniq_key(value, uniq_key_name))
+      def fetch_by_uniq_keys(where_values)
+        cache_key = cache_uniq_key(where_values)
+        if _id = SecondLevelCache.cache_store.read(cache_key)
           self.find(_id) rescue nil
         else
-          record = self.where(uniq_key_name => value).first
-          record.tap{|record| SecondLevelCache.cache_store.write(cache_uniq_key(value, uniq_key_name), record.id)} if record
+          record = self.where(where_values).first
+          record.tap{|record| SecondLevelCache.cache_store.write(cache_key, record.id)} if record
         end
+      end
+      
+      def fetch_by_uniq_keys!(where_values)
+        fetch_by_uniq_keys(where_values) || raise(::ActiveRecord::RecordNotFound)
+      end
+      
+      def fetch_by_uniq_key(value, uniq_key_name)
+        # puts "[Deprecated] will remove in the future, use fetch_by_uniq_keys method instead."
+        fetch_by_uniq_keys(uniq_key_name => value)
       end
 
       def fetch_by_uniq_key!(value, uniq_key_name)
+        # puts "[Deprecated] will remove in the future, use fetch_by_uniq_keys! method instead."
         fetch_by_uniq_key(value, uniq_key_name) || raise(::ActiveRecord::RecordNotFound)
       end
 
       private
-
-      def cache_uniq_key(value, uniq_key_name)
-        "uniq_key_#{self.name}_#{uniq_key_name}_#{value}"
+      
+      def cache_uniq_key(where_values)
+        ext_key = where_values.collect { |k,v|
+          v = Digest::MD5.hexdigest(v) if v.size >= 32
+          [k,v].join("_")
+        }.join(",")
+        "uniq_key_#{self.name}_#{ext_key}"
       end
     end
   end
