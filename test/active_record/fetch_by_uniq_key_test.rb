@@ -5,26 +5,43 @@ class ActiveRecord::FetchByUinqKeyTest < Minitest::Test
   def setup
     DatabaseCleaner[:active_record].start
     @user = User.create :name => 'hooopo', :email => 'hoooopo@gmail.com'
+    @post = Post.create :slug => "foobar", :topic_id => 2
+  end
+
+  def test_cache_uniq_key
+    assert_equal User.send(:cache_uniq_key, { :name => "hooopo" } ), "uniq_key_User_name_hooopo"
+    assert_equal User.send(:cache_uniq_key, { :foo => 1, :bar => 2 } ), "uniq_key_User_foo_1,bar_2"
+    long_val = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    assert_equal User.send(:cache_uniq_key, { :foo => 1, :bar => long_val } ), "uniq_key_User_foo_1,bar_#{Digest::MD5.hexdigest(long_val)}"
   end
 
   def test_should_query_from_db_using_primary_key
-    User.fetch_by_uniq_key(@user.name, :name)
+    Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
     $sql_logger = nil
-    User.fetch_by_uniq_key(@user.name, :name)
-    assert_equal $sql_logger.strip, 'SELECT  "users".* FROM "users"  WHERE "users"."id" = ? LIMIT 1'
+    Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
+    assert_equal $sql_logger.strip, 'SELECT  "posts".* FROM "posts"  WHERE "posts"."id" = ? LIMIT 1'
   end
 
   def test_should_not_hit_db_using_fetch_by_uniq_key_twice
-    user = User.fetch_by_uniq_key(@user.name, :name)
-    assert_equal user, @user
+    post = Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
+    assert_equal post, @post
     no_connection do
-      User.fetch_by_uniq_key(@user.name, :name)
+      Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
     end
   end
 
   def test_should_fail_when_fetch_by_uniq_key_with_bang_method
     assert_raises(ActiveRecord::RecordNotFound) do
-      User.fetch_by_uniq_key!(@user.name + "not_exist", :name)
+      Post.fetch_by_uniq_keys!(:topic_id => 2, :slug => "foobar1")
     end
+    
+    assert_raises(ActiveRecord::RecordNotFound) do
+      User.fetch_by_uniq_key!("xxxxx", :name)
+    end
+  end
+  
+  def test_should_work_with_fetch_by_uniq_key
+    user = User.fetch_by_uniq_key(@user.name, :name)
+    assert_equal user, @user
   end
 end
