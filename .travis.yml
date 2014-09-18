@@ -1,8 +1,9 @@
 language: ruby
 rvm:
-  - 2.0.0
   - 1.9.3
-  - ruby-head
-matrix:
-  allow_failures:
-    - rvm: ruby-head
+  - 2.0
+  - 2.1
+gemfile:
+  - gemfiles/Gemfile-4-0
+  - gemfiles/Gemfile-4-1
+  - gemfiles/Gemfile-edge

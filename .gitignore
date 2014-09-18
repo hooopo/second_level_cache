@@ -11,3 +11,5 @@
 *.swp
 *.swo
 *~
+*.lock
+vendor/bundle
