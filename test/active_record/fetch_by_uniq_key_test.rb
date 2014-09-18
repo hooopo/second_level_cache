@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
-class ActiveRecord::FetchByUinqKeyTest < Minitest::Test
+class ActiveRecord::FetchByUinqKeyTest < ActiveSupport::TestCase
   def setup
     DatabaseCleaner[:active_record].start
     @user = User.create :name => 'hooopo', :email => 'hoooopo@gmail.com'
@@ -34,12 +34,12 @@ class ActiveRecord::FetchByUinqKeyTest < Minitest::Test
     assert_raises(ActiveRecord::RecordNotFound) do
       Post.fetch_by_uniq_keys!(:topic_id => 2, :slug => "foobar1")
     end
-    
+
     assert_raises(ActiveRecord::RecordNotFound) do
       User.fetch_by_uniq_key!("xxxxx", :name)
     end
   end
-  
+
   def test_should_work_with_fetch_by_uniq_key
     user = User.fetch_by_uniq_key(@user.name, :name)
     assert_equal user, @user

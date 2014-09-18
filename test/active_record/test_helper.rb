@@ -15,7 +15,7 @@ def close_test_db_connect
   ActiveRecord::Base.connection.disconnect!
 end
 
-class Minitest::Test
+class ActiveSupport::TestCase
   def no_connection
     close_test_db_connect
     assert_nothing_raised { yield }
