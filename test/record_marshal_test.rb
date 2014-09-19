@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'active_record/test_helper'
+require 'test_helper'
 
 class RecordMarshalTest < ActiveSupport::TestCase
   def setup

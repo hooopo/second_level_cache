@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
-require 'active_record/test_helper'
+require 'test_helper'
 
-class ActiveRecord::PolymorphicAssociationTest < ActiveSupport::TestCase
+class PolymorphicAssociationTest < ActiveSupport::TestCase
   def setup
     @user = User.create :name => 'csdn', :email => 'test@csdn.com'
   end

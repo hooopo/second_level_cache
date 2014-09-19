@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
-require 'active_record/test_helper'
+require 'test_helper'
 
-class ActiveRecord::PreloaderTest < ActiveSupport::TestCase
+class PreloaderTest < ActiveSupport::TestCase
   def setup
     @topic1 = Topic.create :title => "title1", :body => "body1"
     @topic2 = Topic.create :title => "title2", :body => "body2"

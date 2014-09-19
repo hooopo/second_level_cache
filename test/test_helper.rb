@@ -10,12 +10,12 @@ require 'second_level_cache'
 
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
 
-require 'active_record/model/user'
-require 'active_record/model/book'
-require 'active_record/model/image'
-require 'active_record/model/topic'
-require 'active_record/model/post'
-require 'active_record/model/account'
+require 'model/user'
+require 'model/book'
+require 'model/image'
+require 'model/topic'
+require 'model/post'
+require 'model/account'
 
 DatabaseCleaner[:active_record].strategy = :truncation
 
