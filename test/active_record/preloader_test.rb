@@ -19,9 +19,13 @@ class ActiveRecord::PreloaderTest < ActiveRecord::TestCase
 
   def test_when_read_multi_missed_from_cache_AR_will_fetch_missed_records_from_db
     @topic1.expire_second_level_cache
-    results = Post.includes(:topic).order("id ASC").to_a
-    assert_equal results.size, 3
-    assert_equal results.first.topic, @topic1
-    assert_match /IN\s+\(#{@topic1.id}\)/m, $sql_logger
+
+    results = nil
+    assert_sql(/IN\s+\(#{@topic1.id}\)/m) do
+      results = Post.includes(:topic).order("id ASC").to_a
+    end
+
+    assert_equal 3, results.size
+    assert_equal @topic1, results.first.topic
   end
 end

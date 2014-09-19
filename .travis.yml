@@ -7,3 +7,6 @@ gemfile:
   - gemfiles/Gemfile-4-0
   - gemfiles/Gemfile-4-1
   - gemfiles/Gemfile-edge
+matrix:
+  allow_failures:
+    - gemfile: gemfiles/Gemfile-edge

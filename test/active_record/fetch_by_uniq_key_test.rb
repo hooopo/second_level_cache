@@ -16,11 +16,10 @@ class ActiveRecord::FetchByUinqKeyTest < ActiveRecord::TestCase
 
   def test_should_query_from_db_using_primary_key
     Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
-    sql = capture_sql do
+    @post.expire_second_level_cache
+    assert_sql 'SELECT  "posts".* FROM "posts"  WHERE "posts"."id" = ? LIMIT 1' do
       Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
     end
-
-    assert_equal sql.join.strip, 'SELECT  "posts".* FROM "posts"  WHERE "posts"."id" = ? LIMIT 1'
   end
 
   def test_should_not_hit_db_using_fetch_by_uniq_key_twice
