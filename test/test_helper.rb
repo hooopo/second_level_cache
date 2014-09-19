@@ -1,10 +1,21 @@
 # -*- encoding : utf-8 -*-
-require 'rubygems'
 require 'bundler/setup'
-require 'second_level_cache'
 require 'minitest/autorun'
 require 'active_support/test_case'
+require 'active_record_test_case_helper'
 require 'database_cleaner'
+
+require 'active_record'
+require 'second_level_cache'
+
+ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
+
+require 'active_record/model/user'
+require 'active_record/model/book'
+require 'active_record/model/image'
+require 'active_record/model/topic'
+require 'active_record/model/post'
+require 'active_record/model/account'
 
 DatabaseCleaner[:active_record].strategy = :truncation
 

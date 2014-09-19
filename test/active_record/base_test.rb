@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
-class ActiveRecord::BaseTest < ActiveRecord::TestCase
+class ActiveRecord::BaseTest < ActiveSupport::TestCase
   def setup
     @user = User.create :name => 'csdn', :email => 'test@csdn.com'
   end

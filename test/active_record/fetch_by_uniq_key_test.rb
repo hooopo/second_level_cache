@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
-class ActiveRecord::FetchByUinqKeyTest < ActiveRecord::TestCase
+class ActiveRecord::FetchByUinqKeyTest < ActiveSupport::TestCase
   def setup
     @user = User.create :name => 'hooopo', :email => 'hoooopo@gmail.com'
     @post = Post.create :slug => "foobar", :topic_id => 2
