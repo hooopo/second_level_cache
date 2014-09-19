@@ -8,6 +8,9 @@
 *.log
 *.gem
 *.sqlite3
+*-journal
 *.swp
 *.swo
 *~
+*.lock
+vendor/bundle

@@ -2,10 +2,10 @@
 require 'test_helper'
 require 'active_record'
 
-class RequireTest < Minitest::Test
+class RequireTest < ActiveSupport::TestCase
   def setup
     ActiveRecord::Relation
-    require 'active_record/test_helper'
+    require 'test_helper'
     @user = User.create :name => 'Dingding Ye', :email => 'yedingding@gmail.com'
   end
 

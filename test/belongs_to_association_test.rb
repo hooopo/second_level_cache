@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
-require 'active_record/test_helper'
+require 'test_helper'
 
-class ActiveRecord::BelongsToAssociationTest < Minitest::Test
+class BelongsToAssociationTest < ActiveSupport::TestCase
   def setup
     @user = User.create :name => 'csdn', :email => 'test@csdn.com'
   end
@@ -11,7 +11,7 @@ class ActiveRecord::BelongsToAssociationTest < Minitest::Test
 
     @user.write_second_level_cache
     book.clear_association_cache
-    no_connection do
+    assert_no_queries do
       assert_equal @user, book.user
     end
   end

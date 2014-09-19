@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
-require 'active_record/test_helper'
+require 'test_helper'
 
-class ActiveRecord::FinderMethodsTest < Minitest::Test
+class FinderMethodsTest < ActiveSupport::TestCase
   def setup
     @user = User.create :name => 'csdn', :email => 'test@csdn.com'
   end
@@ -13,14 +13,14 @@ class ActiveRecord::FinderMethodsTest < Minitest::Test
 
   def test_should_find_with_cache
     @user.write_second_level_cache
-    no_connection do
+    assert_no_queries do
       assert_equal @user, User.find(@user.id)
     end
   end
 
   def test_should_find_with_condition
     @user.write_second_level_cache
-    no_connection do
+    assert_no_queries do
       assert_equal @user, User.where(:name => @user.name).find(@user.id)
     end
   end

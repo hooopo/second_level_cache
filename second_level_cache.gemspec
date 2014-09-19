@@ -35,5 +35,5 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "activerecord", ["> 4.0.0", "< 5.0"]
   gem.add_development_dependency "sqlite3"
   gem.add_development_dependency "rake"
-  gem.add_development_dependency "database_cleaner", "~> 1.2.0"
+  gem.add_development_dependency "database_cleaner", "~> 1.3.0"
 end

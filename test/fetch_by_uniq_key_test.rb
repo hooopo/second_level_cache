@@ -1,9 +1,8 @@
 # -*- encoding : utf-8 -*-
-require 'active_record/test_helper'
+require 'test_helper'
 
-class ActiveRecord::FetchByUinqKeyTest < Minitest::Test
+class FetchByUinqKeyTest < ActiveSupport::TestCase
   def setup
-    DatabaseCleaner[:active_record].start
     @user = User.create :name => 'hooopo', :email => 'hoooopo@gmail.com'
     @post = Post.create :slug => "foobar", :topic_id => 2
   end
@@ -17,15 +16,16 @@ class ActiveRecord::FetchByUinqKeyTest < Minitest::Test
 
   def test_should_query_from_db_using_primary_key
     Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
-    $sql_logger = nil
-    Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
-    assert_equal $sql_logger.strip, 'SELECT  "posts".* FROM "posts"  WHERE "posts"."id" = ? LIMIT 1'
+    @post.expire_second_level_cache
+    assert_sql 'SELECT  "posts".* FROM "posts"  WHERE "posts"."id" = ? LIMIT 1' do
+      Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
+    end
   end
 
   def test_should_not_hit_db_using_fetch_by_uniq_key_twice
     post = Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
     assert_equal post, @post
-    no_connection do
+    assert_no_queries do
       Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
     end
   end
@@ -34,12 +34,12 @@ class ActiveRecord::FetchByUinqKeyTest < Minitest::Test
     assert_raises(ActiveRecord::RecordNotFound) do
       Post.fetch_by_uniq_keys!(:topic_id => 2, :slug => "foobar1")
     end
-    
+
     assert_raises(ActiveRecord::RecordNotFound) do
       User.fetch_by_uniq_key!("xxxxx", :name)
     end
   end
-  
+
   def test_should_work_with_fetch_by_uniq_key
     user = User.fetch_by_uniq_key(@user.name, :name)
     assert_equal user, @user
