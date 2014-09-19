@@ -6,7 +6,7 @@ require 'minitest/autorun'
 require 'active_support/test_case'
 require 'database_cleaner'
 
-DatabaseCleaner[:active_record].strategy = :transaction
+DatabaseCleaner[:active_record].strategy = :truncation
 
 SecondLevelCache.configure do |config|
   config.cache_store = ActiveSupport::Cache::MemoryStore.new
@@ -17,5 +17,10 @@ SecondLevelCache.logger.level = Logger::INFO
 class ActiveSupport::TestCase
   setup do
     SecondLevelCache.cache_store.clear
+    DatabaseCleaner.start
+  end
+
+  teardown do
+    DatabaseCleaner.clean
   end
 end

@@ -3,7 +3,6 @@ require 'active_record/test_helper'
 
 class ActiveRecord::FetchByUinqKeyTest < ActiveRecord::TestCase
   def setup
-    DatabaseCleaner[:active_record].start
     @user = User.create :name => 'hooopo', :email => 'hoooopo@gmail.com'
     @post = Post.create :slug => "foobar", :topic_id => 2
   end

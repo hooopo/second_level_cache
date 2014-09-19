@@ -3,7 +3,6 @@ require 'active_record/test_helper'
 
 class ActiveRecord::PreloaderTest < ActiveRecord::TestCase
   def setup
-    DatabaseCleaner[:active_record].start
     @topic1 = Topic.create :title => "title1", :body => "body1"
     @topic2 = Topic.create :title => "title2", :body => "body2"
     @topic3 = Topic.create :title => "title3", :body => "body3"
