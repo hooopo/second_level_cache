@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
-class ActiveRecord::PolymorphicAssociationTest < ActiveSupport::TestCase
+class ActiveRecord::PolymorphicAssociationTest < ActiveRecord::TestCase
   def setup
     @user = User.create :name => 'csdn', :email => 'test@csdn.com'
   end
@@ -10,7 +10,7 @@ class ActiveRecord::PolymorphicAssociationTest < ActiveSupport::TestCase
     image = @user.images.create
 
     @user.write_second_level_cache
-    no_connection do
+    assert_no_queries do
       assert_equal @user, image.imagable
     end
   end
@@ -21,4 +21,3 @@ class ActiveRecord::PolymorphicAssociationTest < ActiveSupport::TestCase
     assert_equal @user, image.imagable
   end
 end
-

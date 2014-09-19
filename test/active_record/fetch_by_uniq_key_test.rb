@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'active_record/test_helper'
 
-class ActiveRecord::FetchByUinqKeyTest < ActiveSupport::TestCase
+class ActiveRecord::FetchByUinqKeyTest < ActiveRecord::TestCase
   def setup
     DatabaseCleaner[:active_record].start
     @user = User.create :name => 'hooopo', :email => 'hoooopo@gmail.com'
@@ -17,15 +17,17 @@ class ActiveRecord::FetchByUinqKeyTest < ActiveSupport::TestCase
 
   def test_should_query_from_db_using_primary_key
     Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
-    $sql_logger = nil
-    Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
-    assert_equal $sql_logger.strip, 'SELECT  "posts".* FROM "posts"  WHERE "posts"."id" = ? LIMIT 1'
+    sql = capture_sql do
+      Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
+    end
+
+    assert_equal sql.join.strip, 'SELECT  "posts".* FROM "posts"  WHERE "posts"."id" = ? LIMIT 1'
   end
 
   def test_should_not_hit_db_using_fetch_by_uniq_key_twice
     post = Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
     assert_equal post, @post
-    no_connection do
+    assert_no_queries do
       Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
     end
   end
