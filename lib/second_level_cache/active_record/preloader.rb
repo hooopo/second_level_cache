@@ -3,13 +3,11 @@ module SecondLevelCache
   module ActiveRecord
     module Associations
       class Preloader
-        module Association
+        module BelongsTo
           extend ActiveSupport::Concern
 
           included do
-            class_eval do
-              alias_method_chain :records_for, :second_level_cache
-            end
+            alias_method_chain :records_for, :second_level_cache
           end
 
           def records_for_with_second_level_cache(ids)
@@ -17,9 +15,9 @@ module SecondLevelCache
 
             map_cache_keys = ids.map{|id| klass.second_level_cache_key(id)}
             records_from_cache = ::SecondLevelCache.cache_store.read_multi(*map_cache_keys)
-            # NOTICE 
+            # NOTICE
             # Rails.cache.read_multi return hash that has keys only hitted.
-            # eg. Rails.cache.read_multi(1,2,3) => {2 => hit_value, 3 => hit_value} 
+            # eg. Rails.cache.read_multi(1,2,3) => {2 => hit_value, 3 => hit_value}
             hitted_ids = records_from_cache.map{|key, _| key.split("/")[2].to_i}
             missed_ids = ids.map{|x| x.to_i} - hitted_ids
 
@@ -40,6 +38,6 @@ module SecondLevelCache
           end
         end
       end
-    end 
+    end
   end
 end

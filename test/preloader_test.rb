@@ -36,4 +36,20 @@ class PreloaderTest < ActiveSupport::TestCase
 
     assert_equal topics, results.map(&:topic)
   end
+
+  def test_has_many_preloader_returns_correct_results
+    topic = Topic.create(id: 1)
+    Post.create(id: 1)
+    post = topic.posts.create
+
+    assert_equal [post], Topic.includes(:posts).find(1).posts
+  end
+
+  def test_has_one_preloader_returns_correct_results
+    user = User.create(id: 1)
+    Account.create(id: 1)
+    account = user.create_account
+
+    assert_equal account, User.includes(:account).find(1).account
+  end
 end
