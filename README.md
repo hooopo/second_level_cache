@@ -17,7 +17,7 @@ Write-Through: As objects are created, updated, and deleted, all of the caches a
 In your gem file:
 
 ```ruby
-gem "second_level_cache", "~> 2.0.0.rc1"
+gem "second_level_cache", "~> 2.1.0"
 ```
 
 For ActiveRecord 3:
