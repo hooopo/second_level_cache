@@ -55,7 +55,7 @@ module SecondLevelCache
       end
 
       def second_level_cache_key(id)
-        "#{cache_key_prefix}/#{name.downcase}/#{id}/#{cache_version}"
+        "#{cache_key_prefix}/#{table_name.downcase}/#{id}/#{cache_version}"
       end
 
       def read_second_level_cache(id)

@@ -16,6 +16,7 @@ require 'model/image'
 require 'model/topic'
 require 'model/post'
 require 'model/account'
+require 'model/animal'
 
 DatabaseCleaner[:active_record].strategy = :truncation
 
