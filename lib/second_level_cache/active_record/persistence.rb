@@ -21,8 +21,8 @@ module SecondLevelCache
         reload_without_second_level_cache(options)
       end
 
-      def touch_with_second_level_cache(name = nil)
-        touch_without_second_level_cache(name).tap{update_second_level_cache}
+      def touch_with_second_level_cache(*names)
+        touch_without_second_level_cache(*names).tap{update_second_level_cache}
       end
     end
   end

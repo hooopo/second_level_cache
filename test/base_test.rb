@@ -22,10 +22,10 @@ class BaseTest < ActiveSupport::TestCase
   end
 
   def test_should_expire_cache_when_update_counters
-    assert_equal @user.books_count, 0
+    assert_equal 0, @user.books_count
     @user.books.create
     assert_nil User.read_second_level_cache(@user.id)
     user = User.find(@user.id)
-    assert_equal user.books_count, @user.books_count + 1
+    assert_equal 1, user.books_count
   end
 end

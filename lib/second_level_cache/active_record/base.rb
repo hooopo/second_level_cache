@@ -12,8 +12,8 @@ module SecondLevelCache
         class << self
           alias_method_chain :update_counters, :cache
         end
-      end
 
+      end
 
       module ClassMethods
         def update_counters_with_cache(id, counters)
