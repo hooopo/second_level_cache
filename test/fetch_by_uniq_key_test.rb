@@ -10,6 +10,7 @@ class FetchByUinqKeyTest < ActiveSupport::TestCase
   def test_cache_uniq_key
     assert_equal User.send(:cache_uniq_key, { :name => "hooopo" } ), "uniq_key_User_name_hooopo"
     assert_equal User.send(:cache_uniq_key, { :foo => 1, :bar => 2 } ), "uniq_key_User_foo_1,bar_2"
+    assert_equal User.send(:cache_uniq_key, { :foo => 1, :bar => nil } ), "uniq_key_User_foo_1,bar_"
     long_val = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     assert_equal User.send(:cache_uniq_key, { :foo => 1, :bar => long_val } ), "uniq_key_User_foo_1,bar_#{Digest::MD5.hexdigest(long_val)}"
   end
