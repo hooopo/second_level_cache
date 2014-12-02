@@ -30,7 +30,7 @@ module SecondLevelCache
       
       def cache_uniq_key(where_values)
         ext_key = where_values.collect { |k,v|
-          v = Digest::MD5.hexdigest(v) if v.size >= 32
+          v = Digest::MD5.hexdigest(v) if v && v.size >= 32
           [k,v].join("_")
         }.join(",")
         "uniq_key_#{self.name}_#{ext_key}"
