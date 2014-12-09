@@ -5,6 +5,7 @@ class HasOneAssociationTest < ActiveSupport::TestCase
   def setup
     @user = User.create :name => 'hooopo', :email => 'hoooopo@gmail.com'
     @account = @user.create_account
+    UserProfile.create()
     @profile = @user.create_profile
   end
 
