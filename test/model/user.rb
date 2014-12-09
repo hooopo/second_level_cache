@@ -13,6 +13,7 @@ class User < ActiveRecord::Base
   serialize :options, Array
   acts_as_cached(:version => CacheVersion, :expires_in => 3.day)
   has_one  :account
+  has_one  :profile, class_name: 'UserProfile', autosave: true
   has_many :books
   has_many :images, :as => :imagable
 end
