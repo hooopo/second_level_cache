@@ -3,7 +3,7 @@ require 'test_helper'
 
 class RecordMarshalTest < ActiveSupport::TestCase
   def setup
-    @user = User.create :name => 'csdn', :email => 'test@csdn.com'
+    @user = User.create :name => 'csdn', :email => 'test@csdn.com', :options => [1,2]
   end
 
   def test_should_dump_active_record_object
@@ -17,6 +17,7 @@ class RecordMarshalTest < ActiveSupport::TestCase
   def test_should_load_active_record_object
     @user.write_second_level_cache
     assert_equal @user, User.read_second_level_cache(@user.id)
+    assert_equal Array, User.read_second_level_cache(@user.id).options.class
   end
 
 

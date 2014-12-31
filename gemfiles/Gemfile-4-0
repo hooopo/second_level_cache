@@ -2,4 +2,4 @@ source 'https://rubygems.org'
 
 gemspec :path => '..'
 
-gem 'rails', github: 'rails/rails', branch: '4-0-stable'
+gem 'rails', "~> 4.0.0"

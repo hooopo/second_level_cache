@@ -19,7 +19,7 @@ module RecordMarshal
     # load a cached record
     def load(serialized)
       return unless serialized
-      serialized[0].constantize.instantiate(serialized[1])
+      serialized[0].constantize.new(serialized[1])
     end
 
     def load_multi(serializeds)
