@@ -3,10 +3,13 @@ rvm:
   - 1.9.3
   - 2.0
   - 2.1
+  - 2.2
 gemfile:
   - gemfiles/Gemfile-4-0
   - gemfiles/Gemfile-4-1
+  - gemfiles/Gemfile-4-2
   - gemfiles/Gemfile-edge
 matrix:
   allow_failures:
     - gemfile: gemfiles/Gemfile-edge
+    - rvm: 2.2
