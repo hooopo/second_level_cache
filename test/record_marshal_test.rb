@@ -18,6 +18,7 @@ class RecordMarshalTest < ActiveSupport::TestCase
     @user.write_second_level_cache
     assert_equal @user, User.read_second_level_cache(@user.id)
     assert_equal Array, User.read_second_level_cache(@user.id).options.class
+    assert User.read_second_level_cache(@user.id).persisted?
   end
 
 
