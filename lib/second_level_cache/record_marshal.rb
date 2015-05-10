@@ -19,9 +19,16 @@ module RecordMarshal
     # load a cached record
     def load(serialized)
       return unless serialized
-      record = serialized[0].constantize.new(serialized[1])
-      record.instance_variable_set("@new_record", false)
-      record
+      if ::ActiveRecord::VERSION::STRING > '4.1.8' && ::ActiveRecord::VERSION::MAJOR < 5
+        #fix issues 19
+        #fix 2.1.2 object.changed? ActiveRecord::SerializationTypeMismatch: Attribute was supposed to be a Hash, but was a String. -- "{:a=>\"t\", :b=>\"x\"}"
+        #fix 2.1.4 object.changed? is true
+        serialized[0].constantize.serialized_attributes.each do |k, v|
+          next if serialized[1][k].nil?
+          serialized[1][k] = v.dump(serialized[1][k]) if serialized[1][k].is_a?(v.object_class)
+        end
+      end
+      serialized[0].constantize.instantiate(serialized[1])
     end
 
     def load_multi(serializeds)
