@@ -19,21 +19,24 @@ module RecordMarshal
     # load a cached record
     def load(serialized)
       return unless serialized
-      if ::ActiveRecord::VERSION::STRING > '4.0' && ::ActiveRecord::VERSION::MAJOR < 5
-        #fix issues 19
-        #fix 2.1.2 object.changed? ActiveRecord::SerializationTypeMismatch: Attribute was supposed to be a Hash, but was a String. -- "{:a=>\"t\", :b=>\"x\"}"
-        #fix 2.1.4 object.changed? is true
-        serialized[0].constantize.serialized_attributes.each do |k, v|
-          next if serialized[1][k].nil? || serialized[1][k].is_a?(String)
-          if serialized[1][k].is_a?(v.object_class)
-            serialized[1][k] = v.dump(serialized[1][k])
-          elsif serialized[1][k].respond_to?(:unserialize)
-            #Rails version < 4.2
-            serialized[1][k] = serialized[1][k].serialized_value
-          end
+      #fix issues 19
+      #fix 2.1.2 object.changed? ActiveRecord::SerializationTypeMismatch: Attribute was supposed to be a Hash, but was a String. -- "{:a=>\"t\", :b=>\"x\"}"
+      #fix 2.1.4 object.changed? is true
+      #fix Rails 4.2 is deprecating `serialized_attributes` without replacement to Rails 5 is deprecating `serialized_attributes` without replacement
+      klass, attributes = serialized[0].constantize, serialized[1]
+      if ::ActiveRecord::VERSION::STRING < '4.2.0'
+        klass.serialized_attributes.each do |k, v|
+          next if attributes[k].nil? || attributes[k].is_a?(String)
+          attributes[k] = attributes[k].serialized_value if attributes[k].respond_to?(:unserialize)
+        end
+      else
+        klass.columns.select{|t| t.cast_type.is_a?(::ActiveRecord::Type::Serialized) }.each do |c|
+          name, coder = c.name, c.cast_type.coder
+          next if attributes[name].nil? || attributes[name].is_a?(String)
+          attributes[name] = coder.dump(attributes[name]) if attributes[name].is_a?(coder.object_class)
         end
       end
-      serialized[0].constantize.instantiate(serialized[1])
+      klass.instantiate(attributes)
     end
 
     def load_multi(serializeds)
