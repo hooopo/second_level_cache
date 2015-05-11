@@ -20,6 +20,7 @@ class RecordMarshalTest < ActiveSupport::TestCase
     assert_equal Array, User.read_second_level_cache(@user.id).options.class
     assert_equal Array, User.read_second_level_cache(@user.id).reload.options.class
     assert_equal User.read_second_level_cache(@user.id).changed?, false
+    assert_equal [1,2], User.read_second_level_cache(@user.id).options
     assert User.read_second_level_cache(@user.id).persisted?
   end
 
