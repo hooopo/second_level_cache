@@ -3,7 +3,17 @@ require 'test_helper'
 
 class RecordMarshalTest < ActiveSupport::TestCase
   def setup
-    @user = User.create :name => 'csdn', :email => 'test@csdn.com', :options => [1,2]
+    if ::ActiveRecord::VERSION::STRING >= '4.1.0'
+      @json_options = { "name" => 'Test', "age" => 18 }
+      @user = User.create :name => 'csdn',
+                :email => 'test@csdn.com',
+                :options => [1,2],
+                :json_options => @json_options
+    else
+      @user = User.create :name => 'csdn',
+                :email => 'test@csdn.com',
+                :options => [1,2]
+    end
   end
 
   def test_should_dump_active_record_object
@@ -21,6 +31,11 @@ class RecordMarshalTest < ActiveSupport::TestCase
     assert_equal Array, User.read_second_level_cache(@user.id).reload.options.class
     assert_equal User.read_second_level_cache(@user.id).changed?, false
     assert_equal [1,2], User.read_second_level_cache(@user.id).options
+    if ::ActiveRecord::VERSION::STRING >= '4.1.0'
+      result = User.read_second_level_cache(@user.id)
+      assert_equal @json_options["name"], result.json_options["name"]
+      assert_equal @json_options, result.json_options
+    end
     assert User.read_second_level_cache(@user.id).persisted?
   end
 

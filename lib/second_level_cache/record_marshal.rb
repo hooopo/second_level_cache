@@ -27,13 +27,28 @@ module RecordMarshal
       if ::ActiveRecord::VERSION::STRING < '4.2.0'
         klass.serialized_attributes.each do |k, v|
           next if attributes[k].nil? || attributes[k].is_a?(String)
-          attributes[k] = attributes[k].serialized_value if attributes[k].respond_to?(:unserialize)
+          if attributes[k].respond_to?(:unserialize)
+            if attributes[k].serialized_value.is_a?(String)
+              attributes[k] = attributes[k].serialized_value
+              next
+            end
+
+            if ::ActiveRecord::VERSION::STRING >= '4.1.0' && attributes[k].coder == ActiveRecord::Coders::JSON
+              attributes[k] = attributes[k].serialized_value.to_json
+            else
+              attributes[k] = attributes[k].serialized_value
+            end
+          end
         end
       else
         klass.columns.select{|t| t.cast_type.is_a?(::ActiveRecord::Type::Serialized) }.each do |c|
           name, coder = c.name, c.cast_type.coder
           next if attributes[name].nil? || attributes[name].is_a?(String)
-          attributes[name] = coder.dump(attributes[name]) if attributes[name].is_a?(coder.object_class)
+          if coder.is_a?(ActiveRecord::Coders::YAMLColumn)
+            attributes[name] = coder.dump(attributes[name]) if attributes[name].is_a?(coder.object_class)
+          elsif coder == ActiveRecord::Coders::JSON
+            attributes[name] = attributes[name].to_json
+          end
         end
       end
       klass.instantiate(attributes)
