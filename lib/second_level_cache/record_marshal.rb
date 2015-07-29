@@ -27,7 +27,18 @@ module RecordMarshal
       if ::ActiveRecord::VERSION::STRING < '4.2.0'
         klass.serialized_attributes.each do |k, v|
           next if attributes[k].nil? || attributes[k].is_a?(String)
-          attributes[k] = attributes[k].serialized_value if attributes[k].respond_to?(:unserialize)
+          if attributes[k].respond_to?(:unserialize)
+            if attributes[k].serialized_value.is_a?(String)
+              attributes[k] = attributes[k].serialized_value
+              next
+            end
+
+            if ::ActiveRecord::VERSION::STRING >= '4.1.0' && attributes[k].coder == ActiveRecord::Coders::JSON
+              attributes[k] = attributes[k].serialized_value.to_json
+            else
+              attributes[k] = attributes[k].serialized_value
+            end
+          end
         end
       else
         klass.columns.select{|t| t.cast_type.is_a?(::ActiveRecord::Type::Serialized) }.each do |c|

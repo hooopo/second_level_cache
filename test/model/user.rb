@@ -12,7 +12,9 @@ end
 class User < ActiveRecord::Base
   CacheVersion = 3
   serialize :options, Array
-  serialize :json_options, JSON
+  if ::ActiveRecord::VERSION::STRING >= '4.1.0'
+    serialize :json_options, JSON
+  end
   acts_as_cached(:version => CacheVersion, :expires_in => 3.day)
   has_one  :account
   has_many :books
