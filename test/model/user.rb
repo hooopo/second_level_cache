@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 ActiveRecord::Base.connection.create_table(:users, :force => true) do |t|
   t.text    :options
+  t.text    :json_options
   t.string  :name, :unique => true
   t.string  :email
   t.integer :books_count, :default => 0
@@ -11,6 +12,7 @@ end
 class User < ActiveRecord::Base
   CacheVersion = 3
   serialize :options, Array
+  serialize :json_options, JSON
   acts_as_cached(:version => CacheVersion, :expires_in => 3.day)
   has_one  :account
   has_many :books

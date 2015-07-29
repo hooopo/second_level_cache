@@ -33,7 +33,11 @@ module RecordMarshal
         klass.columns.select{|t| t.cast_type.is_a?(::ActiveRecord::Type::Serialized) }.each do |c|
           name, coder = c.name, c.cast_type.coder
           next if attributes[name].nil? || attributes[name].is_a?(String)
-          attributes[name] = coder.dump(attributes[name]) if attributes[name].is_a?(coder.object_class)
+          if coder.is_a?(ActiveRecord::Coders::YAMLColumn)
+            attributes[name] = coder.dump(attributes[name]) if attributes[name].is_a?(coder.object_class)
+          elsif coder == ActiveRecord::Coders::JSON
+            attributes[name] = attributes[name].to_json
+          end
         end
       end
       klass.instantiate(attributes)
