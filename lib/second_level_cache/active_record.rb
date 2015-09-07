@@ -8,11 +8,15 @@ require 'second_level_cache/active_record/belongs_to_association'
 require 'second_level_cache/active_record/has_one_association'
 require 'second_level_cache/active_record/preloader'
 
-ActiveRecord::Base.send(:include, SecondLevelCache::Mixin)
-ActiveRecord::Base.send(:include, SecondLevelCache::ActiveRecord::Base)
-ActiveRecord::Base.send(:extend, SecondLevelCache::ActiveRecord::FetchByUniqKey)
+if defined? Rails
+  require 'second_level_cache/active_record/railtie'
+else
+  ActiveRecord::Base.send(:include, SecondLevelCache::Mixin)
+  ActiveRecord::Base.send(:include, SecondLevelCache::ActiveRecord::Base)
+  ActiveRecord::Base.send(:extend, SecondLevelCache::ActiveRecord::FetchByUniqKey)
 
-ActiveRecord::Base.send(:include, SecondLevelCache::ActiveRecord::Persistence)
-ActiveRecord::Associations::BelongsToAssociation.send(:include, SecondLevelCache::ActiveRecord::Associations::BelongsToAssociation)
-ActiveRecord::Associations::HasOneAssociation.send(:include, SecondLevelCache::ActiveRecord::Associations::HasOneAssociation)
-ActiveRecord::Associations::Preloader::BelongsTo.send(:include, SecondLevelCache::ActiveRecord::Associations::Preloader::BelongsTo)
+  ActiveRecord::Base.send(:include, SecondLevelCache::ActiveRecord::Persistence)
+  ActiveRecord::Associations::BelongsToAssociation.send(:include, SecondLevelCache::ActiveRecord::Associations::BelongsToAssociation)
+  ActiveRecord::Associations::HasOneAssociation.send(:include, SecondLevelCache::ActiveRecord::Associations::HasOneAssociation)
+  ActiveRecord::Associations::Preloader::BelongsTo.send(:include, SecondLevelCache::ActiveRecord::Associations::Preloader::BelongsTo)
+end
