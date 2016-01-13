@@ -13,4 +13,15 @@ class HasOneAssociationTest < ActiveSupport::TestCase
       clean_user.account
     end
   end
+
+  def test_should_fetch_has_one_through
+    user = User.create :name => 'hooopo', :email => 'hoooopo@gmail.com', forked_from_user: @user
+    clean_user = user.reload
+    assert_equal User, clean_user.forked_from_user.class
+    assert_equal @user.id, user.id
+    clean_user = user.reload
+    assert_no_queries do
+      clean_user.forked_from_user
+    end
+  end
 end
