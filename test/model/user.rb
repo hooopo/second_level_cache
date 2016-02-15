@@ -15,6 +15,13 @@ ActiveRecord::Base.connection.create_table(:forked_user_links, :force => true) d
   t.timestamps null: false
 end
 
+ActiveRecord::Base.connection.create_table(:namespaces, :force => true) do |t|
+  t.integer :user_id
+  t.string  :kind
+  t.string  :name
+  t.timestamps null: false
+end
+
 class User < ActiveRecord::Base
   CacheVersion = 3
   serialize :options, Array
@@ -25,8 +32,16 @@ class User < ActiveRecord::Base
   has_one  :account
   has_one  :forked_user_link, foreign_key: 'forked_to_user_id'
   has_one  :forked_from_user, through: :forked_user_link
+  has_many :namespaces
+  has_one  :namespace, -> { where(kind: nil) }
   has_many :books
   has_many :images, :as => :imagable
+end
+
+class Namespace < ActiveRecord::Base
+  acts_as_cached(:version => 1, :expires_in => 3.day)
+
+  belongs_to :user
 end
 
 class ForkedUserLink < ActiveRecord::Base

@@ -1,9 +1,9 @@
 # SecondLevelCache
 
-[![Gem Version](https://badge.fury.io/rb/second_level_cache.png)](http://badge.fury.io/rb/second_level_cache)
-[![Dependency Status](https://gemnasium.com/hooopo/second_level_cache.png)](https://gemnasium.com/hooopo/second_level_cache)
-[![Build Status](https://travis-ci.org/hooopo/second_level_cache.png?branch=master)](https://travis-ci.org/hooopo/second_level_cache)
-[![Code Climate](https://codeclimate.com/github/hooopo/second_level_cache.png)](https://codeclimate.com/github/hooopo/second_level_cache)
+[![Gem Version](https://badge.fury.io/rb/second_level_cache.svg)](http://badge.fury.io/rb/second_level_cache)
+[![Dependency Status](https://gemnasium.com/hooopo/second_level_cache.svg)](https://gemnasium.com/hooopo/second_level_cache)
+[![Build Status](https://travis-ci.org/hooopo/second_level_cache.svg?branch=master)](https://travis-ci.org/hooopo/second_level_cache)
+[![Code Climate](https://codeclimate.com/github/hooopo/second_level_cache.svg)](https://codeclimate.com/github/hooopo/second_level_cache)
 
 SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu, support ActiveRecord 4.
 
@@ -91,13 +91,13 @@ ActiveRecord::Base.transaction do
    user.save
    account.save
    Rails.logger.info "info"
-end # <- Cache write 
+end # <- Cache write
 
 # if you want to do something after user and account's write_second_level_cache operation, do this way:
 ActiveRecord::Base.transaction do
    user.save
    account.save
-end # <- Cache write 
+end # <- Cache write
 Rails.logger.info "info"
 ```
 
@@ -114,7 +114,7 @@ In production env, we recommend to use [Dalli](https://github.com/mperham/dalli)
  config.cache_store = [:dalli_store, APP_CONFIG["memcached_host"], {:namespace => "ns", :compress => true}]
 ```
 
-## Tips: 
+## Tips:
 
 * When you want to clear only second level cache apart from other cache for example fragment cache in cache store,
 you can only change the `cache_key_prefix`:
@@ -130,7 +130,7 @@ class User < ActiveRecord::Base
 end
 ```
 
-* It provides a great feature, not hits db when fetching record via unique key(not primary key). 
+* It provides a great feature, not hits db when fetching record via unique key(not primary key).
 
 ```ruby
 # this will fetch from cache
