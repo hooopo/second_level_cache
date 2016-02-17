@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 ActiveRecord::Base.connection.create_table(:animals, force: true) do |t|
   t.string  :type
   t.string  :name

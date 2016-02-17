@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'active_support/all'
 require 'second_level_cache/config'
 require 'second_level_cache/record_marshal'
@@ -9,7 +8,7 @@ module SecondLevelCache
   end
 
   class << self
-    delegate :logger, :cache_store, :cache_key_prefix, :to => Config
+    delegate :logger, :cache_store, :cache_key_prefix, to: Config
   end
 
   module Mixin
@@ -18,37 +17,28 @@ module SecondLevelCache
     module ClassMethods
       attr_reader :second_level_cache_options
 
+      delegate :logger, :cache_store, :cache_key_prefix, to: SecondLevelCache
+
       def acts_as_cached(options = {})
         @second_level_cache_enabled = true
         @second_level_cache_options = options
         @second_level_cache_options[:expires_in] ||= 1.week
         @second_level_cache_options[:version] ||= 0
-        relation.class.send :include, SecondLevelCache::ActiveRecord::FinderMethods
-        include SecondLevelCache::ActiveRecord::Core if /^4\.2\./.match(::ActiveRecord.version.version)
+        relation.class.send :prepend, SecondLevelCache::ActiveRecord::FinderMethods
+        prepend SecondLevelCache::ActiveRecord::Core
       end
 
       def second_level_cache_enabled?
-        !!@second_level_cache_enabled
+        @second_level_cache_enabled == true
       end
 
       def without_second_level_cache
-        old, @second_level_cache_enabled = @second_level_cache_enabled, false
+        old = @second_level_cache_enabled
+        @second_level_cache_enabled = false
 
         yield if block_given?
       ensure
         @second_level_cache_enabled = old
-      end
-
-      def cache_store
-        Config.cache_store
-      end
-
-      def logger
-        Config.logger
-      end
-
-      def cache_key_prefix
-        Config.cache_key_prefix
       end
 
       def cache_version
@@ -60,11 +50,13 @@ module SecondLevelCache
       end
 
       def read_second_level_cache(id)
-        RecordMarshal.load(SecondLevelCache.cache_store.read(second_level_cache_key(id))) if self.second_level_cache_enabled?
+        return unless second_level_cache_enabled?
+        RecordMarshal.load(SecondLevelCache.cache_store.read(second_level_cache_key(id)))
       end
 
       def expire_second_level_cache(id)
-        SecondLevelCache.cache_store.delete(second_level_cache_key(id)) if self.second_level_cache_enabled?
+        return unless second_level_cache_enabled?
+        SecondLevelCache.cache_store.delete(second_level_cache_key(id))
       end
     end
 
@@ -73,13 +65,15 @@ module SecondLevelCache
     end
 
     def expire_second_level_cache
-      SecondLevelCache.cache_store.delete(second_level_cache_key) if self.class.second_level_cache_enabled?
+      return unless self.class.second_level_cache_enabled?
+      SecondLevelCache.cache_store.delete(second_level_cache_key)
     end
 
     def write_second_level_cache
-      if self.class.second_level_cache_enabled?
-        SecondLevelCache.cache_store.write(second_level_cache_key, RecordMarshal.dump(self), :expires_in => self.class.second_level_cache_options[:expires_in])
-      end
+      return unless self.class.second_level_cache_enabled?
+      marshal = RecordMarshal.dump(self)
+      expires_in = self.class.second_level_cache_options[:expires_in]
+      SecondLevelCache.cache_store.write(second_level_cache_key, marshal, expires_in: expires_in)
     end
 
     alias update_second_level_cache write_second_level_cache

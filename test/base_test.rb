@@ -1,13 +1,12 @@
-# -*- encoding : utf-8 -*-
 require 'test_helper'
 
 class BaseTest < ActiveSupport::TestCase
   def setup
-    @user = User.create :name => 'csdn', :email => 'test@csdn.com'
+    @user = User.create name: 'csdn', email: 'test@csdn.com'
   end
 
   def test_should_update_cache_when_update_attributes
-    @user.update_attributes :name => 'change'
+    @user.update_attributes name: 'change'
     assert_equal @user.name, User.read_second_level_cache(@user.id).name
   end
 

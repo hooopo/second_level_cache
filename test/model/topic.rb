@@ -1,7 +1,6 @@
-# -*- encoding : utf-8 -*-
-ActiveRecord::Base.connection.create_table(:topics, :force => true) do |t|
+ActiveRecord::Base.connection.create_table(:topics, force: true) do |t|
   t.string  :title
-  t.text  :body
+  t.text :body
 
   t.timestamps null: false
 end

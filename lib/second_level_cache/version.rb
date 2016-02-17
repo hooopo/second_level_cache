@@ -1,4 +1,4 @@
-# -*- encoding : utf-8 -*-
-module SecondLevelCache 
-  VERSION = "2.1.9"
+# frozen_string_literal: true
+module SecondLevelCache
+  VERSION = '2.2.0'.freeze
 end
