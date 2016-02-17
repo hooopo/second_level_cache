@@ -8,14 +8,14 @@ module SecondLevelCache
           self.find(_id) rescue nil
         else
           record = self.where(where_values).first
-          record.tap{|record| SecondLevelCache.cache_store.write(cache_key, record.id)} if record
+          record.tap { |record| SecondLevelCache.cache_store.write(cache_key, record.id) } if record
         end
       end
-      
+
       def fetch_by_uniq_keys!(where_values)
         fetch_by_uniq_keys(where_values) || raise(::ActiveRecord::RecordNotFound)
       end
-      
+
       def fetch_by_uniq_key(value, uniq_key_name)
         # puts "[Deprecated] will remove in the future, use fetch_by_uniq_keys method instead."
         fetch_by_uniq_keys(uniq_key_name => value)
@@ -27,12 +27,13 @@ module SecondLevelCache
       end
 
       private
-      
+
       def cache_uniq_key(where_values)
-        ext_key = where_values.collect { |k,v|
+        keys = where_values.collect do |k,v|
           v = Digest::MD5.hexdigest(v) if v && v.size >= 32
           [k,v].join("_")
-        }.join(",")
+        end
+        ext_key = keys.join(",")
         "uniq_key_#{self.name}_#{ext_key}"
       end
     end

@@ -10,11 +10,15 @@ module SecondLevelCache
           return super if reflection.options[:through] || reflection.scope
           # TODO: implement cache with has_one through, scope
           if reflection.options[:as]
-            cache_record = klass.fetch_by_uniq_keys({reflection.foreign_key => owner[reflection.active_record_primary_key], reflection.type => owner.class.base_class.name})
+            keys = {
+              reflection.foreign_key => owner[reflection.active_record_primary_key],
+              reflection.type => owner.class.base_class.name
+            }
+            cache_record = klass.fetch_by_uniq_keys(keys)
           else
             cache_record = klass.fetch_by_uniq_key(owner[reflection.active_record_primary_key], reflection.foreign_key)
           end
-          return cache_record.tap{|record| set_inverse_instance(record)} if cache_record
+          return cache_record.tap { |record| set_inverse_instance(record) } if cache_record
 
           record = super
 

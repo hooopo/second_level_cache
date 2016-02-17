@@ -36,10 +36,14 @@ module SecondLevelCache
     private
 
       def cachable?
-        limit_one? && order_values.blank? &&
-          includes_values.blank? && preload_values.blank? &&
-          readonly_value.nil? && joins_values.blank? && !@klass.locking_enabled? &&
-          where_clause_match_equality?
+        limit_one? &&
+        order_values.blank? &&
+        includes_values.blank? &&
+        preload_values.blank? &&
+        readonly_value.nil? &&
+        joins_values.blank? &&
+        !@klass.locking_enabled? &&
+        where_clause_match_equality?
       end
 
       def where_clause_match_equality?

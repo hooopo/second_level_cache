@@ -3,15 +3,10 @@ module SecondLevelCache
   module ActiveRecord
     module Associations
       module BelongsToAssociation
-        extend ActiveSupport::Concern
-
-        included do
-        end
-
         def find_target
           return super unless klass.second_level_cache_enabled?
           cache_record = klass.read_second_level_cache(second_level_cache_key)
-          return cache_record.tap{|record| set_inverse_instance(record)} if cache_record
+          return cache_record.tap { |record| set_inverse_instance(record) } if cache_record
           record = super
 
           record.tap do |r|

@@ -2,10 +2,8 @@
 module SecondLevelCache
   module ActiveRecord
     module Persistence
-      extend ActiveSupport::Concern
-
       def update_column(name, value)
-        super(name, value).tap{update_second_level_cache}
+        super(name, value).tap { update_second_level_cache }
       end
 
       def reload(options = nil)
@@ -14,7 +12,7 @@ module SecondLevelCache
       end
 
       def touch(*names)
-        super(*names).tap{update_second_level_cache}
+        super(*names).tap { update_second_level_cache }
       end
     end
   end
