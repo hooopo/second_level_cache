@@ -16,6 +16,14 @@ Write-Through: As objects are created, updated, and deleted, all of the caches a
 
 In your gem file:
 
+ActiveRecord 5:
+
+```ruby
+gem 'second_level_cache', '~> 2.0.0'
+```
+
+For ActiveRecord 4:
+
 ```ruby
 gem "second_level_cache", "~> 2.1.9"
 ```
@@ -32,7 +40,7 @@ For example, cache User objects:
 
 ```ruby
 class User < ActiveRecord::Base
-  acts_as_cached(:version => 1, :expires_in => 1.week)
+  acts_as_cached(version: 1, expires_in: 1.week)
 end
 ```
 
@@ -41,14 +49,14 @@ Then it will fetch cached object in this situations:
 ```ruby
 User.find(1)
 user.articles.find(1)
-User.where(:status => 1).find(1)
+User.where(status: 1).find(1)
 article.user
 ```
 
 Cache key:
 
 ```ruby
-user = User.find 1
+user = User.find(1)
 user.second_level_cache_key  # We will get the key looks like "slc/user/1/0"
 ```
 
@@ -67,7 +75,7 @@ Disable SecondLevelCache:
 
 ```ruby
 User.without_second_level_cache do
-  user = User.find 1
+  user = User.find(1)
   # ...
 end
 ```
@@ -111,7 +119,7 @@ DatabaseCleaner.strategy = :truncation
 
 In production env, we recommend to use [Dalli](https://github.com/mperham/dalli) as Rails cache store.
 ```ruby
- config.cache_store = [:dalli_store, APP_CONFIG["memcached_host"], {:namespace => "ns", :compress => true}]
+ config.cache_store = [:dalli_store, APP_CONFIG["memcached_host"], { namespace: "ns", compress: true }]
 ```
 
 ## Tips:
@@ -126,7 +134,7 @@ SecondLevelCache.configure.cache_key_prefix = "slc1"
 
 ```ruby
 class User < ActiveRecord::Base
-  acts_as_cached(:version => 2, :expires_in => 1.week)
+  acts_as_cached(version: 2, expires_in: 1.week)
 end
 ```
 
