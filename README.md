@@ -19,7 +19,7 @@ In your gem file:
 ActiveRecord 5:
 
 ```ruby
-gem 'second_level_cache', '~> 2.0.0'
+gem 'second_level_cache', '~> 2.2.0'
 ```
 
 For ActiveRecord 4:
