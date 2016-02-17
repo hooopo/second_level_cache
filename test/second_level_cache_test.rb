@@ -3,7 +3,7 @@ require 'test_helper'
 
 class SecondLevelCacheTest < ActiveSupport::TestCase
   def setup
-    @user = User.create :name => 'csdn', :email => 'test@csdn.com'
+    @user = User.create name: 'csdn', email: 'test@csdn.com'
   end
 
   def test_should_get_cache_key

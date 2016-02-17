@@ -3,8 +3,8 @@ require 'test_helper'
 
 class PersistenceTest < ActiveSupport::TestCase
   def setup
-    @user = User.create :name => 'csdn', :email => 'test@csdn.com'
-    @topic = Topic.create :title => "csdn"
+    @user = User.create name: 'csdn', email: 'test@csdn.com'
+    @topic = Topic.create title: "csdn"
   end
 
   def test_should_reload_object

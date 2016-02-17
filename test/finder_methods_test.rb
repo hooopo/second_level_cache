@@ -3,7 +3,7 @@ require 'test_helper'
 
 class FinderMethodsTest < ActiveSupport::TestCase
   def setup
-    @user = User.create :name => 'csdn', :email => 'test@csdn.com'
+    @user = User.create name: 'csdn', email: 'test@csdn.com'
   end
 
   def test_should_find_without_cache
@@ -21,7 +21,7 @@ class FinderMethodsTest < ActiveSupport::TestCase
   def test_should_find_with_condition
     @user.write_second_level_cache
     assert_no_queries do
-      assert_equal @user, User.where(:name => @user.name).find(@user.id)
+      assert_equal @user, User.where(name: @user.name).find(@user.id)
     end
   end
 
