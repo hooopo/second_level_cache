@@ -3,8 +3,6 @@ module SecondLevelCache
   module ActiveRecord
     module Associations
       module HasOneAssociation
-        extend ActiveSupport::Concern
-
         def find_target
           return super unless klass.second_level_cache_enabled?
           return super if reflection.options[:through] || reflection.scope

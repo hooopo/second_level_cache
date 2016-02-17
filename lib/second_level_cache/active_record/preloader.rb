@@ -4,8 +4,6 @@ module SecondLevelCache
     module Associations
       class Preloader
         module BelongsTo
-          extend ActiveSupport::Concern
-
           def records_for(ids)
             return super(ids) unless klass.second_level_cache_enabled?
 

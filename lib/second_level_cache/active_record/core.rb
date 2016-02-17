@@ -2,8 +2,6 @@
 module SecondLevelCache
   module ActiveRecord
     module Core
-      extend ActiveSupport::Concern
-
       def self.prepended(base)
         class << base
           prepend ClassMethods
