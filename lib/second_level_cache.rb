@@ -17,6 +17,8 @@ module SecondLevelCache
     module ClassMethods
       attr_reader :second_level_cache_options
 
+      delegate :logger, :cache_store, :cache_key_prefix, to: SecondLevelCache
+
       def acts_as_cached(options = {})
         @second_level_cache_enabled = true
         @second_level_cache_options = options
@@ -37,18 +39,6 @@ module SecondLevelCache
         yield if block_given?
       ensure
         @second_level_cache_enabled = old
-      end
-
-      def cache_store
-        Config.cache_store
-      end
-
-      def logger
-        Config.logger
-      end
-
-      def cache_key_prefix
-        Config.cache_key_prefix
       end
 
       def cache_version
