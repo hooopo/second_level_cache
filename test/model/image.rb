@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 ActiveRecord::Base.connection.create_table(:images, force: true) do |t|
   t.string  :url
   t.string  :imagable_type

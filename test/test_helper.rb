@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'bundler/setup'
 require 'minitest/autorun'
 require 'active_support/test_case'

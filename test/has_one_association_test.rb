@@ -1,9 +1,8 @@
-# -*- encoding : utf-8 -*-
 require 'test_helper'
 
 class HasOneAssociationTest < ActiveSupport::TestCase
   def setup
-    @user = User.create :name => 'hooopo', :email => 'hoooopo@gmail.com'
+    @user = User.create name: 'hooopo', email: 'hoooopo@gmail.com'
     @account = @user.create_account
   end
 
@@ -15,7 +14,7 @@ class HasOneAssociationTest < ActiveSupport::TestCase
   end
 
   def test_should_fetch_has_one_through
-    user = User.create :name => 'hooopo', :email => 'hoooopo@gmail.com', forked_from_user: @user
+    user = User.create name: 'hooopo', email: 'hoooopo@gmail.com', forked_from_user: @user
     clean_user = user.reload
     assert_equal User, clean_user.forked_from_user.class
     assert_equal @user.id, user.forked_from_user.id

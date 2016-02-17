@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 ActiveRecord::Base.connection.create_table(:accounts, force: true) do |t|
   t.integer :age
   t.string :site

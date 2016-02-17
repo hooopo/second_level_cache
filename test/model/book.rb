@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 ActiveRecord::Base.connection.create_table(:books, force: true) do |t|
   t.string  :title
   t.string  :body

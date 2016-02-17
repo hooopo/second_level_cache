@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 ActiveRecord::Base.connection.create_table(:users, force: true) do |t|
   t.text    :options
   t.text    :json_options
