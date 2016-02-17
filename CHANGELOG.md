@@ -1,4 +1,4 @@
-2.2.0
+2.2.1
 -----
 
 * ActiveRecord 5 ready! Do not support ActiveRecord 4 and lower versions now (use second_level_cache 2.1.x).
