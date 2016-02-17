@@ -39,7 +39,7 @@ module ActiveRecordTestCaseHelper
     patterns_to_match.each do |pattern|
       failed_patterns << pattern unless SQLCounter.log_all.any? { |sql| pattern === sql }
     end
-    assert failed_patterns.empty?, "Query pattern(s) #{failed_patterns.map(&:inspect).join(', ')} not found.#{SQLCounter.log.size == 0 ? '' : "\nQueries:\n#{SQLCounter.log.join("\n")}"}"
+    assert failed_patterns.empty?, "Query pattern(s) #{failed_patterns.map(&:inspect).join(', ')} not found.#{SQLCounter.log.empty? ? '' : "\nQueries:\n#{SQLCounter.log.join("\n")}"}"
   end
 
   def assert_queries(num = 1, options = {})
@@ -50,7 +50,7 @@ module ActiveRecordTestCaseHelper
     if num == :any
       assert_operator the_log.size, :>=, 1, '1 or more queries expected, but none were executed.'
     else
-      mesg = "#{the_log.size} instead of #{num} queries were executed.#{the_log.size == 0 ? '' : "\nQueries:\n#{the_log.join("\n")}"}"
+      mesg = "#{the_log.size} instead of #{num} queries were executed.#{the_log.empty? ? '' : "\nQueries:\n#{the_log.join("\n")}"}"
       assert_equal num, the_log.size, mesg
     end
     x
