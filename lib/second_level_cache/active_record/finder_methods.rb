@@ -1,7 +1,7 @@
 module SecondLevelCache
   module ActiveRecord
     module FinderMethods
-      # TODO find_some
+      # TODO: find_some
       # https://github.com/rails/rails/blob/master/activerecord/lib/active_record/relation/finder_methods.rb#L289-L309
       #
       # Cacheable:
@@ -18,12 +18,14 @@ module SecondLevelCache
         return super(id) unless second_level_cache_enabled?
         return super(id) unless select_all_column?
 
-        id = id.id if ActiveRecord::Base === id
+        id = id.id if ActiveRecord::Base == id
 
         if cachable?
           record = @klass.read_second_level_cache(id)
           if record
-            return record if where_values_hash.blank? || where_values_match_cache?(record)
+            if where_values_hash.blank? || where_values_match_cache?(record)
+              return record
+            end
           end
         end
 
@@ -32,17 +34,17 @@ module SecondLevelCache
         record
       end
 
-    private
+      private
 
       def cachable?
         limit_one? &&
-        order_values.blank? &&
-        includes_values.blank? &&
-        preload_values.blank? &&
-        readonly_value.nil? &&
-        joins_values.blank? &&
-        !@klass.locking_enabled? &&
-        where_clause_match_equality?
+          order_values.blank? &&
+          includes_values.blank? &&
+          preload_values.blank? &&
+          readonly_value.nil? &&
+          joins_values.blank? &&
+          !@klass.locking_enabled? &&
+          where_clause_match_equality?
       end
 
       def where_clause_match_equality?

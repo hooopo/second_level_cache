@@ -26,9 +26,9 @@ class HasOneAssociationTest < ActiveSupport::TestCase
 
   def test_has_one_with_conditions
     user = User.create name: 'hooopo', email: 'hoooopo@gmail.com'
-    group_namespace1 = Namespace.create(user_id: user.id, name: 'ruby-china', kind: 'group')
+    Namespace.create(user_id: user.id, name: 'ruby-china', kind: 'group')
     user.create_namespace(name: 'hooopo')
-    group_namespace2 = Namespace.create(user_id: user.id, name: 'rails', kind: 'group')
+    Namespace.create(user_id: user.id, name: 'rails', kind: 'group')
     assert_not_equal user.namespace, nil
     clear_user = User.find(user.id)
     assert_equal clear_user.namespace.name, 'hooopo'

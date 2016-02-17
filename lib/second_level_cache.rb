@@ -27,11 +27,12 @@ module SecondLevelCache
       end
 
       def second_level_cache_enabled?
-        !!@second_level_cache_enabled
+        @second_level_cache_enabled == true
       end
 
       def without_second_level_cache
-        old, @second_level_cache_enabled = @second_level_cache_enabled, false
+        old = @second_level_cache_enabled
+        @second_level_cache_enabled = false
 
         yield if block_given?
       ensure
@@ -59,11 +60,13 @@ module SecondLevelCache
       end
 
       def read_second_level_cache(id)
-        RecordMarshal.load(SecondLevelCache.cache_store.read(second_level_cache_key(id))) if self.second_level_cache_enabled?
+        return unless second_level_cache_enabled?
+        RecordMarshal.load(SecondLevelCache.cache_store.read(second_level_cache_key(id)))
       end
 
       def expire_second_level_cache(id)
-        SecondLevelCache.cache_store.delete(second_level_cache_key(id)) if self.second_level_cache_enabled?
+        return unless second_level_cache_enabled?
+        SecondLevelCache.cache_store.delete(second_level_cache_key(id))
       end
     end
 
@@ -72,13 +75,15 @@ module SecondLevelCache
     end
 
     def expire_second_level_cache
-      SecondLevelCache.cache_store.delete(second_level_cache_key) if self.class.second_level_cache_enabled?
+      return unless self.class.second_level_cache_enabled?
+      SecondLevelCache.cache_store.delete(second_level_cache_key)
     end
 
     def write_second_level_cache
-      if self.class.second_level_cache_enabled?
-        SecondLevelCache.cache_store.write(second_level_cache_key, RecordMarshal.dump(self), expires_in: self.class.second_level_cache_options[:expires_in])
-      end
+      return unless self.class.second_level_cache_enabled?
+      marshal = RecordMarshal.dump(self)
+      expires_in = self.class.second_level_cache_options[:expires_in]
+      SecondLevelCache.cache_store.write(second_level_cache_key, marshal, expires_in: expires_in)
     end
 
     alias update_second_level_cache write_second_level_cache

@@ -5,13 +5,17 @@ module SecondLevelCache
         def find_target
           return super unless klass.second_level_cache_enabled?
           cache_record = klass.read_second_level_cache(second_level_cache_key)
-          return cache_record.tap { |record| set_inverse_instance(record) } if cache_record
+          if cache_record
+            return cache_record.tap { |record| set_inverse_instance(record) }
+          end
+
           record = super
+          return nil unless record
 
           record.tap do |r|
             set_inverse_instance(r)
             r.write_second_level_cache
-          end if record
+          end
         end
 
         private

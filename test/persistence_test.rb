@@ -3,7 +3,7 @@ require 'test_helper'
 class PersistenceTest < ActiveSupport::TestCase
   def setup
     @user = User.create name: 'csdn', email: 'test@csdn.com'
-    @topic = Topic.create title: "csdn"
+    @topic = Topic.create title: 'csdn'
   end
 
   def test_should_reload_object
@@ -26,7 +26,7 @@ class PersistenceTest < ActiveSupport::TestCase
   end
 
   def test_should_update_cache_after_update_column
-    @user.update_column :name, "new_name"
+    @user.update_column :name, 'new_name'
     new_user = User.find @user.id
     assert_equal new_user, @user
   end

@@ -26,16 +26,18 @@ SecondLevelCache.configure do |config|
 end
 
 SecondLevelCache.logger.level = Logger::ERROR
-ActiveSupport::Cache::MemoryStore.logger = SecondLevelCache::Config.logger
-ActiveRecord::Base.logger = SecondLevelCache::Config.logger
+ActiveSupport::Cache::MemoryStore.logger = SecondLevelCache.logger
+ActiveRecord::Base.logger = SecondLevelCache.logger
 
-class ActiveSupport::TestCase
-  setup do
-    SecondLevelCache.cache_store.clear
-    DatabaseCleaner.start
-  end
+module ActiveSupport
+  class TestCase
+    setup do
+      SecondLevelCache.cache_store.clear
+      DatabaseCleaner.start
+    end
 
-  teardown do
-    DatabaseCleaner.clean
+    teardown do
+      DatabaseCleaner.clean
+    end
   end
 end

@@ -37,9 +37,9 @@ module ActiveRecordTestCaseHelper
   ensure
     failed_patterns = []
     patterns_to_match.each do |pattern|
-      failed_patterns << pattern unless SQLCounter.log_all.any?{ |sql| pattern === sql }
+      failed_patterns << pattern unless SQLCounter.log_all.any? { |sql| pattern === sql }
     end
-    assert failed_patterns.empty?, "Query pattern(s) #{failed_patterns.map{ |p| p.inspect }.join(', ')} not found.#{SQLCounter.log.size == 0 ? '' : "\nQueries:\n#{SQLCounter.log.join("\n")}"}"
+    assert failed_patterns.empty?, "Query pattern(s) #{failed_patterns.map(&:inspect).join(', ')} not found.#{SQLCounter.log.size == 0 ? '' : "\nQueries:\n#{SQLCounter.log.join("\n")}"}"
   end
 
   def assert_queries(num = 1, options = {})
@@ -48,7 +48,7 @@ module ActiveRecordTestCaseHelper
     x = yield
     the_log = ignore_none ? SQLCounter.log_all : SQLCounter.log
     if num == :any
-      assert_operator the_log.size, :>=, 1, "1 or more queries expected, but none were executed."
+      assert_operator the_log.size, :>=, 1, '1 or more queries expected, but none were executed.'
     else
       mesg = "#{the_log.size} instead of #{num} queries were executed.#{the_log.size == 0 ? '' : "\nQueries:\n#{the_log.join("\n")}"}"
       assert_equal num, the_log.size, mesg
@@ -61,15 +61,15 @@ module ActiveRecordTestCaseHelper
     assert_queries(0, options, &block)
   end
 
-  def assert_column(model, column_name, msg=nil)
-    assert has_column?(model, column_name), msg
+  def assert_column(model, column_name, msg = nil)
+    assert exists_column?(model, column_name), msg
   end
 
-  def assert_no_column(model, column_name, msg=nil)
-    assert_not has_column?(model, column_name), msg
+  def assert_no_column(model, column_name, msg = nil)
+    assert_not exists_column?(model, column_name), msg
   end
 
-  def has_column?(model, column_name)
+  def exists_column?(model, column_name)
     model.reset_column_information
     model.column_names.include?(column_name.to_s)
   end
@@ -77,10 +77,13 @@ module ActiveRecordTestCaseHelper
   class SQLCounter
     class << self
       attr_accessor :ignored_sql, :log, :log_all
-      def clear_log; self.log = []; self.log_all = []; end
+      def clear_log
+        self.log = []
+        self.log_all = []
+      end
     end
 
-    self.clear_log
+    clear_log
 
     self.ignored_sql = [/^PRAGMA/, /^SELECT currval/, /^SELECT CAST/, /^SELECT @@IDENTITY/, /^SELECT @@ROWCOUNT/, /^SAVEPOINT/, /^ROLLBACK TO SAVEPOINT/, /^RELEASE SAVEPOINT/, /^SHOW max_identifier_length/, /^BEGIN/, /^COMMIT/]
 
@@ -102,7 +105,7 @@ module ActiveRecordTestCaseHelper
       @ignore = ignore
     end
 
-    def call(name, start, finish, message_id, values)
+    def call(_name, _start, _finish, _message_id, values)
       sql = values[:sql]
 
       # FIXME: this seems bad. we should probably have a better way to indicate

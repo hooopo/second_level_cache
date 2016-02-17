@@ -16,7 +16,7 @@ class PreloaderTest < ActiveSupport::TestCase
     assert_equal topics, results.map(&:topic)
   end
 
-  def test_belongs_to_when_read_multi_missed_from_cache_AR_will_fetch_missed_records_from_db
+  def test_belongs_to_when_read_multi_missed_from_cache_ar_will_fetch_missed_records_from_db
     topics = [
       Topic.create(title: 'title1', body: 'body1'),
       Topic.create(title: 'title2', body: 'body2'),

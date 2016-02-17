@@ -9,4 +9,3 @@ class Image < ActiveRecord::Base
 
   belongs_to :imagable, polymorphic: true, counter_cache: true
 end
-

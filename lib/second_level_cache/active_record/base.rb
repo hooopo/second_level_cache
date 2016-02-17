@@ -14,7 +14,7 @@ module SecondLevelCache
       module ClassMethods
         def update_counters(id, counters)
           super(id, counters).tap do
-            Array(id).each{ |i| expire_second_level_cache(i) }
+            Array(id).each { |i| expire_second_level_cache(i) }
           end
         end
       end
