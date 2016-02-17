@@ -6,7 +6,6 @@ require 'active_record_test_case_helper'
 require 'database_cleaner'
 require 'active_record'
 
-ActiveRecord::Base.raise_in_transactional_callbacks = true if ActiveRecord::Base.respond_to?(:raise_in_transactional_callbacks=)
 ActiveSupport.test_order = :sorted if ActiveSupport.respond_to?(:test_order=)
 
 require 'second_level_cache'

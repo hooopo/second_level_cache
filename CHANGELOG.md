@@ -1,3 +1,9 @@
+2.2.0
+-----
+
+* ActiveRecord 5 ready! Do not support ActiveRecord 4 and lower versions now (use second_level_cache 2.1.x).
+* Requirement Ruby 2.3+.
+
 2.0.0.rc1
 -----
 * ActiveRecord 4 ready!

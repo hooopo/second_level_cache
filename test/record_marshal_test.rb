@@ -48,6 +48,6 @@ class RecordMarshalTest < ActiveSupport::TestCase
   def test_should_load_active_record_object_without_association_cache
     @user.books
     @user.write_second_level_cache
-    assert_empty User.read_second_level_cache(@user.id).association_cache
+    assert_equal false, User.read_second_level_cache(@user.id).association_cached?('id')
   end
 end

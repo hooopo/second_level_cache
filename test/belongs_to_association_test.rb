@@ -10,7 +10,7 @@ class BelongsToAssociationTest < ActiveSupport::TestCase
     book = @user.books.create
 
     @user.write_second_level_cache
-    book.clear_association_cache
+    book.send(:clear_association_cache)
     assert_no_queries do
       assert_equal @user, book.user
     end

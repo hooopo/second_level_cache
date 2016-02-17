@@ -18,7 +18,7 @@ class FetchByUinqKeyTest < ActiveSupport::TestCase
   def test_should_query_from_db_using_primary_key
     Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
     @post.expire_second_level_cache
-    assert_sql(/SELECT\s+"posts".* FROM "posts"\s+WHERE "posts"."id" = \? LIMIT 1/) do
+    assert_sql(/SELECT\s+"posts".* FROM "posts"\s+WHERE "posts"."id" = \? LIMIT ?/) do
       Post.fetch_by_uniq_keys(:topic_id => 2, :slug => "foobar")
     end
   end
