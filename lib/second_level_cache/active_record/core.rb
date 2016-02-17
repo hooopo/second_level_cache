@@ -2,19 +2,16 @@
 module SecondLevelCache
   module ActiveRecord
     module Core
-      extend ActiveSupport::Concern
-
-      included do
-        class << self
-          alias_method_chain :find, :cache
+      def self.prepended(base)
+        class << base
+          prepend ClassMethods
         end
-
       end
 
       module ClassMethods
-        def find_with_cache(*ids)
+        def find(*ids)
           return all.find(ids.first) if ids.size == 1 && ids.first.is_a?(Fixnum)
-          find_without_cache(*ids)
+          super(*ids)
         end
       end
     end

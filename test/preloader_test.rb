@@ -29,7 +29,7 @@ class PreloaderTest < ActiveSupport::TestCase
 
     results = nil
     assert_queries(2) do
-      assert_sql(/IN\s+\(#{expired_topic.id}\)/m) do
+      assert_sql(/WHERE\s\"topics\"\.\"id\"\s=\s#{expired_topic.id}/m) do
         results = Post.includes(:topic).order('id ASC').to_a
       end
     end

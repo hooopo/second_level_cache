@@ -23,8 +23,8 @@ module SecondLevelCache
         @second_level_cache_options = options
         @second_level_cache_options[:expires_in] ||= 1.week
         @second_level_cache_options[:version] ||= 0
-        relation.class.send :include, SecondLevelCache::ActiveRecord::FinderMethods
-        include SecondLevelCache::ActiveRecord::Core if /^4\.2\./.match(::ActiveRecord.version.version)
+        relation.class.send :prepend, SecondLevelCache::ActiveRecord::FinderMethods
+        prepend SecondLevelCache::ActiveRecord::Core
       end
 
       def second_level_cache_enabled?
