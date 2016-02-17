@@ -2,12 +2,6 @@
 module SecondLevelCache
   module ActiveRecord
     module FinderMethods
-      extend ActiveSupport::Concern
-
-      included do
-        alias_method_chain :find_one, :second_level_cache
-      end
-
       # TODO find_some
       # https://github.com/rails/rails/blob/master/activerecord/lib/active_record/relation/finder_methods.rb#L289-L309
       #
@@ -21,20 +15,20 @@ module SecondLevelCache
       #     Article.where("user_id > 1").find(params[:id])
       #     Article.where("articles.user_id = 1").find(prams[:id])
       #     Article.where("user_id = 1 AND ...").find(params[:id])
-      def find_one_with_second_level_cache(id)
-        return find_one_without_second_level_cache(id) unless second_level_cache_enabled?
-        return find_one_without_second_level_cache(id) unless select_all_column?
+      def find_one(id)
+        return super(id) unless second_level_cache_enabled?
+        return super(id) unless select_all_column?
 
         id = id.id if ActiveRecord::Base === id
 
         if cachable?
           record = @klass.read_second_level_cache(id)
           if record
-            return record if where_values.blank? || where_values_match_cache?(record)
+            return record if where_values_hash.blank? || where_values_match_cache?(record)
           end
         end
 
-        record = find_one_without_second_level_cache(id)
+        record = super(id)
         record.write_second_level_cache
         record
       end
@@ -45,7 +39,11 @@ module SecondLevelCache
         limit_one? && order_values.blank? &&
           includes_values.blank? && preload_values.blank? &&
           readonly_value.nil? && joins_values.blank? && !@klass.locking_enabled? &&
-          where_values.all? { |where_value| where_value.is_a?(::Arel::Nodes::Equality) }
+          where_clause_match_equality?
+      end
+
+      def where_clause_match_equality?
+        where_values_hash.all?
       end
 
       def where_values_match_cache?(record)

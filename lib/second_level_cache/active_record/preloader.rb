@@ -6,12 +6,8 @@ module SecondLevelCache
         module BelongsTo
           extend ActiveSupport::Concern
 
-          included do
-            alias_method_chain :records_for, :second_level_cache
-          end
-
-          def records_for_with_second_level_cache(ids)
-            return records_for_without_second_level_cache(ids) unless klass.second_level_cache_enabled?
+          def records(ids)
+            return super(ids) unless klass.second_level_cache_enabled?
 
             map_cache_keys = ids.map{|id| klass.second_level_cache_key(id)}
             records_from_cache = ::SecondLevelCache.cache_store.read_multi(*map_cache_keys)
@@ -26,7 +22,7 @@ module SecondLevelCache
             if missed_ids.empty?
               RecordMarshal.load_multi(records_from_cache.values)
             else
-              records_from_db = records_for_without_second_level_cache(missed_ids)
+              records_from_db = super(missed_ids)
               records_from_db.map{|record| write_cache(record); record} + RecordMarshal.load_multi(records_from_cache.values)
             end
           end
