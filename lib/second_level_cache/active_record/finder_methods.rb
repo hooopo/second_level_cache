@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module SecondLevelCache
   module ActiveRecord
     module FinderMethods
@@ -7,7 +6,7 @@ module SecondLevelCache
       #
       # Cacheable:
       #
-      #     current_user.articles.where(:status => 1).visiable.find(params[:id])
+      #     current_user.articles.where(status: 1).visiable.find(params[:id])
       #
       # Uncacheable:
       #

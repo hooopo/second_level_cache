@@ -1,9 +1,8 @@
-# -*- encoding : utf-8 -*-
 require 'test_helper'
 
 class PolymorphicAssociationTest < ActiveSupport::TestCase
   def setup
-    @user = User.create :name => 'csdn', :email => 'test@csdn.com'
+    @user = User.create name: 'csdn', email: 'test@csdn.com'
   end
 
   def test_should_get_cache_when_use_polymorphic_association

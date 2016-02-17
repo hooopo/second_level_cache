@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module RecordMarshal
   class << self
     # dump ActiveRecord instace with only attributes.

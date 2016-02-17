@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'second_level_cache/active_record/base'
 require 'second_level_cache/active_record/core'
 require 'second_level_cache/active_record/fetch_by_uniq_key'

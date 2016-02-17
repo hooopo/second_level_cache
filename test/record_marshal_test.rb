@@ -1,18 +1,17 @@
-# -*- encoding : utf-8 -*-
 require 'test_helper'
 
 class RecordMarshalTest < ActiveSupport::TestCase
   def setup
     if ::ActiveRecord::VERSION::STRING >= '4.1.0'
       @json_options = { "name" => 'Test', "age" => 18 }
-      @user = User.create :name => 'csdn',
-                :email => 'test@csdn.com',
-                :options => [1,2],
-                :json_options => @json_options
+      @user = User.create name: 'csdn',
+                          email: 'test@csdn.com',
+                          options: [1,2],
+                          json_options: @json_options
     else
-      @user = User.create :name => 'csdn',
-                :email => 'test@csdn.com',
-                :options => [1,2]
+      @user = User.create name: 'csdn',
+                          email: 'test@csdn.com',
+                          options: [1,2]
     end
   end
 

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'active_support/all'
 require 'second_level_cache/config'
 require 'second_level_cache/record_marshal'
@@ -9,7 +8,7 @@ module SecondLevelCache
   end
 
   class << self
-    delegate :logger, :cache_store, :cache_key_prefix, :to => Config
+    delegate :logger, :cache_store, :cache_key_prefix, to: Config
   end
 
   module Mixin
@@ -78,7 +77,7 @@ module SecondLevelCache
 
     def write_second_level_cache
       if self.class.second_level_cache_enabled?
-        SecondLevelCache.cache_store.write(second_level_cache_key, RecordMarshal.dump(self), :expires_in => self.class.second_level_cache_options[:expires_in])
+        SecondLevelCache.cache_store.write(second_level_cache_key, RecordMarshal.dump(self), expires_in: self.class.second_level_cache_options[:expires_in])
       end
     end
 
