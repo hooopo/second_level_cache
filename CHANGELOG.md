@@ -1,3 +1,8 @@
+2.2.2
+-----
+
+* Add `where(id: n).first`, `where(id: n).last` hit cache support.
+
 2.2.1
 -----
 

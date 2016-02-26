@@ -40,4 +40,18 @@ class FinderMethodsTest < ActiveSupport::TestCase
     end
     refute_equal @user.name, @from_db.name
   end
+
+  def test_where_and_first_should_with_cache
+    @user.write_second_level_cache
+    assert_no_queries do
+      assert_equal @user, User.where(id: @user.id).first
+    end
+  end
+
+  def test_where_and_last_should_with_cache
+    @user.write_second_level_cache
+    assert_no_queries do
+      assert_equal @user, User.where(id: @user.id).last
+    end
+  end
 end

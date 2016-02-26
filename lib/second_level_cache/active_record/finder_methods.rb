@@ -2,7 +2,7 @@ module SecondLevelCache
   module ActiveRecord
     module FinderMethods
       # TODO: find_some
-      # https://github.com/rails/rails/blob/master/activerecord/lib/active_record/relation/finder_methods.rb#L289-L309
+      # http://api.rubyonrails.org/classes/ActiveRecord/FinderMethods.html#method-i-find_one
       #
       # Cacheable:
       #
@@ -31,6 +31,31 @@ module SecondLevelCache
 
         record = super(id)
         record.write_second_level_cache
+        record
+      end
+
+      # http://api.rubyonrails.org/classes/ActiveRecord/FinderMethods.html#method-i-first
+      #
+      # Cacheable:
+      #
+      #     User.where(id: 1).first
+      #     User.where(id: 1).last
+      #
+      # Uncacheable:
+      #
+      #     User.where(name: 'foo').first
+      #     User.where(age: 18).first
+      #
+      def first(limit = nil)
+        return super(limit) if limit.to_i > 1
+        # only have primary_key condition in where
+        if where_values_hash.length == 1 && where_values_hash.key?(primary_key)
+          record = @klass.read_second_level_cache(where_values_hash[primary_key])
+          return record if record
+        end
+
+        record = super(limit)
+        record.write_second_level_cache if record
         record
       end
 
