@@ -1,7 +1,7 @@
 2.2.2
 -----
 
-* Add `where(id: n).first`, `where(id: n).last` hit cache support.
+* Add `where(id: n).first`, `where(id: n).last` hit cache support. This improve will avoid some gems query database, for example: [devise](https://github.com/plataformatec/devise) `current_user` method.
 
 2.2.1
 -----
