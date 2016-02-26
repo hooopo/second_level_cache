@@ -50,6 +50,7 @@ Then it will fetch cached object in this situations:
 User.find(1)
 user.articles.find(1)
 User.where(status: 1).find(1)
+User.where(id: 1).first # or .last
 article.user
 ```
 

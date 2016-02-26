@@ -2,4 +2,4 @@ source 'https://rubygems.org'
 
 gemspec :path => '..'
 
-gem 'rails', :github => 'rails/rails', :ref => '6ece7df8d80c6d93db43878fa4c0278a0204072c'
+gem 'rails', '5.0.0.beta3'
