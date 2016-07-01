@@ -1,8 +1,9 @@
 module SecondLevelCache
   module ActiveRecord
     module Persistence
-      def update_column(name, value)
-        super(name, value).tap { update_second_level_cache }
+      # update_column will call update_columns
+      def update_columns(attributes)
+        super(attributes).tap { update_second_level_cache }
       end
 
       def reload(options = nil)
