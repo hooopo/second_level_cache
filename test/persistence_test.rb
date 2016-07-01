@@ -31,6 +31,30 @@ class PersistenceTest < ActiveSupport::TestCase
     assert_equal new_user, @user
   end
 
+  def test_should_update_cache_after_update_columns
+    @user.update_columns name: 'new_name1'
+    new_user = User.find @user.id
+    assert_equal new_user, @user
+  end
+
+  def test_should_update_cache_after_update_attribute
+    @user.update_attribute :name, 'new_name'
+    new_user = User.find @user.id
+    assert_equal new_user, @user
+  end
+
+  def test_should_update_cache_after_update
+    @user.update name: 'new_name'
+    new_user = User.find @user.id
+    assert_equal new_user, @user
+  end
+
+  def test_should_update_cache_after_update!
+    @user.update! name: 'new_name'
+    new_user = User.find @user.id
+    assert_equal new_user, @user
+  end
+
   def test_should_return_true_if_touch_ok
     assert @topic.touch == true
   end

@@ -3,6 +3,7 @@ ActiveRecord::Base.connection.create_table(:users, force: true) do |t|
   t.text    :json_options
   t.string  :name, unique: true
   t.string  :email
+  t.integer :status, default: 0
   t.integer :books_count, default: 0
   t.integer :images_count, default: 0
   t.timestamps null: false
@@ -33,6 +34,8 @@ class User < ActiveRecord::Base
   has_one  :namespace, -> { where(kind: nil) }
   has_many :books
   has_many :images, as: :imagable
+
+  enum status: [:active, :archived]
 end
 
 class Namespace < ActiveRecord::Base

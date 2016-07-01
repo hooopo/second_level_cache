@@ -36,6 +36,10 @@ module RecordMarshal
         end
       end
 
+      klass.defined_enums.each do |key, value|
+        attributes[key] = value[attributes[key]]
+      end
+
       klass.instantiate(attributes)
     end
 
