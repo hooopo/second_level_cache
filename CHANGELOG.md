@@ -1,3 +1,7 @@
+2.1.10
+* read multi from cache for find(ids)
+
+-----
 2.0.0.rc1
 -----
 * ActiveRecord 4 ready!
