@@ -3,6 +3,7 @@ class SecondLevelCache::ActiveRecord::Railtie < Rails::Railtie
     ActiveRecord::Base.send(:include, SecondLevelCache::Mixin)
     ActiveRecord::Base.send(:include, SecondLevelCache::ActiveRecord::Base)
     ActiveRecord::Base.send(:extend, SecondLevelCache::ActiveRecord::FetchByUniqKey)
+    ActiveRecord::Base.send(:extend, SecondLevelCache::ActiveRecord::MultiReadFromCache)
 
     ActiveRecord::Base.send(:include, SecondLevelCache::ActiveRecord::Persistence)
     ActiveRecord::Associations::BelongsToAssociation.send(:include, SecondLevelCache::ActiveRecord::Associations::BelongsToAssociation)
