@@ -141,6 +141,13 @@ post = Post.fetch_by_uniq_keys(user_id: 2, slug: "foo")
 user = User.fetch_by_uniq_keys!(nick_name: "hooopo") # this will raise `ActiveRecord::RecordNotFound` Exception when nick name not exists.
 ```
 
+* multi_read_from_cache
+
+```ruby
+# this will use Rails.cache.multi_read method to fetch record, if miss, then use SQL in query.
+blogs = Blog.multi_read_from_cache([1,2,3])
+```
+
 * You can use Rails's [Eager Loading](http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) feature as normal. Even better, second_level_cache will transform the `IN` query into a Rails.cache.multi_read operation. For example:
 
 ```ruby

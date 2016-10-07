@@ -7,6 +7,7 @@ require 'second_level_cache/active_record/persistence'
 require 'second_level_cache/active_record/belongs_to_association'
 require 'second_level_cache/active_record/has_one_association'
 require 'second_level_cache/active_record/preloader'
+require 'second_level_cache/active_record/multi_read_from_cache'
 
 if defined? Rails
   require 'second_level_cache/active_record/railtie'
@@ -14,6 +15,7 @@ else
   ActiveRecord::Base.send(:include, SecondLevelCache::Mixin)
   ActiveRecord::Base.send(:include, SecondLevelCache::ActiveRecord::Base)
   ActiveRecord::Base.send(:extend, SecondLevelCache::ActiveRecord::FetchByUniqKey)
+  ActiveRecord::Base.send(:extend, SecondLevelCache::ActiveRecord::MultiReadFromCache)
 
   ActiveRecord::Base.send(:include, SecondLevelCache::ActiveRecord::Persistence)
   ActiveRecord::Associations::BelongsToAssociation.send(:include, SecondLevelCache::ActiveRecord::Associations::BelongsToAssociation)
