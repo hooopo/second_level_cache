@@ -12,10 +12,13 @@ module SecondLevelCache
 
         def find_target_with_second_level_cache
           return find_target_without_second_level_cache unless klass.second_level_cache_enabled?
-          return find_target_without_second_level_cache if reflection.options[:through] || reflection.scope
-          # TODO: implement cache with has_one through, scope
+
+          return find_target_without_second_level_cache if reflection.options[:through]
+          # TODO: implement cache with has_one through
           if reflection.options[:as]
             cache_record = klass.fetch_by_uniq_keys({reflection.foreign_key => owner[reflection.active_record_primary_key], reflection.type => owner.class.base_class.name})
+          elsif reflection.scope
+            cache_record = klass.fetch_by_uniq_keys(create_scope)
           else
             cache_record = klass.fetch_by_uniq_key(owner[reflection.active_record_primary_key], reflection.foreign_key)
           end
