@@ -1,3 +1,6 @@
+2.1.14
+* support has_one with scope
+
 2.1.10
 * read multi from cache for find(ids)
 

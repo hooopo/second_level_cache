@@ -31,7 +31,11 @@ class HasOneAssociationTest < ActiveSupport::TestCase
     user.create_namespace(name: 'hooopo')
     group_namespace2 = Namespace.create(user_id: user.id, name: 'rails', kind: 'group')
     assert_not_equal user.namespace, nil
-    clear_user = User.find(user.id)
+    assert_equal user.reload.namespace.name, 'hooopo'
+    clear_user = user.reload
+    assert_no_queries do
+      clear_user.namespace
+    end
     assert_equal clear_user.namespace.name, 'hooopo'
   end
 end
