@@ -3,7 +3,7 @@ require 'test_helper'
 class RecordMarshalTest < ActiveSupport::TestCase
   def setup
     if ::ActiveRecord::VERSION::STRING >= '4.1.0'
-      @json_options = { 'name' => 'Test', 'age' => 18, 'hash' => {'name' => 'dup'} }
+      @json_options = { 'name' => 'Test', 'age' => 18, 'hash' => { 'name' => 'dup' } }
       @user = User.create name: 'csdn',
                           email: 'test@csdn.com',
                           options: [1, 2],
