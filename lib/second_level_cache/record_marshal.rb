@@ -37,7 +37,7 @@ module RecordMarshal
       end
 
       klass.defined_enums.each do |key, value|
-        attributes[key] = value[attributes[key]]
+        attributes[key] = value[attributes[key]] if attributes[key].is_a?(String)
       end
 
       klass.instantiate(attributes)

@@ -3,11 +3,12 @@ require 'test_helper'
 class RecordMarshalTest < ActiveSupport::TestCase
   def setup
     if ::ActiveRecord::VERSION::STRING >= '4.1.0'
-      @json_options = { 'name' => 'Test', 'age' => 18 }
+      @json_options = { 'name' => 'Test', 'age' => 18, 'hash' => {'name' => 'dup'} }
       @user = User.create name: 'csdn',
                           email: 'test@csdn.com',
                           options: [1, 2],
-                          json_options: @json_options
+                          json_options: @json_options,
+                          status: :active
     else
       @user = User.create name: 'csdn',
                           email: 'test@csdn.com',
@@ -46,5 +47,12 @@ class RecordMarshalTest < ActiveSupport::TestCase
     @user.books
     @user.write_second_level_cache
     assert_equal false, User.read_second_level_cache(@user.id).association_cached?('id')
+  end
+
+  def test_should_thread_safe_load
+    user = User.find @user.id
+    assert_equal 'active', user.status
+    user = User.find @user.id
+    assert_equal 'active', user.status
   end
 end
