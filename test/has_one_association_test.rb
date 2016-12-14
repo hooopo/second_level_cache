@@ -33,4 +33,18 @@ class HasOneAssociationTest < ActiveSupport::TestCase
     clear_user = User.find(user.id)
     assert_equal clear_user.namespace.name, 'hooopo'
   end
+
+  def test_assign_relation
+    assert_equal @user.account, @account
+    new_account = Account.create
+    @user.account = new_account
+    assert_equal @user.account, new_account
+    assert_equal @user.reload.account, new_account
+  end
+
+  def test_belongs_to_column_change
+    assert_equal @user.account, @account
+    @account.update(user_id: @user.id + 1)
+    assert_equal @user.reload.account, nil
+  end
 end
