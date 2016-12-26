@@ -45,6 +45,6 @@ class HasOneAssociationTest < ActiveSupport::TestCase
   def test_belongs_to_column_change
     assert_equal @user.account, @account
     @account.update(user_id: @user.id + 1)
-    assert_equal @user.reload.account, nil
+    assert_nil @user.reload.account
   end
 end

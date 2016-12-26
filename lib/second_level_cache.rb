@@ -1,6 +1,7 @@
 require 'active_support/all'
 require 'second_level_cache/config'
 require 'second_level_cache/record_marshal'
+require 'second_level_cache/record_relation'
 
 module SecondLevelCache
   def self.configure
@@ -29,7 +30,11 @@ module SecondLevelCache
       end
 
       def second_level_cache_enabled?
-        @second_level_cache_enabled == true
+        if defined? @second_level_cache_enabled
+          @second_level_cache_enabled == true
+        else
+          false
+        end
       end
 
       def without_second_level_cache
