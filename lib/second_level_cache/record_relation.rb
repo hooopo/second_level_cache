@@ -10,8 +10,8 @@ module SecondLevelCache
     #   records_for(slice).load(&block)
     #
     # https://github.com/rails/rails/pull/26340
-    def load(&block)
-      return self
+    def load(&_block)
+      self
     end
   end
 end

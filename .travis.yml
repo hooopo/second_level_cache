@@ -4,6 +4,7 @@ rvm:
   - 2.3.0
 gemfile:
   - gemfiles/Gemfile-5-0
+  - gemfiles/Gemfile-5-0-1
   - gemfiles/Gemfile-edge
 matrix:
   allow_failures:

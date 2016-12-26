@@ -30,8 +30,11 @@ module SecondLevelCache
       end
 
       def second_level_cache_enabled?
-        return false if !defined? @second_level_cache_enabled
-        @second_level_cache_enabled == true
+        if defined? @second_level_cache_enabled
+          @second_level_cache_enabled == true
+        else
+          false
+        end
       end
 
       def without_second_level_cache
