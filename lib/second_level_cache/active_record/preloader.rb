@@ -19,7 +19,7 @@ module SecondLevelCache
             record_marshals = RecordMarshal.load_multi(records_from_cache.values)
 
             if missed_ids.empty?
-              return record_marshals
+              return SecondLevelCache::RecordRelation.new(record_marshals)
             end
 
             records_from_db = super(missed_ids)
@@ -27,7 +27,7 @@ module SecondLevelCache
               write_cache(r)
             end
 
-            records_from_db + record_marshals
+            SecondLevelCache::RecordRelation.new(records_from_db + record_marshals)
           end
 
           private
