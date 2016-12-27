@@ -10,6 +10,14 @@ class FinderMethodsTest < ActiveSupport::TestCase
     assert_equal @user, User.find(@user.id)
   end
 
+  def test_should_find_with_string_id
+    SecondLevelCache.cache_store.clear
+    assert_equal @user, User.find(@user.id.to_s)
+    assert_no_queries do
+      assert_equal @user, User.find(@user.id.to_s)
+    end
+  end
+
   def test_should_find_with_cache
     @user.write_second_level_cache
     assert_no_queries do
