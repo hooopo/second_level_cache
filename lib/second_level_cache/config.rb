@@ -1,7 +1,7 @@
 module SecondLevelCache
   class Config
     class << self
-      attr_accessor :cache_store, :logger, :cache_key_prefix
+      attr_writer :cache_store, :logger, :cache_key_prefix
 
       def cache_store
         @cache_store ||= Rails.cache if defined?(Rails)
