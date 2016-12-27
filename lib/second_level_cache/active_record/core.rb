@@ -9,7 +9,7 @@ module SecondLevelCache
 
       module ClassMethods
         def find(*ids)
-          return all.find(ids.first) if ids.size == 1 && ids.first.is_a?(Fixnum)
+          return all.find(ids.first) if ids.size == 1 && ids.first.is_a?(Integer)
           super(*ids)
         end
       end
