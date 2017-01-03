@@ -21,7 +21,7 @@ module SecondLevelCache
       end
 
       def fetch_by_uniq_keys!(where_values)
-        fetch_by_uniq_keys(where_values) || fail(::ActiveRecord::RecordNotFound)
+        fetch_by_uniq_keys(where_values) || raise(::ActiveRecord::RecordNotFound)
       end
 
       def fetch_by_uniq_key(value, uniq_key_name)
@@ -33,7 +33,7 @@ module SecondLevelCache
       def fetch_by_uniq_key!(value, uniq_key_name)
         # puts "[Deprecated] will remove in the future,
         # use fetch_by_uniq_keys! method instead."
-        fetch_by_uniq_key(value, uniq_key_name) || fail(::ActiveRecord::RecordNotFound)
+        fetch_by_uniq_key(value, uniq_key_name) || raise(::ActiveRecord::RecordNotFound)
       end
 
       private

@@ -1,3 +1,7 @@
+AllCops:
+  Exclude:
+    - 'second_level_cache.gemspec'
+
 Lint/Eval:
   Enabled: false
 
