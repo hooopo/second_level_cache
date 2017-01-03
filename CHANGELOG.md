@@ -1,3 +1,8 @@
+2.2.6
+-----
+
+* Use `second_level_cache` instead of `acts_as_cached` method to setup in model. (#56)
+
 2.2.5
 -----
 

@@ -5,6 +5,6 @@ ActiveRecord::Base.connection.create_table(:posts, force: true) do |t|
 end
 
 class Post < ActiveRecord::Base
-  acts_as_cached
+  second_level_cache
   belongs_to :topic, touch: true
 end
