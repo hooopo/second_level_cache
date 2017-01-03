@@ -20,7 +20,7 @@ module SecondLevelCache
 
       delegate :logger, :cache_store, :cache_key_prefix, to: SecondLevelCache
 
-      def acts_as_cached(options = {})
+      def second_level_cache(options = {})
         @second_level_cache_enabled = true
         @second_level_cache_options = options
         @second_level_cache_options[:expires_in] ||= 1.week
@@ -28,6 +28,10 @@ module SecondLevelCache
         relation.class.send :prepend, SecondLevelCache::ActiveRecord::FinderMethods
         prepend SecondLevelCache::ActiveRecord::Core
       end
+
+      # TODO: remove `acts_as_cached` method in version 2.3.0
+      alias acts_as_cached second_level_cache
+      deprecate acts_as_cached: :second_level_cache, deprecator: ActiveSupport::Deprecation.new('2.3.0', 'second_level_cache')
 
       def second_level_cache_enabled?
         if defined? @second_level_cache_enabled

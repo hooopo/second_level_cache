@@ -6,7 +6,7 @@ ActiveRecord::Base.connection.create_table(:books, force: true) do |t|
 end
 
 class Book < ActiveRecord::Base
-  acts_as_cached
+  second_level_cache
 
   belongs_to :user, counter_cache: true
   has_many :images, as: :imagable

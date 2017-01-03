@@ -6,7 +6,7 @@ ActiveRecord::Base.connection.create_table(:topics, force: true) do |t|
 end
 
 class Topic < ActiveRecord::Base
-  acts_as_cached
+  second_level_cache
 
   has_many :posts
 end
