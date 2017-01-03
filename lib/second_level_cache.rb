@@ -28,9 +28,6 @@ module SecondLevelCache
         relation.class.send :prepend, SecondLevelCache::ActiveRecord::FinderMethods
         prepend SecondLevelCache::ActiveRecord::Core
       end
-      # TODO: remove `acts_as_cached` method in version 2.3.0
-      alias_method :acts_as_cached, :second_level_cache
-      deprecate acts_as_cached: :second_level_cache, deprecator: ActiveSupport::Deprecation.new('2.3.0', 'second_level_cache')
 
       def second_level_cache_enabled?
         if defined? @second_level_cache_enabled
