@@ -40,7 +40,7 @@ For example, cache User objects:
 
 ```ruby
 class User < ActiveRecord::Base
-  acts_as_cached(version: 1, expires_in: 1.week)
+  second_level_cache(version: 1, expires_in: 1.week)
 end
 ```
 
@@ -135,7 +135,7 @@ SecondLevelCache.configure.cache_key_prefix = "slc1"
 
 ```ruby
 class User < ActiveRecord::Base
-  acts_as_cached(version: 2, expires_in: 1.week)
+  second_level_cache(version: 2, expires_in: 1.week)
 end
 ```
 
