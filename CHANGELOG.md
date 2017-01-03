@@ -1,3 +1,13 @@
+2.2.7
+-----
+
+* Use `second_level_cache` instead of `acts_as_cached` method to setup in model. (#56)
+
+2.2.6
+-----
+
+* Fix warning in Ruby 2.4.0. (#54)
+
 2.2.5
 -----
 
