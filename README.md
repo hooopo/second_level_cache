@@ -40,7 +40,7 @@ For example, cache User objects:
 
 ```ruby
 class User < ActiveRecord::Base
-  acts_as_cached(version: 1, expires_in: 1.week)
+  second_level_cache version: 1, expires_in: 1.week
 end
 ```
 
@@ -67,7 +67,9 @@ Expires cache:
 user = User.find(1)
 user.expire_second_level_cache
 ```
+
 or expires cache using class method:
+
 ```ruby
 User.expire_second_level_cache(1)
 ```
@@ -104,8 +106,8 @@ end # <- Cache write
 
 # if you want to do something after user and account's write_second_level_cache operation, do this way:
 ActiveRecord::Base.transaction do
-   user.save
-   account.save
+  user.save
+  account.save
 end # <- Cache write
 Rails.logger.info "info"
 ```
@@ -119,8 +121,9 @@ DatabaseCleaner.strategy = :truncation
 ## Configure
 
 In production env, we recommend to use [Dalli](https://github.com/mperham/dalli) as Rails cache store.
+
 ```ruby
- config.cache_store = [:dalli_store, APP_CONFIG["memcached_host"], { namespace: "ns", compress: true }]
+config.cache_store = [:dalli_store, APP_CONFIG["memcached_host"], { namespace: "ns", compress: true }]
 ```
 
 ## Tips:
@@ -131,11 +134,12 @@ you can only change the `cache_key_prefix`:
 ```ruby
 SecondLevelCache.configure.cache_key_prefix = "slc1"
 ```
+
 * When schema of your model changed, just change the `version` of the speical model, avoding clear all the cache.
 
 ```ruby
 class User < ActiveRecord::Base
-  acts_as_cached(version: 2, expires_in: 1.week)
+  second_level_cache version: 2, expires_in: 1.week
 end
 ```
 
@@ -156,6 +160,7 @@ user = User.fetch_by_uniq_keys!(nick_name: "hooopo") # this will raise `ActiveRe
 Answer.includes(:question).limit(10).order("id DESC").each{|answer| answer.question.title}
 Answer Load (0.2ms)  SELECT `answers`.* FROM `answers` ORDER BY id DESC LIMIT 10 # Only one SQL query and one Rails.cache.read_multi fetching operation.
 ```
+
 [Details for read_multi feature](http://hooopo.writings.io/articles/a9cae5e0).
 
 ## Contributors

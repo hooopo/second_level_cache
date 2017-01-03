@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
   CACHE_VERSION = 3
   serialize :options, Array
   serialize :json_options, JSON if ::ActiveRecord::VERSION::STRING >= '4.1.0'
-  acts_as_cached(version: CACHE_VERSION, expires_in: 3.days)
+  second_level_cache(version: CACHE_VERSION, expires_in: 3.days)
   has_one  :account
   has_one  :forked_user_link, foreign_key: 'forked_to_user_id'
   has_one  :forked_from_user, through: :forked_user_link
@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
 end
 
 class Namespace < ActiveRecord::Base
-  acts_as_cached version: 1, expires_in: 3.days
+  second_level_cache version: 1, expires_in: 3.days
 
   belongs_to :user
 end

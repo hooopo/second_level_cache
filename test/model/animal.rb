@@ -5,9 +5,9 @@ ActiveRecord::Base.connection.create_table(:animals, force: true) do |t|
 end
 
 class Animal < ActiveRecord::Base
-  acts_as_cached
+  second_level_cache
 end
 
 class Dog < Animal
-  acts_as_cached
+  second_level_cache
 end
