@@ -40,7 +40,7 @@ For example, cache User objects:
 
 ```ruby
 class User < ActiveRecord::Base
-  second_level_cache version: 1, expires_in: 1.week
+  second_level_cache expires_in: 1.week
 end
 ```
 
@@ -99,9 +99,9 @@ User.select("id, name").find(1)
 ```ruby
 # user and account's write_second_level_cache operation will invoke after the logger.
 ActiveRecord::Base.transaction do
-   user.save
-   account.save
-   Rails.logger.info "info"
+  user.save
+  account.save
+  Rails.logger.info "info"
 end # <- Cache write
 
 # if you want to do something after user and account's write_second_level_cache operation, do this way:
@@ -135,7 +135,8 @@ you can only change the `cache_key_prefix`:
 SecondLevelCache.configure.cache_key_prefix = "slc1"
 ```
 
-* When schema of your model changed, just change the `version` of the speical model, avoding clear all the cache.
+* SecondLevelCache was added model schema digest as cache version, this means when you add/remove/change columns, the caches of this Model will expires.
+* When your want change the model cache version by manualy, just add the `version` option like this:
 
 ```ruby
 class User < ActiveRecord::Base
@@ -143,7 +144,7 @@ class User < ActiveRecord::Base
 end
 ```
 
-* It provides a great feature, not hits db when fetching record via unique key(not primary key).
+* It provides a great feature, not hits db when fetching record via unique key (not primary key).
 
 ```ruby
 # this will fetch from cache
