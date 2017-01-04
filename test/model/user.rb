@@ -1,6 +1,7 @@
 ActiveRecord::Base.connection.create_table(:users, force: true) do |t|
   t.text    :options
   t.text    :json_options
+  t.text    :extras
   t.string  :name, unique: true
   t.string  :email
   t.integer :status, default: 0
@@ -24,9 +25,12 @@ end
 
 class User < ActiveRecord::Base
   CACHE_VERSION = 3
+  second_level_cache(version: CACHE_VERSION, expires_in: 3.days)
+
   serialize :options, Array
   serialize :json_options, JSON if ::ActiveRecord::VERSION::STRING >= '4.1.0'
-  second_level_cache(version: CACHE_VERSION, expires_in: 3.days)
+  store :extras, accessors: [:tagline, :gender]
+
   has_one  :account
   has_one  :forked_user_link, foreign_key: 'forked_to_user_id'
   has_one  :forked_from_user, through: :forked_user_link
