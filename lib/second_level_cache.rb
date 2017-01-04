@@ -23,8 +23,8 @@ module SecondLevelCache
       def second_level_cache(options = {})
         @second_level_cache_enabled = true
         @second_level_cache_options = options
-        @second_level_cache_options[:expires_in] ||= 1.week
         @second_level_cache_options[:version] ||= 0
+        @second_level_cache_options[:expires_in] ||= 1.week
         relation.class.send :prepend, SecondLevelCache::ActiveRecord::FinderMethods
         prepend SecondLevelCache::ActiveRecord::Core
       end
@@ -50,8 +50,15 @@ module SecondLevelCache
         @second_level_cache_enabled = old
       end
 
+      # Get MD5 digest of this Model schema
+      # http://api.rubyonrails.org/classes/ActiveRecord/Core/ClassMethods.html#method-i-inspect
       def cache_version
-        second_level_cache_options[:version]
+        return @cache_version if defined? @cache_version
+        # This line is copy from:
+        # https://github.com/rails/rails/blob/f9a5f48/activerecord/lib/active_record/core.rb#L236
+        attr_list = attribute_types.map { |name, type| "#{name}: #{type.type}" } * ', '
+        model_schema_digest = Digest::MD5.hexdigest(attr_list)
+        @cache_version = "#{second_level_cache_options[:version]}/#{model_schema_digest}"
       end
 
       def second_level_cache_key(id)
