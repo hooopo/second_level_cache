@@ -2,6 +2,7 @@ require 'active_support/all'
 require 'second_level_cache/config'
 require 'second_level_cache/record_marshal'
 require 'second_level_cache/record_relation'
+require 'second_level_cache/active_record'
 
 module SecondLevelCache
   def self.configure
@@ -97,5 +98,3 @@ module SecondLevelCache
     end
   end
 end
-
-require 'second_level_cache/active_record' if defined?(ActiveRecord)
