@@ -7,14 +7,14 @@ require 'second_level_cache/active_record/belongs_to_association'
 require 'second_level_cache/active_record/has_one_association'
 require 'second_level_cache/active_record/preloader'
 
-if defined? Rails
-  require 'second_level_cache/active_record/railtie'
-else
-  ActiveRecord::Base.send(:include, SecondLevelCache::Mixin)
-  ActiveRecord::Base.send(:prepend, SecondLevelCache::ActiveRecord::Base)
-  ActiveRecord::Base.send(:extend, SecondLevelCache::ActiveRecord::FetchByUniqKey)
+# http://api.rubyonrails.org/classes/ActiveSupport/LazyLoadHooks.html
+# ActiveSupport.run_load_hooks(:active_record, ActiveRecord::Base)
+ActiveSupport.on_load(:active_record) do
+  include SecondLevelCache::Mixin
+  prepend SecondLevelCache::ActiveRecord::Base
+  extend SecondLevelCache::ActiveRecord::FetchByUniqKey
+  prepend SecondLevelCache::ActiveRecord::Persistence
 
-  ActiveRecord::Base.send(:prepend, SecondLevelCache::ActiveRecord::Persistence)
   ActiveRecord::Associations::BelongsToAssociation.send(:prepend, SecondLevelCache::ActiveRecord::Associations::BelongsToAssociation)
   ActiveRecord::Associations::HasOneAssociation.send(:prepend, SecondLevelCache::ActiveRecord::Associations::HasOneAssociation)
   ActiveRecord::Associations::Preloader::BelongsTo.send(:prepend, SecondLevelCache::ActiveRecord::Associations::Preloader::BelongsTo)
