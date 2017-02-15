@@ -55,3 +55,6 @@ Rails/HasAndBelongsToMany:
 
 Style/CaseEquality:
   Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
