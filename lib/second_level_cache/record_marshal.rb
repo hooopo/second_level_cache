@@ -31,6 +31,9 @@ module RecordMarshal
         next if attributes[name].nil? || attributes[name].is_a?(String)
         if coder.is_a?(::ActiveRecord::Coders::YAMLColumn)
           attributes[name] = coder.dump(attributes[name]) if attributes[name].is_a?(coder.object_class)
+        elsif coder.is_a?(::ActiveRecord::Store::IndifferentCoder)
+          # https://github.com/rails/rails/blob/5b14129/activerecord/lib/active_record/store.rb#L179
+          attributes[name] = coder.dump(attributes[name])
         elsif coder == ::ActiveRecord::Coders::JSON
           attributes[name] = attributes[name].to_json
         end
