@@ -2,8 +2,8 @@ AllCops:
   Exclude:
     - 'second_level_cache.gemspec'
 
-Lint/Eval:
-  Enabled: false
+Security/Eval:
+    Enabled: false
 
 Style/Documentation:
   Enabled: false
@@ -54,4 +54,7 @@ Rails/HasAndBelongsToMany:
   Enabled: false
 
 Style/CaseEquality:
+  Enabled: false
+
+Rails/SkipsModelValidations:
   Enabled: false

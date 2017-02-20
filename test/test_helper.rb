@@ -11,7 +11,6 @@ ActiveSupport.run_load_hooks(:active_record, ActiveRecord::Base)
 
 require 'second_level_cache'
 
-
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
 
 require 'model/user'
