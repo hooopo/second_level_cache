@@ -6,8 +6,11 @@ require 'database_cleaner'
 require 'active_record'
 
 ActiveSupport.test_order = :sorted if ActiveSupport.respond_to?(:test_order=)
+# Force hook :active_record on_load event to make sure loader can work.
+ActiveSupport.run_load_hooks(:active_record, ActiveRecord::Base)
 
 require 'second_level_cache'
+
 
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
 
