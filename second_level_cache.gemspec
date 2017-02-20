@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
   Write-Through: As objects are created, updated, and deleted, all of the caches are automatically kept up-to-date and coherent.
   SUMMARY
 
-  gem.homepage      = 'https://github.com/csdn-dev/second_level_cache'
+  gem.homepage      = 'https://github.com/hooopo/second_level_cache'
 
   gem.files         = Dir.glob('lib/**/*.rb') + [
     'README.md',
