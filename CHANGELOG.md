@@ -1,3 +1,15 @@
+2.3.1
+-----
+
+- Fix some cases will raise "uninitialized constant SecondLevelCache::Mixin" error. (#66)
+
+2.3.0
+-----
+
+* Use Model schema digest as cache_version, so you don't need set `:version` option now. (#60)
+* Fix `store` serialize option (#62)
+* Remove `acts_as_cached` method now! Please use `second_level_cache`. (#59)
+
 2.2.7
 -----
 
