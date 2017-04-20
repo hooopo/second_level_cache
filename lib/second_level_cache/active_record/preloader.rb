@@ -35,6 +35,7 @@ module SecondLevelCache
 
           private
 
+          # test klass primary key is integer type. (rails default)
           def integer?
             primary_key_attribute = klass.attribute_types.select { |name, type| name == User.primary_key }
             if primary_key_attribute.key?(klass.primary_key.to_s)
