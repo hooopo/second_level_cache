@@ -2,7 +2,7 @@ require 'test_helper'
 
 class PreloaderNonIntegerTest < ActiveSupport::TestCase
   def test_belongs_to_preload_caches_includes_uuid
-  	orders = [
+    orders = [
       Order.create(id: '15944214-e4df-4e46-8d56-1f5864a0b90c', title: 'title1', body: 'body1'),
       Order.create(id: '25944214-e4df-4e46-8d56-1f5864a0b90c', title: 'title2', body: 'body2'),
       Order.create(id: '35944214-e4df-4e46-8d56-1f5864a0b90c', title: 'title3', body: 'body3')
@@ -11,13 +11,13 @@ class PreloaderNonIntegerTest < ActiveSupport::TestCase
 
     results = nil
     assert_queries(1) do
-    	results = OrderItem.includes(:order).order('id ASC').to_a
+      results = OrderItem.includes(:order).order('id ASC').to_a
     end
     assert_equal orders, results.map(&:order)
   end
 
   def test_belongs_to_when_read_multi_missed_from_cache_ar_will_fetch_missed_records_from_db_uuid
-  	orders = [
+    orders = [
       Order.create(id: '15944214-e4df-4e46-8d56-1f5864a0b90c', title: 'title1', body: 'body1'),
       Order.create(id: '25944214-e4df-4e46-8d56-1f5864a0b90c', title: 'title2', body: 'body2'),
       Order.create(id: '35944214-e4df-4e46-8d56-1f5864a0b90c', title: 'title3', body: 'body3')
