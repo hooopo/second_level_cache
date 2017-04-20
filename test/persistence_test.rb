@@ -20,7 +20,7 @@ class PersistenceTest < ActiveSupport::TestCase
   def test_should_update_cache_after_touch
     old_updated_time = @user.updated_at
     @user.touch
-    assert !(old_updated_time == @user.updated_at)
+    assert old_updated_time != @user.updated_at
     new_user = User.find @user.id
     assert_equal new_user, @user
   end

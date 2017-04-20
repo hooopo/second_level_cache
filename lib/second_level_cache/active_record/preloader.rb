@@ -11,7 +11,7 @@ module SecondLevelCache
             # NOTICE
             # Rails.cache.read_multi return hash that has keys only hitted.
             # eg. Rails.cache.read_multi(1,2,3) => {2 => hit_value, 3 => hit_value}
-            hitted_ids = records_from_cache.map do |key, _| 
+            hitted_ids = records_from_cache.map do |key, _|
               id = key.split('/')[2]
               integer? ? id.to_i : id
             end
@@ -37,7 +37,7 @@ module SecondLevelCache
 
           # test klass primary key is integer type. (rails default)
           def integer?
-            primary_key_attribute = klass.attribute_types.select { |name, type| name == User.primary_key }
+            primary_key_attribute = klass.attribute_types.select { |name, _| name == User.primary_key }
             if primary_key_attribute.key?(klass.primary_key.to_s)
               primary_key_attribute[klass.primary_key].type == :integer
             else
