@@ -11,10 +11,10 @@ module SecondLevelCache
             # NOTICE
             # Rails.cache.read_multi return hash that has keys only hitted.
             # eg. Rails.cache.read_multi(1,2,3) => {2 => hit_value, 3 => hit_value}
-            hitted_ids = records_from_cache.map { |key, _| key.split('/')[2].to_i }
-            missed_ids = ids.map(&:to_i) - hitted_ids
+            hitted_ids = records_from_cache.map { |key, _| key.split('/')[2] }
+            missed_ids = ids.map(&:to_s) - hitted_ids
 
-            ::SecondLevelCache.logger.info "missed ids -> #{missed_ids.inspect} | hitted ids -> #{hitted_ids.inspect}"
+            ::SecondLevelCache.logger.info "missed ids -> #{missed_ids.join(',')} | hitted ids -> #{hitted_ids.join(',')}"
 
             record_marshals = RecordMarshal.load_multi(records_from_cache.values)
 
