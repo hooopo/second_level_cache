@@ -11,8 +11,11 @@ module SecondLevelCache
             # NOTICE
             # Rails.cache.read_multi return hash that has keys only hitted.
             # eg. Rails.cache.read_multi(1,2,3) => {2 => hit_value, 3 => hit_value}
-            hitted_ids = records_from_cache.map { |key, _| key.split('/')[2].to_i }
-            missed_ids = ids.map(&:to_i) - hitted_ids
+            hitted_ids = records_from_cache.map do |key, _|
+              id = key.split('/')[2]
+              integer? ? id.to_i : id
+            end
+            missed_ids = (integer? ? ids.map(&:to_i) : ids) - hitted_ids
 
             ::SecondLevelCache.logger.info "missed ids -> #{missed_ids.inspect} | hitted ids -> #{hitted_ids.inspect}"
 
@@ -31,6 +34,16 @@ module SecondLevelCache
           end
 
           private
+
+          # test klass primary key is integer type. (rails default)
+          def integer?
+            primary_key_attribute = klass.attribute_types.select { |name, _| name == User.primary_key }
+            if primary_key_attribute.key?(klass.primary_key.to_s)
+              primary_key_attribute[klass.primary_key].type == :integer
+            else
+              true
+            end
+          end
 
           def write_cache(record)
             record.write_second_level_cache

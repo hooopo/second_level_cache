@@ -29,7 +29,7 @@ class User < ActiveRecord::Base
 
   serialize :options, Array
   serialize :json_options, JSON if ::ActiveRecord::VERSION::STRING >= '4.1.0'
-  store :extras, accessors: [:tagline, :gender]
+  store :extras, accessors: %I[tagline gender]
 
   has_one  :account
   has_one  :forked_user_link, foreign_key: 'forked_to_user_id'
@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
   has_many :books
   has_many :images, as: :imagable
 
-  enum status: [:active, :archived]
+  enum status: %I[active archived]
 end
 
 class Namespace < ActiveRecord::Base
