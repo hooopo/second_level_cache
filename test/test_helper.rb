@@ -18,6 +18,8 @@ require 'model/book'
 require 'model/image'
 require 'model/topic'
 require 'model/post'
+require 'model/order'
+require 'model/order_item'
 require 'model/account'
 require 'model/animal'
 
