@@ -49,6 +49,6 @@ class Namespace < ActiveRecord::Base
 end
 
 class ForkedUserLink < ActiveRecord::Base
-  belongs_to :forked_from_user, class_name: User
-  belongs_to :forked_to_user, class_name: User
+  belongs_to :forked_from_user, class_name: 'User'
+  belongs_to :forked_to_user, class_name: 'User'
 end

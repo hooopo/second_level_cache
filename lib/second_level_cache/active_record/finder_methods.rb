@@ -19,7 +19,6 @@ module SecondLevelCache
         return super(id) unless select_all_column?
 
         id = id.id if ActiveRecord::Base == id
-
         if cachable?
           record = @klass.read_second_level_cache(id)
           if record
@@ -61,12 +60,13 @@ module SecondLevelCache
 
       private
 
+      # readonly_value - active_record/relation/query_methods.rb Rails 5.1 true/false
       def cachable?
         limit_one? &&
           order_values.blank? &&
           includes_values.blank? &&
           preload_values.blank? &&
-          readonly_value.nil? &&
+          readonly_value.blank? &&
           joins_values.blank? &&
           !@klass.locking_enabled? &&
           where_clause_match_equality?

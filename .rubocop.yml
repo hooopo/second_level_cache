@@ -14,7 +14,7 @@ Style/AsciiComments:
 Style/IfUnlessModifier:
   Enabled: false
 
-Style/AmbiguousBlockAssociation:
+Lint/AmbiguousBlockAssociation:
   Enabled: false
 
 Metrics/LineLength:
