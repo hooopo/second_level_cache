@@ -66,7 +66,7 @@ module SecondLevelCache
           order_values.blank? &&
           includes_values.blank? &&
           preload_values.blank? &&
-          !readonly_value &&
+          readonly_value.blank? &&
           joins_values.blank? &&
           !@klass.locking_enabled? &&
           where_clause_match_equality?
