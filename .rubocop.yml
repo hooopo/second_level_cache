@@ -1,6 +1,11 @@
 AllCops:
   Exclude:
     - 'second_level_cache.gemspec'
+  TargetRubyVersion: 2.4
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
 
 Security/Eval:
     Enabled: false
@@ -61,3 +66,10 @@ Style/CaseEquality:
 
 Rails/SkipsModelValidations:
   Enabled: false
+
+Rails/ApplicationRecord:
+  Enabled: false
+
+Style/EvalWithLocation:
+  Exclude:
+    - "test/active_record_test_case_helper.rb"

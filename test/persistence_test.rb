@@ -1,14 +1,16 @@
-require 'test_helper'
+# frozen_string_literal: true
+
+require "test_helper"
 
 class PersistenceTest < ActiveSupport::TestCase
   def setup
-    @user = User.create name: 'csdn', email: 'test@csdn.com'
-    @topic = Topic.create title: 'csdn'
+    @user = User.create name: "csdn", email: "test@csdn.com"
+    @topic = Topic.create title: "csdn"
   end
 
   def test_should_reload_object
-    User.where(id: @user.id).update_all(email: 'different@csdn.com')
-    assert_equal 'different@csdn.com', @user.reload.email
+    User.where(id: @user.id).update_all(email: "different@csdn.com")
+    assert_equal "different@csdn.com", @user.reload.email
   end
 
   def test_should_reload_object_associations
@@ -26,31 +28,31 @@ class PersistenceTest < ActiveSupport::TestCase
   end
 
   def test_should_update_cache_after_update_column
-    @user.update_column :name, 'new_name'
+    @user.update_column :name, "new_name"
     new_user = User.find @user.id
     assert_equal new_user, @user
   end
 
   def test_should_update_cache_after_update_columns
-    @user.update_columns name: 'new_name1'
+    @user.update_columns name: "new_name1"
     new_user = User.find @user.id
     assert_equal new_user, @user
   end
 
   def test_should_update_cache_after_update_attribute
-    @user.update_attribute :name, 'new_name'
+    @user.update_attribute :name, "new_name"
     new_user = User.find @user.id
     assert_equal new_user, @user
   end
 
   def test_should_update_cache_after_update
-    @user.update name: 'new_name'
+    @user.update name: "new_name"
     new_user = User.find @user.id
     assert_equal new_user, @user
   end
 
   def test_should_update_cache_after_update!
-    @user.update! name: 'new_name'
+    @user.update! name: "new_name"
     new_user = User.find @user.id
     assert_equal new_user, @user
   end

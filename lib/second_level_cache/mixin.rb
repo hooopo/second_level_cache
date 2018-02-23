@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SecondLevelCache
   module Mixin
     extend ActiveSupport::Concern
@@ -39,7 +41,7 @@ module SecondLevelCache
         return @cache_version if defined? @cache_version
         # This line is copy from:
         # https://github.com/rails/rails/blob/f9a5f48/activerecord/lib/active_record/core.rb#L236
-        attr_list = attribute_types.map { |name, type| "#{name}: #{type.type}" } * ', '
+        attr_list = attribute_types.map { |name, type| "#{name}: #{type.type}" } * ", "
         model_schema_digest = Digest::MD5.hexdigest(attr_list)
         @cache_version = "#{second_level_cache_options[:version]}/#{model_schema_digest}"
       end

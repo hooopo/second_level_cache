@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SecondLevelCache
   module ActiveRecord
     module Associations

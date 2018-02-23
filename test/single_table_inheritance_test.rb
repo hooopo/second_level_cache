@@ -1,4 +1,6 @@
-require 'test_helper'
+# frozen_string_literal: true
+
+require "test_helper"
 
 class SingleTableInheritanceTest < ActiveSupport::TestCase
   def test_superclass_find__caches_superclass_record

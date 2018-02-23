@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ActiveRecord::Base.connection.create_table(:order_items, force: true, id: :uuid) do |t|
   t.text :body
   t.string :slug
