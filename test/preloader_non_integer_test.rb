@@ -28,8 +28,9 @@ class PreloaderNonIntegerTest < ActiveSupport::TestCase
 
     results = nil
     assert_queries(2) do
-      assert_sql(/WHERE\s\"orders\"\.\"id\"\s=\s'#{expired_order.id}'/m) do
+      assert_sql(/WHERE\s\"orders\"\.\"id\" = ?/m) do
         results = OrderItem.includes(:order).order('id ASC').to_a
+        assert_equal expired_order, results.first.order
       end
     end
 

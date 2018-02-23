@@ -30,12 +30,12 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
   gem.version       = SecondLevelCache::VERSION
 
-  gem.add_runtime_dependency 'activesupport', ['>= 5.0.0', '< 5.2']
-  gem.add_runtime_dependency 'activerecord', ['>= 5.0.0', '< 5.2']
+  gem.add_runtime_dependency 'activesupport', ['>= 5.2.0.rc', '< 6']
+  gem.add_runtime_dependency 'activerecord', ['>= 5.2.0.rc', '< 6']
 
   gem.add_development_dependency 'sqlite3'
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'pry'
-  gem.add_development_dependency 'database_cleaner', '~> 1.3.0'
+  gem.add_development_dependency 'database_cleaner'
   gem.add_development_dependency 'rubocop'
 end

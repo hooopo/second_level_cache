@@ -3,8 +3,9 @@ module SecondLevelCache
     module Associations
       class Preloader
         module BelongsTo
-          def records_for(ids)
-            return super(ids) unless klass.second_level_cache_enabled?
+          def records_for(ids, &block)
+            return super(ids, &block) unless reflection.is_a?(::ActiveRecord::Reflection::BelongsToReflection)
+            return super(ids, &block) unless klass.second_level_cache_enabled?
 
             map_cache_keys = ids.map { |id| klass.second_level_cache_key(id) }
             records_from_cache = ::SecondLevelCache.cache_store.read_multi(*map_cache_keys)
@@ -22,7 +23,7 @@ module SecondLevelCache
               return SecondLevelCache::RecordRelation.new(record_marshals)
             end
 
-            records_from_db = super(missed_ids)
+            records_from_db = super(missed_ids, &block)
             records_from_db.map do |r|
               write_cache(r)
             end
