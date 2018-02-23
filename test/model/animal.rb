@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ActiveRecord::Base.connection.create_table(:animals, force: true) do |t|
   t.string  :type
   t.string  :name

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RecordMarshal
   class << self
     # dump ActiveRecord instace with only attributes.

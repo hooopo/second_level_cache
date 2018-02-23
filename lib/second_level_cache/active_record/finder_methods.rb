@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SecondLevelCache
   module ActiveRecord
     module FinderMethods
@@ -54,7 +56,7 @@ module SecondLevelCache
         end
 
         record = super(limit)
-        record.write_second_level_cache if record
+        record&.write_second_level_cache
         record
       end
 

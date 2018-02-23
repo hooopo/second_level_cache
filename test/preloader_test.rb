@@ -1,26 +1,28 @@
-require 'test_helper'
+# frozen_string_literal: true
+
+require "test_helper"
 
 class PreloaderTest < ActiveSupport::TestCase
   def test_belongs_to_preload_caches_includes
     topics = [
-      Topic.create(title: 'title1', body: 'body1'),
-      Topic.create(title: 'title2', body: 'body2'),
-      Topic.create(title: 'title3', body: 'body3')
+      Topic.create(title: "title1", body: "body1"),
+      Topic.create(title: "title2", body: "body2"),
+      Topic.create(title: "title3", body: "body3")
     ]
     topics.each { |topic| topic.posts.create(body: "post#{topic.id}") }
 
     results = nil
     assert_queries(1) do
-      results = Post.includes(:topic).order('id ASC').to_a
+      results = Post.includes(:topic).order("id ASC").to_a
     end
     assert_equal topics, results.map(&:topic)
   end
 
   def test_belongs_to_when_read_multi_missed_from_cache_ar_will_fetch_missed_records_from_db
     topics = [
-      Topic.create(title: 'title1', body: 'body1'),
-      Topic.create(title: 'title2', body: 'body2'),
-      Topic.create(title: 'title3', body: 'body3')
+      Topic.create(title: "title1", body: "body1"),
+      Topic.create(title: "title2", body: "body2"),
+      Topic.create(title: "title3", body: "body3")
     ]
     topics.each { |topic| topic.posts.create(body: "post#{topic.id}") }
     expired_topic = topics.first
@@ -29,7 +31,7 @@ class PreloaderTest < ActiveSupport::TestCase
     results = nil
     assert_queries(2) do
       assert_sql(/WHERE\s\"topics\"\.\"id\"\s=\s?/m) do
-        results = Post.includes(:topic).order('id ASC').to_a
+        results = Post.includes(:topic).order("id ASC").to_a
         assert_equal expired_topic, results.first.topic
       end
     end

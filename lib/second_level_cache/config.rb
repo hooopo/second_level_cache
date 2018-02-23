@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SecondLevelCache
   class Config
     class << self
@@ -14,7 +16,7 @@ module SecondLevelCache
       end
 
       def cache_key_prefix
-        @cache_key_prefix ||= 'slc'
+        @cache_key_prefix ||= "slc"
       end
     end
   end

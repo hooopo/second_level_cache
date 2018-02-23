@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SecondLevelCache
   class RecordRelation < Array
     # A fake Array for fix ActiveRecord 5.0.1 records_for method changed bug

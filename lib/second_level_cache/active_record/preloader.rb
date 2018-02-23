@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SecondLevelCache
   module ActiveRecord
     module Associations
@@ -12,7 +14,7 @@ module SecondLevelCache
             # NOTICE
             # Rails.cache.read_multi return hash that has keys only hitted.
             # eg. Rails.cache.read_multi(1,2,3) => {2 => hit_value, 3 => hit_value}
-            hitted_ids = records_from_cache.map { |key, _| key.split('/')[2] }
+            hitted_ids = records_from_cache.map { |key, _| key.split("/")[2] }
             missed_ids = ids.map(&:to_s) - hitted_ids
 
             ::SecondLevelCache.logger.info "missed ids -> #{missed_ids.join(',')} | hitted ids -> #{hitted_ids.join(',')}"

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SecondLevelCache
   module ActiveRecord
     module FetchByUniqKey
@@ -7,7 +9,7 @@ module SecondLevelCache
         if obj_id
           begin
             return find(obj_id)
-          rescue
+          rescue StandardError
             return nil
           end
         end
@@ -41,10 +43,10 @@ module SecondLevelCache
       def cache_uniq_key(where_values)
         keys = where_values.collect do |k, v|
           v = Digest::MD5.hexdigest(v) if v && v.size >= 32
-          [k, v].join('_')
+          [k, v].join("_")
         end
 
-        ext_key = keys.join(',')
+        ext_key = keys.join(",")
         "uniq_key_#{name}_#{ext_key}"
       end
     end

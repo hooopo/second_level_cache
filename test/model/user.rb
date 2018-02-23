@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ActiveRecord::Base.connection.create_table(:users, force: true) do |t|
   t.text    :options
   t.text    :json_options
@@ -28,11 +30,11 @@ class User < ActiveRecord::Base
   second_level_cache(version: CACHE_VERSION, expires_in: 3.days)
 
   serialize :options, Array
-  serialize :json_options, JSON if ::ActiveRecord::VERSION::STRING >= '4.1.0'
+  serialize :json_options, JSON if ::ActiveRecord::VERSION::STRING >= "4.1.0"
   store :extras, accessors: %i[tagline gender]
 
   has_one  :account
-  has_one  :forked_user_link, foreign_key: 'forked_to_user_id'
+  has_one  :forked_user_link, foreign_key: "forked_to_user_id"
   has_one  :forked_from_user, through: :forked_user_link
   has_many :namespaces
   has_one  :namespace, -> { where(kind: nil) }
@@ -49,6 +51,6 @@ class Namespace < ActiveRecord::Base
 end
 
 class ForkedUserLink < ActiveRecord::Base
-  belongs_to :forked_from_user, class_name: 'User'
-  belongs_to :forked_to_user, class_name: 'User'
+  belongs_to :forked_from_user, class_name: "User"
+  belongs_to :forked_to_user, class_name: "User"
 end

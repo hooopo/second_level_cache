@@ -1,4 +1,6 @@
-require 'active_support/test_case'
+# frozen_string_literal: true
+
+require "active_support/test_case"
 
 module ActiveRecordTestCaseHelper
   def teardown
@@ -48,7 +50,7 @@ module ActiveRecordTestCaseHelper
     x = yield
     the_log = ignore_none ? SQLCounter.log_all : SQLCounter.log
     if num == :any
-      assert_operator the_log.size, :>=, 1, '1 or more queries expected, but none were executed.'
+      assert_operator the_log.size, :>=, 1, "1 or more queries expected, but none were executed."
     else
       mesg = "#{the_log.size} instead of #{num} queries were executed.#{the_log.empty? ? '' : "\nQueries:\n#{the_log.join("\n")}"}"
       assert_equal num, the_log.size, mesg
@@ -110,13 +112,13 @@ module ActiveRecordTestCaseHelper
 
       # FIXME: this seems bad. we should probably have a better way to indicate
       # the query was cached
-      return if 'CACHE' == values[:name]
+      return if values[:name] == "CACHE"
 
       self.class.log_all << sql
-      self.class.log << sql unless ignore =~ sql
+      self.class.log << sql unless ignore.match?(sql)
     end
 
-    ActiveSupport::Notifications.subscribe('sql.active_record', SQLCounter.new)
+    ActiveSupport::Notifications.subscribe("sql.active_record", SQLCounter.new)
   end
 end
 
