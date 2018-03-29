@@ -5,6 +5,7 @@ require "test_helper"
 class FinderMethodsTest < ActiveSupport::TestCase
   def setup
     @user = User.create name: "csdn", email: "test@csdn.com"
+    @book = @user.books.create
   end
 
   def test_should_find_without_cache
@@ -17,6 +18,13 @@ class FinderMethodsTest < ActiveSupport::TestCase
     assert_equal @user, User.find(@user.id.to_s)
     assert_no_queries do
       assert_equal @user, User.find(@user.id.to_s)
+    end
+  end
+
+  def test_should_find_with_has_many
+    @book.write_second_level_cache
+    assert_no_queries do
+      assert_equal @book, @user.books.find(@book.id)
     end
   end
 

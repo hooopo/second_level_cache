@@ -20,7 +20,7 @@ ActiveSupport.on_load(:active_record) do
 
   ActiveRecord::Associations::BelongsToAssociation.send(:prepend, SecondLevelCache::ActiveRecord::Associations::BelongsToAssociation)
   ActiveRecord::Associations::HasOneAssociation.send(:prepend, SecondLevelCache::ActiveRecord::Associations::HasOneAssociation)
-
+  ActiveRecord::Relation.send(:prepend, SecondLevelCache::ActiveRecord::FinderMethods)
   # Rails 5.2 has removed ActiveRecord::Associations::Preloader::BelongsTo
   # https://github.com/rails/rails/pull/31079
   ActiveRecord::Associations::Preloader::Association.send(:prepend, SecondLevelCache::ActiveRecord::Associations::Preloader::BelongsTo)
