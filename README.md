@@ -170,12 +170,14 @@ Answer Load (0.2ms)  SELECT `answers`.* FROM `answers` ORDER BY id DESC LIMIT 10
 
 [Details for read_multi feature](http://hooopo.writings.io/articles/a9cae5e0).
 
-## Contributors
+## Original design by:
 
 * [chloerei](https://github.com/chloerei)
-* [reyesyang](https://github.com/reyesyang)
 * [hooopo](https://github.com/hooopo)
-* [sishen](https://github.com/sishen)
+
+## Contributors
+
+[Contributor List](https://github.com/hooopo/second_level_cache/graphs/contributors)
 
 ## License
 
