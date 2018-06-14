@@ -1,3 +1,18 @@
+2.4.3
+-------
+
+- Fix caching for STI model. (#78)
+
+2.4.2
+-------
+
+- Fix for work with Paranoia gem. (#77)
+
+2.4.1
+-------
+
+- Fix relation finder. (#75)
+
 2.4.0
 ---------
 
