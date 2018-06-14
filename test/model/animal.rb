@@ -11,3 +11,6 @@ end
 class Dog < Animal
   second_level_cache
 end
+
+class Cat < Animal
+end

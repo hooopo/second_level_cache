@@ -32,4 +32,11 @@ class SingleTableInheritanceTest < ActiveSupport::TestCase
       end
     end
   end
+
+  def test_superclass_find__caches_all_subclasses
+    cat = Cat.create
+    assert_no_queries do
+      assert_equal cat, Animal.find(cat.id)
+    end
+  end
 end
