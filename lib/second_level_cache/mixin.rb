@@ -62,18 +62,22 @@ module SecondLevelCache
     end
 
     def second_level_cache_key
-      self.class.second_level_cache_key(id)
+      klass.second_level_cache_key(id)
+    end
+
+    def klass
+      self.class.base_class
     end
 
     def expire_second_level_cache
-      return unless self.class.second_level_cache_enabled?
+      return unless klass.second_level_cache_enabled?
       SecondLevelCache.cache_store.delete(second_level_cache_key)
     end
 
     def write_second_level_cache
-      return unless self.class.second_level_cache_enabled?
+      return unless klass.second_level_cache_enabled?
       marshal = RecordMarshal.dump(self)
-      expires_in = self.class.second_level_cache_options[:expires_in]
+      expires_in = klass.second_level_cache_options[:expires_in]
       expire_changed_association_uniq_keys
       SecondLevelCache.cache_store.write(second_level_cache_key, marshal, expires_in: expires_in)
     end
@@ -81,10 +85,10 @@ module SecondLevelCache
     alias update_second_level_cache write_second_level_cache
 
     def expire_changed_association_uniq_keys
-      reflections = self.class.reflections.select { |_, reflection| reflection.belongs_to? }
+      reflections = klass.reflections.select { |_, reflection| reflection.belongs_to? }
       changed_keys = reflections.map { |_, reflection| reflection.foreign_key } & previous_changes.keys
       changed_keys.each do |key|
-        SecondLevelCache.cache_store.delete(self.class.send(:cache_uniq_key, key => previous_changes[key][0]))
+        SecondLevelCache.cache_store.delete(klass.send(:cache_uniq_key, key => previous_changes[key][0]))
       end
     end
   end
