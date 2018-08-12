@@ -56,7 +56,7 @@ module SecondLevelCache
         end
 
         record = super(limit)
-        record&.write_second_level_cache
+        record&.write_second_level_cache if select_all_column?
         record
       end
 

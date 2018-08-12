@@ -72,4 +72,10 @@ class FinderMethodsTest < ActiveSupport::TestCase
       assert_equal @user, User.unscoped.where(id: @user.id).last
     end
   end
+
+  def test_should_not_write_cache_for_first
+    @user = User.select("id").first
+    @user = User.find(@user.id)
+    assert_equal "csdn", @user.name
+  end
 end
