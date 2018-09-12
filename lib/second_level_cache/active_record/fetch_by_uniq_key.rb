@@ -10,7 +10,7 @@ module SecondLevelCache
           begin
             return find(obj_id)
           rescue StandardError
-            return nil
+            SecondLevelCache.cache_store.delete(cache_key)
           end
         end
 
