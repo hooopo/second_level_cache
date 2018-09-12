@@ -53,11 +53,11 @@ class FetchByUinqKeyTest < ActiveSupport::TestCase
   end
 
   def test_should_hit_db_using_fetch_by_uniq_key_after_update_uniq_key
-    post_1 = Post.create slug: "foobar111", topic_id: 2, user_id: 1, iid: 1
+    post_old = Post.create slug: "foobar111", topic_id: 2, user_id: 1, iid: 1
     assert_queries do
       Post.fetch_by_uniq_keys(user_id: 1, iid: 1)
     end
-    post_1.update_attributes!(iid: 11)
+    post_old.update_attributes!(iid: 11)
     assert_nil Post.fetch_by_uniq_keys(user_id: 1, iid: 1)
     post = Post.create slug: "foobar222", topic_id: 3, user_id: 1, iid: 1
     post_cache = Post.fetch_by_uniq_keys(user_id: 1, iid: 1)
@@ -68,14 +68,14 @@ class FetchByUinqKeyTest < ActiveSupport::TestCase
   end
 
   def test_should_hit_db_using_fetch_by_uniq_key_after_rebuild_record
-    post_1 = Post.create slug: "foobar333", topic_id: 5, user_id: 2, iid: 2
+    post_old = Post.create slug: "foobar333", topic_id: 5, user_id: 2, iid: 2
     assert_queries do
       Post.fetch_by_uniq_keys(user_id: 2, iid: 2)
     end
-    post_1.destroy
+    post_old.destroy
     assert_nil Post.fetch_by_uniq_keys(user_id: 2, iid: 2)
-    post_2 = Post.create slug: "foobar444", topic_id: 5, user_id: 2, iid: 2
+    post_new = Post.create slug: "foobar444", topic_id: 5, user_id: 2, iid: 2
     post_cache = Post.fetch_by_uniq_keys(user_id: 2, iid: 2)
-    assert_equal post_2, post_cache
+    assert_equal post_new, post_cache
   end
 end

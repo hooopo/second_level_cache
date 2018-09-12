@@ -87,18 +87,18 @@ module SecondLevelCache
     def expire_changed_association_uniq_keys
       uniq_keys = klass.send(:read_uniq_keys)
 
-      changed_keys = uniq_keys.select do |keys|
-        (previous_changes.keys | keys).size > 0
+      changed_keys = uniq_keys.reject do |keys|
+        (previous_changes.keys | keys).empty?
       end
 
       changed_keys.each do |keys|
         where_values = {}
         keys.each do |key|
-          where_values[key] = if previous_changes.has_key?(key)
-            previous_changes[key][0]
-          else
-            read_attribute(key)
-          end
+          where_values[key] = if previous_changes.key?(key)
+                                previous_changes[key][0]
+                              else
+                                read_attribute(key)
+                              end
         end
         SecondLevelCache.cache_store.delete(klass.send(:cache_uniq_key, where_values))
       end
