@@ -10,7 +10,7 @@ module SecondLevelCache
           begin
             return find(obj_id)
           rescue StandardError
-            return nil
+            SecondLevelCache.cache_store.delete(cache_key)
           end
         end
 
@@ -19,6 +19,7 @@ module SecondLevelCache
 
         record.tap do |r|
           SecondLevelCache.cache_store.write(cache_key, r.id)
+          write_uniq_keys(where_values.keys)
         end
       end
 
@@ -48,6 +49,22 @@ module SecondLevelCache
 
         ext_key = keys.join(",")
         "uniq_key_#{name}_#{ext_key}"
+      end
+
+      def key_of_uniq_keys
+        "key_of_uniq_keys_#{name}"
+      end
+
+      def write_uniq_keys(uniq_keys)
+        uniq_keys_store = read_uniq_keys
+        unless uniq_keys_store.include?(uniq_keys)
+          uniq_keys_store << uniq_keys
+          SecondLevelCache.cache_store.write(key_of_uniq_keys, uniq_keys_store)
+        end
+      end
+
+      def read_uniq_keys
+        SecondLevelCache.cache_store.read(key_of_uniq_keys) || []
       end
     end
   end
