@@ -9,6 +9,8 @@ module SecondLevelCache
         if obj_id
           begin
             return find(obj_id)
+          rescue ::ActiveRecord::RecordNotFound
+            SecondLevelCache.cache_store.delete(cache_key)
           rescue StandardError
             return nil
           end
