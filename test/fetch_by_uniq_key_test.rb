@@ -47,6 +47,14 @@ class FetchByUinqKeyTest < ActiveSupport::TestCase
     assert_nil Post.fetch_by_uniq_keys(topic_id: 3, slug: "foobar")
   end
 
+  def test_should_work_when_delete_and_create_the_same_value
+    assert_not_nil Post.fetch_by_uniq_keys(topic_id: 2, slug: "foobar")
+    @post.destroy
+    assert_nil Post.fetch_by_uniq_keys(topic_id: 2, slug: "foobar")
+    @post = Post.create(topic_id: 2, slug: "foobar")
+    assert_not_nil Post.fetch_by_uniq_keys(topic_id: 2, slug: "foobar")
+  end
+
   def test_should_work_with_fetch_by_uniq_key
     user = User.fetch_by_uniq_key(@user.name, :name)
     assert_equal user, @user
