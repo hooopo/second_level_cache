@@ -42,6 +42,11 @@ class FetchByUinqKeyTest < ActiveSupport::TestCase
     end
   end
 
+  def test_should_return_nil_when_record_not_found
+    assert_not_nil Post.fetch_by_uniq_keys(topic_id: 2, slug: "foobar")
+    assert_nil Post.fetch_by_uniq_keys(topic_id: 3, slug: "foobar")
+  end
+
   def test_should_work_with_fetch_by_uniq_key
     user = User.fetch_by_uniq_key(@user.name, :name)
     assert_equal user, @user
