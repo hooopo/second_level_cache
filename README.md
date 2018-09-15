@@ -1,7 +1,6 @@
 # SecondLevelCache
 
 [![Gem Version](https://badge.fury.io/rb/second_level_cache.svg)](http://badge.fury.io/rb/second_level_cache)
-[![Dependency Status](https://gemnasium.com/hooopo/second_level_cache.svg)](https://gemnasium.com/hooopo/second_level_cache)
 [![Build Status](https://travis-ci.org/hooopo/second_level_cache.svg?branch=master)](https://travis-ci.org/hooopo/second_level_cache)
 [![Code Climate](https://codeclimate.com/github/hooopo/second_level_cache.svg)](https://codeclimate.com/github/hooopo/second_level_cache)
 
