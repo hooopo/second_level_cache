@@ -7,7 +7,7 @@ module SecondLevelCache
     module ClassMethods
       attr_reader :second_level_cache_options
 
-      delegate :logger, :cache_store, :cache_key_prefix, to: SecondLevelCache
+      delegate :logger, :cache_store, :cache_key_prefix, :enabled?, to: SecondLevelCache
 
       def second_level_cache(options = {})
         @second_level_cache_enabled = true
@@ -20,7 +20,7 @@ module SecondLevelCache
 
       def second_level_cache_enabled?
         if defined? @second_level_cache_enabled
-          @second_level_cache_enabled == true
+          enabled? && @second_level_cache_enabled == true
         else
           false
         end

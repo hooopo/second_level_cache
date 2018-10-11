@@ -3,7 +3,7 @@
 module SecondLevelCache
   class Config
     class << self
-      attr_writer :cache_store, :logger, :cache_key_prefix
+      attr_writer :cache_store, :logger, :cache_key_prefix, :enabled
 
       def cache_store
         @cache_store ||= Rails.cache if defined?(Rails)
@@ -17,6 +17,11 @@ module SecondLevelCache
 
       def cache_key_prefix
         @cache_key_prefix ||= "slc"
+      end
+
+      def enabled?
+        @enabled = true unless defined?(@enabled)
+        @enabled
       end
     end
   end

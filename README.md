@@ -131,6 +131,12 @@ In production env, we recommend to use [Dalli](https://github.com/mperham/dalli)
 config.cache_store = [:dalli_store, APP_CONFIG["memcached_host"], { namespace: "ns", compress: true }]
 ```
 
+SecondLevelCache is enabled by default, but you can disable it in some condition.
+
+```ruby
+SecondLevelCache.configure.enabled = false if Rails.env.development?
+```
+
 ## Tips:
 
 * When you want to clear only second level cache apart from other cache for example fragment cache in cache store,
