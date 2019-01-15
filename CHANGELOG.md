@@ -1,3 +1,6 @@
+2.1.15
+* Replace Fixnum class check for Integer class
+
 2.1.14
 * support has_one with scope
 

@@ -13,7 +13,7 @@ module SecondLevelCache
 
       module ClassMethods
         def find_with_cache(*ids)
-          return all.find(ids.first) if ids.size == 1 && ids.first.is_a?(Fixnum)
+          return all.find(ids.first) if ids.size == 1 && ids.first.is_a?(Integer)
           find_without_cache(*ids)
         end
       end
