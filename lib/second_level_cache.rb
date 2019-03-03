@@ -11,6 +11,24 @@ module SecondLevelCache
     block_given? ? yield(Config) : Config
   end
 
+  def self.without_second_level_cache
+    old_cache_enabled = SecondLevelCache.cache_enabled?
+    SecondLevelCache.cache_enabled = false
+
+    yield
+  ensure
+    SecondLevelCache.cache_enabled = old_cache_enabled
+  end
+
+  def self.cache_enabled?
+    cache_enabled = Thread.current[:slc_cache_enabled]
+    cache_enabled.nil? ? true : cache_enabled
+  end
+
+  def self.cache_enabled=(cache_enabled)
+    Thread.current[:slc_cache_enabled] = cache_enabled
+  end
+
   class << self
     delegate :logger, :cache_store, :cache_key_prefix, to: Config
   end
