@@ -33,7 +33,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'activesupport', ['>= 5.2.0.rc', '< 6']
   gem.add_runtime_dependency 'activerecord', ['>= 5.2.0.rc', '< 6']
 
-  gem.add_development_dependency 'sqlite3'
+  gem.add_development_dependency 'sqlite3', '< 1.4'
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'pry'
   gem.add_development_dependency 'database_cleaner'

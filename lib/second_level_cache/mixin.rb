@@ -20,19 +20,14 @@ module SecondLevelCache
 
       def second_level_cache_enabled?
         if defined? @second_level_cache_enabled
-          @second_level_cache_enabled == true
+          @second_level_cache_enabled == true && SecondLevelCache.cache_enabled?
         else
           false
         end
       end
 
-      def without_second_level_cache
-        old = @second_level_cache_enabled
-        @second_level_cache_enabled = false
-
-        yield if block_given?
-      ensure
-        @second_level_cache_enabled = old
+      def without_second_level_cache(&blk)
+        SecondLevelCache.without_second_level_cache(&blk) if blk
       end
 
       # Get MD5 digest of this Model schema
