@@ -3,4 +3,5 @@ source 'https://rubygems.org'
 gemspec path: '..'
 gem "paranoia", "~> 2.2"
 gem "pry"
-gem 'rails', "~> 5.2.0.rc"
+gem 'rails', "~> 5.2.0"
+gem 'sqlite3', '< 1.4'
