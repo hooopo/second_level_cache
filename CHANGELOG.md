@@ -1,3 +1,9 @@
+2.5.0
+-------
+
+- Rails 6 support.
+- Fix cache expire for soft delete.
+
 2.4.3
 -------
 
