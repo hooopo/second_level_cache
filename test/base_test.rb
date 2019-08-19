@@ -20,7 +20,7 @@ class BaseTest < ActiveSupport::TestCase
   def test_should_expire_cache_when_destroy
     @user = User.create name: "csdn", email: "test@csdn.com"
     @user.destroy
-    assert_nil User.find_by_id(@user.id)
+    assert_nil User.find_by(id: @user.id)
     assert_nil SecondLevelCache.cache_store.read(@user.second_level_cache_key)
     assert_nil User.read_second_level_cache(@user.id)
   end

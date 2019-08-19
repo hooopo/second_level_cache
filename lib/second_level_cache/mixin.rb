@@ -72,7 +72,7 @@ module SecondLevelCache
     def write_second_level_cache
       return unless klass.second_level_cache_enabled?
       # Avoid rewrite cache again, when record has been soft deleted
-      return if self.respond_to?(:deleted?) && self.send(:deleted?)
+      return if respond_to?(:deleted?) && send(:deleted?)
 
       marshal = RecordMarshal.dump(self)
       expires_in = klass.second_level_cache_options[:expires_in]
