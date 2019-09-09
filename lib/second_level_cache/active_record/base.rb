@@ -6,7 +6,7 @@ module SecondLevelCache
       def self.prepended(base)
         base.after_commit :update_second_level_cache, on: :update
         base.after_commit :write_second_level_cache, on: :create
-        if defined?(::Paranoia)
+        if defined?(::Paranoia) || column_names.include?("deleted_at")
           base.after_destroy :expire_second_level_cache
         else
           base.after_commit :expire_second_level_cache, on: :destroy
