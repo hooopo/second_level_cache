@@ -1,3 +1,13 @@
+2.5.2
+-------
+
+- Fix methods argument as keyword warning in Ruby 2.7. (#94)
+
+2.5.1
+-------
+
+- Fix cache expire issue for SoftDelete cases.
+
 2.5.0
 -------
 
