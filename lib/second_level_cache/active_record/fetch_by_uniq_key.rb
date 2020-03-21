@@ -6,19 +6,16 @@ module SecondLevelCache
       def fetch_by_uniq_keys(where_values)
         cache_key = cache_uniq_key(where_values)
         obj_id = SecondLevelCache.cache_store.read(cache_key)
-        if obj_id
-          begin
-            return find(obj_id)
-          rescue StandardError
-            return nil
-          end
-        end
 
+        record = find(obj_id) rescue nil if obj_id
+        return record if record
         record = where(where_values).first
-        return nil unless record
-
-        record.tap do |r|
-          SecondLevelCache.cache_store.write(cache_key, r.id)
+        if record
+          SecondLevelCache.cache_store.write(cache_key, record.id)
+          return record
+        else
+          SecondLevelCache.cache_store.delete(cache_key)
+          return nil
         end
       end
 

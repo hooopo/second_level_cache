@@ -51,4 +51,19 @@ class FetchByUinqKeyTest < ActiveSupport::TestCase
     user = User.fetch_by_uniq_key(@user.name, :name)
     assert_equal user, @user
   end
+
+  def test_should_return_correct_when_destroy_old_record_and_create_same_new_record
+    savepoint do
+      uniq_key = { email: "#{Time.now.to_i}@foobar.com" }
+      old_user = User.create(uniq_key)
+      new_user = old_user.deep_dup
+      assert_equal old_user, User.fetch_by_uniq_keys(uniq_key)
+      old_user.destroy
+      # FIXME: sql queries count should be one
+      assert_queries(2) { assert_nil User.fetch_by_uniq_keys(uniq_key) }
+      assert_queries(1) { assert_nil User.fetch_by_uniq_keys(uniq_key) }
+      new_user.save
+      assert_equal new_user, User.fetch_by_uniq_keys(uniq_key)
+    end
+  end
 end
