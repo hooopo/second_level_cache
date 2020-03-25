@@ -25,6 +25,7 @@ require "model/order"
 require "model/order_item"
 require "model/account"
 require "model/animal"
+require "model/contribution"
 
 DatabaseCleaner[:active_record].strategy = :truncation
 

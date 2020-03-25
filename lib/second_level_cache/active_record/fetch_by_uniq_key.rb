@@ -8,7 +8,7 @@ module SecondLevelCache
         obj_id = SecondLevelCache.cache_store.read(cache_key)
 
         record = find(obj_id) rescue nil if obj_id
-        return record if record
+        return record if compare_record_attributes_with_where_values(record, where_values)
         record = where(where_values).first
         if record
           SecondLevelCache.cache_store.write(cache_key, record.id)
@@ -39,12 +39,29 @@ module SecondLevelCache
 
       def cache_uniq_key(where_values)
         keys = where_values.collect do |k, v|
-          v = Digest::MD5.hexdigest(v) if v && v.size >= 32
+          v = Digest::MD5.hexdigest(v) if v.respond_to?(:size) && v.size >= 32
           [k, v].join("_")
         end
 
         ext_key = keys.join(",")
         "uniq_key_#{name}_#{ext_key}"
+      end
+
+      def compare_record_attributes_with_where_values(record, where_values)
+        return false unless record
+        where_values.all? do |k, v|
+          attribute_value = record.read_attribute(k)
+          case attribute_value
+          when String
+            attribute_value == v.to_s
+          when Numeric
+            attribute_value == v.to_f
+          when Date
+            attribute_value == v.to_date
+          else # Maybe NilClass/?
+            attribute_value == v
+          end
+        end
       end
     end
   end
