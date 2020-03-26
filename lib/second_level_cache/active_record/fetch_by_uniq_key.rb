@@ -7,7 +7,13 @@ module SecondLevelCache
         cache_key = cache_uniq_key(where_values)
         obj_id = SecondLevelCache.cache_store.read(cache_key)
 
-        record = find(obj_id) rescue nil if obj_id
+        if obj_id
+          record = begin
+                     find(obj_id)
+                   rescue StandardError
+                     nil
+                   end
+        end
         return record if compare_record_attributes_with_where_values(record, where_values)
         record = where(where_values).first
         if record
@@ -51,16 +57,16 @@ module SecondLevelCache
         return false unless record
         where_values.all? do |k, v|
           attribute_value = record.read_attribute(k)
-          case attribute_value
-          when String
-            attribute_value == v.to_s
-          when Numeric
-            attribute_value == v.to_f
-          when Date
-            attribute_value == v.to_date
-          else # Maybe NilClass/?
-            attribute_value == v
-          end
+          attribute_value == case attribute_value
+                             when String
+                               v.to_s
+                             when Numeric
+                               v.to_f
+                             when Date
+                               v.to_date
+                             else # Maybe NilClass/?
+                               v
+                             end
         end
       end
     end

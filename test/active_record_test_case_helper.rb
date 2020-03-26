@@ -76,13 +76,13 @@ module ActiveRecordTestCaseHelper
     model.column_names.include?(column_name.to_s)
   end
 
-  def savepoint(&block)
+  def savepoint
     if ActiveRecord::Base.connection.supports_savepoints?
       ActiveRecord::Base.connection.begin_transaction(joinable: false)
-      block.call
+      yield
       ActiveRecord::Base.connection.rollback_transaction
     else
-      block.call
+      yield
     end
   end
 
