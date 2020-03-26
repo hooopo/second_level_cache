@@ -1,3 +1,8 @@
+2.5.3
+-------
+
+- Fix `fetch_by_uniq_keys` method that cache incorrect when A record modified uniq key and B reocrd used old uniq key of A record (#96)
+
 2.5.2
 -------
 
