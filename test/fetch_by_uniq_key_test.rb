@@ -14,6 +14,18 @@ class FetchByUinqKeyTest < ActiveSupport::TestCase
     assert_equal User.send(:cache_uniq_key, foo: 1, bar: nil), "uniq_key_User_foo_1,bar_"
     long_val = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     assert_equal User.send(:cache_uniq_key, foo: 1, bar: long_val), "uniq_key_User_foo_1,bar_#{Digest::MD5.hexdigest(long_val)}"
+    assert Contribution.send(:cache_uniq_key, user_id: 1, date: Time.current.to_date), "uniq_key_Contribution_user_id_1,date_#{Time.current.to_date}"
+  end
+
+  def test_compare_record_attributes_with_where_values
+    book = Book.new(title: "foobar")
+    assert Book.send(:compare_record_attributes_with_where_values, book, title: :foobar)
+    book.discount_percentage = 60.00
+    assert Book.send(:compare_record_attributes_with_where_values, book, discount_percentage: "60")
+    book.publish_date = Time.current.to_date
+    assert Book.send(:compare_record_attributes_with_where_values, book, publish_date: Time.current.to_date.to_s)
+    book.title = nil
+    assert Book.send(:compare_record_attributes_with_where_values, book, title: nil)
   end
 
   def test_should_query_from_db_using_primary_key
@@ -59,10 +71,22 @@ class FetchByUinqKeyTest < ActiveSupport::TestCase
       new_user = old_user.deep_dup
       assert_equal old_user, User.fetch_by_uniq_keys(uniq_key)
       old_user.destroy
-      # FIXME: sql queries count should be one
+
+      # Dirty id cache should be removed
       assert_queries(2) { assert_nil User.fetch_by_uniq_keys(uniq_key) }
       assert_queries(1) { assert_nil User.fetch_by_uniq_keys(uniq_key) }
+
       new_user.save
+      assert_equal new_user, User.fetch_by_uniq_keys(uniq_key)
+    end
+  end
+
+  def test_should_return_correct_when_old_record_modify_uniq_key_and_new_record_use_same_uniq_key
+    savepoint do
+      uniq_key = { email: @user.email }
+      assert_equal @user, User.fetch_by_uniq_keys(uniq_key)
+      @user.update_attribute(:email, "#{Time.now.to_i}@foobar.com")
+      new_user = User.create(uniq_key)
       assert_equal new_user, User.fetch_by_uniq_keys(uniq_key)
     end
   end
