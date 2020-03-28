@@ -20,10 +20,16 @@ class HasOneAssociationTest < ActiveSupport::TestCase
     clean_user = user.reload
     assert_equal User, clean_user.forked_from_user.class
     assert_equal @user.id, user.forked_from_user.id
-    # clean_user = user.reload
-    # assert_no_queries do
-    #   clean_user.forked_from_user
-    # end
+    # If ForkedUserLink second_level_cache_enabled is true
+    user.reload
+    assert_no_queries do
+      user.forked_from_user
+    end
+    # IF ForkedUserLink second_level_cache_enabled is false
+    user.reload
+    ForkedUserLink.without_second_level_cache do
+      assert_queries(1) { user.forked_from_user }
+    end
   end
 
   def test_has_one_with_conditions
@@ -48,5 +54,11 @@ class HasOneAssociationTest < ActiveSupport::TestCase
     assert_equal @user.account, @account
     @account.update(user_id: @user.id + 1)
     assert_nil @user.reload.account
+  end
+
+  def test_should_one_query_when_has_one_target_is_null
+    Namespace.destroy_all
+    @user.reload
+    assert_queries(1) { @user.namespace }
   end
 end
