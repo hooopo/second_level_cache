@@ -55,19 +55,8 @@ module SecondLevelCache
 
       def compare_record_attributes_with_where_values(record, where_values)
         return false unless record
-        where_values.all? do |k, v|
-          attribute_value = record.read_attribute(k)
-          attribute_value == case attribute_value
-                             when String
-                               v.to_s
-                             when Numeric
-                               v.to_f
-                             when Date
-                               v.to_date
-                             else # Maybe NilClass/?
-                               v
-                             end
-        end
+        # https://api.rubyonrails.org/classes/ActiveRecord/ModelSchema/ClassMethods.html#method-i-type_for_attribute
+        where_values.all? { |k, v| record.read_attribute(k) == type_for_attribute(k).cast(v) }
       end
     end
   end

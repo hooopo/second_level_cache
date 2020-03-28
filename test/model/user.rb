@@ -53,6 +53,8 @@ class Namespace < ActiveRecord::Base
 end
 
 class ForkedUserLink < ActiveRecord::Base
+  second_level_cache version: 1, expires_in: 1.day
+
   belongs_to :forked_from_user, class_name: "User"
   belongs_to :forked_to_user, class_name: "User"
 end
