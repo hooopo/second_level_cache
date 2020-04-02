@@ -9,5 +9,5 @@ end
 
 class Account < ActiveRecord::Base
   second_level_cache expires_in: 3.days
-  belongs_to :user
+  belongs_to :user, foreign_key: :user_id
 end

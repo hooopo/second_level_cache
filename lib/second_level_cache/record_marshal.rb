@@ -15,7 +15,7 @@ module RecordMarshal
     end
 
     # load a cached record
-    def load(serialized)
+    def load(serialized, &block)
       return unless serialized
       # fix issues 19
       # fix 2.1.2 object.changed? ActiveRecord::SerializationTypeMismatch: Attribute was supposed to be a Hash, but was a String. -- "{:a=>\"t\", :b=>\"x\"}"
@@ -45,11 +45,11 @@ module RecordMarshal
         attributes[key] = value[attributes[key]] if attributes[key].is_a?(String)
       end
 
-      klass.instantiate(attributes)
+      klass.instantiate(attributes, &block)
     end
 
-    def load_multi(serializeds)
-      serializeds.map { |serialized| load(serialized) }
+    def load_multi(serializeds, &block)
+      serializeds.map { |serialized| load(serialized, &block) }
     end
   end
 end
