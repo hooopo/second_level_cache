@@ -4,6 +4,8 @@ module SecondLevelCache
   module ActiveRecord
     module Associations
       module Preloader
+        RAILS6 = ::ActiveRecord.version >= ::Gem::Version.new("6")
+
         def records_for(ids, &block)
           return super(ids, &block) unless klass.second_level_cache_enabled?
           if reflection.is_a?(::ActiveRecord::Reflection::BelongsToReflection)
@@ -17,7 +19,7 @@ module SecondLevelCache
           end
           records_from_cache = ::SecondLevelCache.cache_store.read_multi(*map_cache_keys)
 
-          record_marshals = if ::ActiveRecord.version >= ::Gem::Version.new("6")
+          record_marshals = if RAILS6
                               RecordMarshal.load_multi(records_from_cache.values) do |record|
                                 # This block is copy from:
                                 # https://github.com/rails/rails/blob/6-0-stable/activerecord/lib/active_record/associations/preloader/association.rb#L101

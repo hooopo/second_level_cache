@@ -83,8 +83,10 @@ module SecondLevelCache
     alias update_second_level_cache write_second_level_cache
 
     def expire_changed_association_uniq_keys
-      changed_keys = klass.reflect_on_all_associations(:belongs_to).map(&:foreign_key)
-                          .map(&:to_s) & previous_changes.keys
+      changed_keys = klass.reflect_on_all_associations(:belongs_to).map do |reflection|
+        reflection.foreign_key.to_s
+      end & previous_changes.keys
+
       changed_keys.each do |key|
         SecondLevelCache.cache_store.delete(klass.send(:cache_uniq_key, key => previous_changes[key][0]))
       end
