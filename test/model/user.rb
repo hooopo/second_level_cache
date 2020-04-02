@@ -35,7 +35,7 @@ class User < ActiveRecord::Base
   serialize :json_options, JSON if ::ActiveRecord::VERSION::STRING >= "4.1.0"
   store :extras, accessors: %i[tagline gender]
 
-  has_one  :account
+  has_one  :account, inverse_of: :user
   has_one  :forked_user_link, foreign_key: "forked_to_user_id"
   has_one  :forked_from_user, through: :forked_user_link
   has_many :namespaces
