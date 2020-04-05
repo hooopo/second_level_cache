@@ -17,17 +17,17 @@ class FetchByUinqKeyTest < ActiveSupport::TestCase
     assert Contribution.send(:cache_uniq_key, user_id: 1, date: Time.current.to_date), "uniq_key_Contribution_user_id_1,date_#{Time.current.to_date}"
   end
 
-  def test_compare_record_attributes_with_where_values
+  def test_record_attributes_equal_where_values
     book = Book.new
     assert_no_queries do
       book.title = "foobar"
-      assert Book.send(:compare_record_attributes_with_where_values, book, title: :foobar)
+      assert Book.send(:record_attributes_equal_where_values?, book, title: :foobar)
       book.discount_percentage = 60.00
-      assert Book.send(:compare_record_attributes_with_where_values, book, discount_percentage: "60")
+      assert Book.send(:record_attributes_equal_where_values?, book, discount_percentage: "60")
       book.publish_date = Time.current.to_date
-      assert Book.send(:compare_record_attributes_with_where_values, book, publish_date: Time.current.to_date.to_s)
+      assert Book.send(:record_attributes_equal_where_values?, book, publish_date: Time.current.to_date.to_s)
       book.title = nil
-      assert Book.send(:compare_record_attributes_with_where_values, book, title: nil)
+      assert Book.send(:record_attributes_equal_where_values?, book, title: nil)
     end
   end
 

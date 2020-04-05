@@ -76,20 +76,8 @@ module SecondLevelCache
 
       marshal = RecordMarshal.dump(self)
       expires_in = klass.second_level_cache_options[:expires_in]
-      expire_changed_association_uniq_keys
       SecondLevelCache.cache_store.write(second_level_cache_key, marshal, expires_in: expires_in)
     end
-
     alias update_second_level_cache write_second_level_cache
-
-    def expire_changed_association_uniq_keys
-      changed_keys = klass.reflect_on_all_associations(:belongs_to).map do |reflection|
-        reflection.foreign_key.to_s
-      end & previous_changes.keys
-
-      changed_keys.each do |key|
-        SecondLevelCache.cache_store.delete(klass.send(:cache_uniq_key, key => previous_changes[key][0]))
-      end
-    end
   end
 end

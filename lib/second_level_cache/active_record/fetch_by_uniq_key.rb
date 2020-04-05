@@ -14,7 +14,7 @@ module SecondLevelCache
                      nil
                    end
         end
-        return record if compare_record_attributes_with_where_values(record, where_values)
+        return record if record_attributes_equal_where_values?(record, where_values)
         record = where(where_values).first
         if record
           SecondLevelCache.cache_store.write(cache_key, record.id)
@@ -53,10 +53,9 @@ module SecondLevelCache
         "uniq_key_#{name}_#{ext_key}"
       end
 
-      def compare_record_attributes_with_where_values(record, where_values)
-        return false unless record
+      def record_attributes_equal_where_values?(record, where_values)
         # https://api.rubyonrails.org/classes/ActiveRecord/ModelSchema/ClassMethods.html#method-i-type_for_attribute
-        where_values.all? { |k, v| record.read_attribute(k) == type_for_attribute(k).cast(v) }
+        where_values.all? { |k, v| record&.read_attribute(k) == type_for_attribute(k).cast(v) }
       end
     end
   end
