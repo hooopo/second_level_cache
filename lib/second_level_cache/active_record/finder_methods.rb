@@ -23,11 +23,7 @@ module SecondLevelCache
         id = id.id if ActiveRecord::Base == id
         if cachable?
           record = @klass.read_second_level_cache(id)
-          if record
-            if where_values_hash.blank? || where_values_match_cache?(record)
-              return record
-            end
-          end
+          return record if record && where_values_match_cache?(record)
         end
 
         record = super(id)
@@ -50,7 +46,7 @@ module SecondLevelCache
       def first(limit = nil)
         return super(limit) if limit.to_i > 1
         # only have primary_key condition in where
-        if where_values_hash.length == 1 && where_values_hash.key?(primary_key)
+        if cachable? && where_values_hash.length == 1 && where_values_hash.key?(primary_key)
           record = @klass.read_second_level_cache(where_values_hash[primary_key])
           return record if record
         end
@@ -65,17 +61,26 @@ module SecondLevelCache
       # readonly_value - active_record/relation/query_methods.rb Rails 5.1 true/false
       def cachable?
         limit_one? &&
-          order_values.blank? &&
+          order_values_can_cache? &&
           includes_values.blank? &&
           preload_values.blank? &&
           readonly_value.blank? &&
           joins_values.blank? &&
           !@klass.locking_enabled? &&
-          where_clause_match_equality?
+          where_clause_predicates_all_equality?
       end
 
-      def where_clause_match_equality?
-        where_values_hash.all?
+      def order_values_can_cache?
+        return true if order_values.empty?
+        return false unless order_values.one?
+        return true if order_values.first == klass.primary_key
+        return false unless order_values.first.is_a?(::Arel::Nodes::Ordering)
+        return true if order_values.first.expr == klass.primary_key
+        order_values.first.expr.try(:name) == klass.primary_key
+      end
+
+      def where_clause_predicates_all_equality?
+        where_clause.send(:predicates).size == where_values_hash.size
       end
 
       def where_values_match_cache?(record)

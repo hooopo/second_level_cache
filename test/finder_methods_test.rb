@@ -59,6 +59,18 @@ class FinderMethodsTest < ActiveSupport::TestCase
     refute_equal @user.name, @from_db.name
   end
 
+  def test_should_fetch_from_db_if_where_use_string
+    @user.write_second_level_cache
+    assert_queries(:any) do
+      assert_equal nil, User.unscoped.where(id: @user.id).where("name = 'nonexistent'").first
+    end
+    assert_queries(:any) do
+      assert_raises ActiveRecord::RecordNotFound do
+        User.where("name = 'nonexistent'").find(@user.id)
+      end
+    end
+  end
+
   def test_where_and_first_should_with_cache
     @user.write_second_level_cache
     assert_no_queries do
