@@ -10,7 +10,7 @@ ActiveRecord::Base.connection.create_table(:users, force: true) do |t|
   t.integer :books_count, default: 0
   t.integer :images_count, default: 0
   t.datetime :deleted_at
-  t.timestamps null: false
+  t.timestamps null: false, precision: 6
 end
 
 ActiveRecord::Base.connection.create_table(:forked_user_links, force: true) do |t|
