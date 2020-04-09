@@ -25,7 +25,7 @@ class RecordMarshalTest < ActiveSupport::TestCase
     dumped = RecordMarshal.dump(@user)
     assert dumped.is_a?(Array)
     assert_equal "User", dumped[0]
-    assert_equal @user.attributes, dumped[1]
+    assert_equal dumped[1], ActiveRecord::Base.connection.select_all(User.where(id: @user.id)).first
   end
 
   def test_should_load_active_record_object
