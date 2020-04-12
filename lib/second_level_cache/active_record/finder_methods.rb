@@ -17,16 +17,13 @@ module SecondLevelCache
       #     Article.where("articles.user_id = 1").find(prams[:id])
       #     Article.where("user_id = 1 AND ...").find(params[:id])
       def find_one(id)
-        return super(id) unless second_level_cache_enabled?
-        return super(id) unless select_all_column?
+        return super unless cachable?
 
         id = id.id if ActiveRecord::Base == id
-        if cachable?
-          record = @klass.read_second_level_cache(id)
-          return record if record && where_values_match_cache?(record)
-        end
+        record = @klass.read_second_level_cache(id)
+        return record if record && where_values_match_cache?(record)
 
-        record = super(id)
+        record = super
         record.write_second_level_cache
         record
       end
@@ -44,15 +41,16 @@ module SecondLevelCache
       #     User.where(age: 18).first
       #
       def first(limit = nil)
-        return super(limit) if limit.to_i > 1
+        return super if limit.to_i > 1
+        return super unless cachable?
         # only have primary_key condition in where
-        if cachable? && where_values_hash.length == 1 && where_values_hash.key?(primary_key)
+        if where_values_hash.length == 1 && where_values_hash.key?(primary_key)
           record = @klass.read_second_level_cache(where_values_hash[primary_key])
           return record if record
         end
 
-        record = super(limit)
-        record&.write_second_level_cache if select_all_column?
+        record = super
+        record&.write_second_level_cache
         record
       end
 
@@ -60,10 +58,11 @@ module SecondLevelCache
 
       # readonly_value - active_record/relation/query_methods.rb Rails 5.1 true/false
       def cachable?
-        limit_one? &&
+        second_level_cache_enabled? &&
+          limit_one? &&
+          !eager_loading? &&
+          select_values.blank? &&
           order_values_can_cache? &&
-          includes_values.blank? &&
-          preload_values.blank? &&
           readonly_value.blank? &&
           joins_values.blank? &&
           !@klass.locking_enabled? &&
@@ -95,10 +94,6 @@ module SecondLevelCache
 
       def limit_one?
         limit_value.blank? || limit_value == 1
-      end
-
-      def select_all_column?
-        select_values.blank?
       end
     end
   end

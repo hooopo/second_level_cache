@@ -71,6 +71,15 @@ class FinderMethodsTest < ActiveSupport::TestCase
     end
   end
 
+  def test_should_fetch_from_db_when_use_eager_load
+    @user.write_second_level_cache
+    assert_queries(:any) do
+      assert_sql(/LEFT\sOUTER\sJOIN\s\"books\"/m) do
+        User.eager_load(:books).find(@user.id)
+      end
+    end
+  end
+
   def test_where_and_first_should_with_cache
     @user.write_second_level_cache
     assert_no_queries do
