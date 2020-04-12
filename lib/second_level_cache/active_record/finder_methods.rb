@@ -60,7 +60,10 @@ module SecondLevelCache
       def cachable?
         second_level_cache_enabled? &&
           limit_one? &&
-          !eager_loading? &&
+          # !eager_loading? &&
+          includes_values.blank? &&
+          preload_values.blank? &&
+          eager_load_values.blank? &&
           select_values.blank? &&
           order_values_can_cache? &&
           readonly_value.blank? &&
