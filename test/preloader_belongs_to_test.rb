@@ -46,4 +46,14 @@ class PreloaderBelongsToTest < ActiveSupport::TestCase
     accounts = Account.includes(:user)
     assert_equal accounts.first.object_id, accounts.first.user.account.object_id
   end
+
+  def test_preloader_from_db_when_exists_scope
+    user = User.create
+    book = user.books.create
+    image = book.images.create
+    book.toggle!(:normal)
+    assert_queries(:any) do
+      assert_nil Image.includes(:imagable).where(id: image.id).first.imagable
+    end
+  end
 end
