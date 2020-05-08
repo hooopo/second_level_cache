@@ -1,3 +1,11 @@
+2.6.0
+-------
+
+- Add has_one through cache support. (#98)
+- Fix string query, eager_load, includes/preload for fetch from db. ( #103, #102, #101)
+- Fix preloader if exists default scope. (#104)
+- Change cache hit log as `DEBUG` level. (#105)
+
 2.5.3
 -------
 
