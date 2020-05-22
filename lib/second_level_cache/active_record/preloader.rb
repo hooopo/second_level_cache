@@ -31,7 +31,7 @@ module SecondLevelCache
           # eg. Rails.cache.read_multi(1,2,3) => {2 => hit_value, 3 => hit_value}
           hitted_ids = record_marshals.map { |record| record.read_attribute(association_key_name).to_s }
           missed_ids = ids.map(&:to_s) - hitted_ids
-          ::SecondLevelCache.logger.debug("missed #{association_key_name} -> #{missed_ids.join(',')} | hitted #{association_key_name} -> #{hitted_ids.join(',')}")
+          ActiveSupport::Notifications.instrument("preload.second_level_cache", key: association_key_name, hit: hitted_ids, miss: missed_ids)
           return SecondLevelCache::RecordRelation.new(record_marshals) if missed_ids.empty?
 
           records_from_db = super(missed_ids, &block)

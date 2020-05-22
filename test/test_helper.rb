@@ -33,10 +33,6 @@ SecondLevelCache.configure do |config|
   config.cache_store = ActiveSupport::Cache::MemoryStore.new
 end
 
-SecondLevelCache.logger.level = Logger::INFO
-ActiveSupport::Cache::MemoryStore.logger = SecondLevelCache.logger
-ActiveRecord::Base.logger = SecondLevelCache.logger
-
 module ActiveSupport
   class TestCase
     setup do
