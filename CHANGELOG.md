@@ -1,3 +1,8 @@
+2.6.1
+-------
+
+- Improve proload debug log output, and deprecated logger method. (#106)
+
 2.6.0
 -------
 
