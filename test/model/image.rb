@@ -6,7 +6,7 @@ ActiveRecord::Base.connection.create_table(:images, force: true) do |t|
   t.integer :imagable_id
 end
 
-class Image < ActiveRecord::Base
+class Image < ApplicationRecord
   second_level_cache
 
   belongs_to :imagable, polymorphic: true, counter_cache: true

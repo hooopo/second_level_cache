@@ -6,7 +6,7 @@ ActiveRecord::Base.connection.create_table(:contributions, force: true) do |t|
   t.date    :date
 end
 
-class Contribution < ActiveRecord::Base
+class Contribution < ApplicationRecord
   second_level_cache
 
   validates_uniqueness_of :user_id, scope: :date, if: -> { user_id_changed? || date_changed? }

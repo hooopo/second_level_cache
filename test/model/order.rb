@@ -7,7 +7,7 @@ ActiveRecord::Base.connection.create_table(:orders, force: true, id: :uuid) do |
   t.timestamps null: false
 end
 
-class Order < ActiveRecord::Base
+class Order < ApplicationRecord
   second_level_cache
 
   has_many :order_items

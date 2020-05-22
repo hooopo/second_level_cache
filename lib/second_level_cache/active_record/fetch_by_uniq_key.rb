@@ -18,10 +18,10 @@ module SecondLevelCache
         record = where(where_values).first
         if record
           SecondLevelCache.cache_store.write(cache_key, record.id)
-          return record
+          record
         else
           SecondLevelCache.cache_store.delete(cache_key)
-          return nil
+          nil
         end
       end
 
@@ -42,21 +42,20 @@ module SecondLevelCache
       end
 
       private
+        def cache_uniq_key(where_values)
+          keys = where_values.collect do |k, v|
+            v = Digest::MD5.hexdigest(v) if v.respond_to?(:size) && v.size >= 32
+            [k, v].join("_")
+          end
 
-      def cache_uniq_key(where_values)
-        keys = where_values.collect do |k, v|
-          v = Digest::MD5.hexdigest(v) if v.respond_to?(:size) && v.size >= 32
-          [k, v].join("_")
+          ext_key = keys.join(",")
+          "uniq_key_#{name}_#{ext_key}"
         end
 
-        ext_key = keys.join(",")
-        "uniq_key_#{name}_#{ext_key}"
-      end
-
-      def record_attributes_equal_where_values?(record, where_values)
-        # https://api.rubyonrails.org/classes/ActiveRecord/ModelSchema/ClassMethods.html#method-i-type_for_attribute
-        where_values.all? { |k, v| record&.read_attribute(k) == type_for_attribute(k).cast(v) }
-      end
+        def record_attributes_equal_where_values?(record, where_values)
+          # https://api.rubyonrails.org/classes/ActiveRecord/ModelSchema/ClassMethods.html#method-i-type_for_attribute
+          where_values.all? { |k, v| record&.read_attribute(k) == type_for_attribute(k).cast(v) }
+        end
     end
   end
 end

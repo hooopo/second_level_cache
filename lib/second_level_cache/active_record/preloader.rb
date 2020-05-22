@@ -15,16 +15,16 @@ module SecondLevelCache
           records_from_cache = ::SecondLevelCache.cache_store.read_multi(*map_cache_keys)
 
           record_marshals = if RAILS6
-                              RecordMarshal.load_multi(records_from_cache.values) do |record|
-                                # This block is copy from:
-                                # https://github.com/rails/rails/blob/6-0-stable/activerecord/lib/active_record/associations/preloader/association.rb#L101
-                                owner = owners_by_key[convert_key(record[association_key_name])].first
-                                association = owner.association(reflection.name)
-                                association.set_inverse_instance(record)
-                              end
-                            else
-                              RecordMarshal.load_multi(records_from_cache.values, &block)
-                            end
+            RecordMarshal.load_multi(records_from_cache.values) do |record|
+              # This block is copy from:
+              # https://github.com/rails/rails/blob/6-0-stable/activerecord/lib/active_record/associations/preloader/association.rb#L101
+              owner = owners_by_key[convert_key(record[association_key_name])].first
+              association = owner.association(reflection.name)
+              association.set_inverse_instance(record)
+            end
+          else
+            RecordMarshal.load_multi(records_from_cache.values, &block)
+          end
 
           # NOTICE
           # Rails.cache.read_multi return hash that has keys only hitted.
@@ -41,10 +41,9 @@ module SecondLevelCache
         end
 
         private
-
-        def write_cache(record)
-          record.write_second_level_cache
-        end
+          def write_cache(record)
+            record.write_second_level_cache
+          end
       end
     end
   end

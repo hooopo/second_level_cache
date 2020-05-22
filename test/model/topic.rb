@@ -7,7 +7,7 @@ ActiveRecord::Base.connection.create_table(:topics, force: true) do |t|
   t.timestamps null: false
 end
 
-class Topic < ActiveRecord::Base
+class Topic < ApplicationRecord
   second_level_cache
 
   has_many :posts

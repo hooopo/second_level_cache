@@ -26,7 +26,7 @@ ActiveRecord::Base.connection.create_table(:namespaces, force: true) do |t|
   t.timestamps null: false
 end
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   CACHE_VERSION = 3
   second_level_cache(version: CACHE_VERSION, expires_in: 3.days)
   acts_as_paranoid
@@ -46,13 +46,13 @@ class User < ActiveRecord::Base
   enum status: %i[active archived]
 end
 
-class Namespace < ActiveRecord::Base
+class Namespace < ApplicationRecord
   second_level_cache version: 1, expires_in: 3.days
 
   belongs_to :user
 end
 
-class ForkedUserLink < ActiveRecord::Base
+class ForkedUserLink < ApplicationRecord
   second_level_cache version: 1, expires_in: 1.day
 
   belongs_to :forked_from_user, class_name: "User"

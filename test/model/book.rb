@@ -10,7 +10,7 @@ ActiveRecord::Base.connection.create_table(:books, force: true) do |t|
   t.boolean :normal, default: true, nil: false
 end
 
-class Book < ActiveRecord::Base
+class Book < ApplicationRecord
   second_level_cache
 
   default_scope -> { where(normal: true) }

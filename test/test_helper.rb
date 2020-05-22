@@ -16,6 +16,7 @@ require "second_level_cache"
 
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
 
+require "model/application_record"
 require "model/user"
 require "model/book"
 require "model/image"

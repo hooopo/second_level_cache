@@ -55,49 +55,48 @@ module SecondLevelCache
       end
 
       private
+        # readonly_value - active_record/relation/query_methods.rb Rails 5.1 true/false
+        def cachable?
+          second_level_cache_enabled? &&
+            limit_one? &&
+            # !eager_loading? &&
+            includes_values.blank? &&
+            preload_values.blank? &&
+            eager_load_values.blank? &&
+            select_values.blank? &&
+            order_values_can_cache? &&
+            readonly_value.blank? &&
+            joins_values.blank? &&
+            !@klass.locking_enabled? &&
+            where_clause_predicates_all_equality?
+        end
 
-      # readonly_value - active_record/relation/query_methods.rb Rails 5.1 true/false
-      def cachable?
-        second_level_cache_enabled? &&
-          limit_one? &&
-          # !eager_loading? &&
-          includes_values.blank? &&
-          preload_values.blank? &&
-          eager_load_values.blank? &&
-          select_values.blank? &&
-          order_values_can_cache? &&
-          readonly_value.blank? &&
-          joins_values.blank? &&
-          !@klass.locking_enabled? &&
-          where_clause_predicates_all_equality?
-      end
+        def order_values_can_cache?
+          return true if order_values.empty?
+          return false unless order_values.one?
+          return true if order_values.first == klass.primary_key
+          return false unless order_values.first.is_a?(::Arel::Nodes::Ordering)
+          return true if order_values.first.expr == klass.primary_key
+          order_values.first.expr.try(:name) == klass.primary_key
+        end
 
-      def order_values_can_cache?
-        return true if order_values.empty?
-        return false unless order_values.one?
-        return true if order_values.first == klass.primary_key
-        return false unless order_values.first.is_a?(::Arel::Nodes::Ordering)
-        return true if order_values.first.expr == klass.primary_key
-        order_values.first.expr.try(:name) == klass.primary_key
-      end
+        def where_clause_predicates_all_equality?
+          where_clause.send(:predicates).size == where_values_hash.size
+        end
 
-      def where_clause_predicates_all_equality?
-        where_clause.send(:predicates).size == where_values_hash.size
-      end
-
-      def where_values_match_cache?(record)
-        where_values_hash.all? do |key, value|
-          if value.is_a?(Array)
-            value.include?(record.read_attribute(key))
-          else
-            record.read_attribute(key) == value
+        def where_values_match_cache?(record)
+          where_values_hash.all? do |key, value|
+            if value.is_a?(Array)
+              value.include?(record.read_attribute(key))
+            else
+              record.read_attribute(key) == value
+            end
           end
         end
-      end
 
-      def limit_one?
-        limit_value.blank? || limit_value == 1
-      end
+        def limit_one?
+          limit_value.blank? || limit_value == 1
+        end
     end
   end
 end

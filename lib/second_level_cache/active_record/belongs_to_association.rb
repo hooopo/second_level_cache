@@ -21,10 +21,9 @@ module SecondLevelCache
         end
 
         private
-
-        def second_level_cache_key
-          owner[reflection.foreign_key]
-        end
+          def second_level_cache_key
+            owner[reflection.foreign_key]
+          end
       end
     end
   end
