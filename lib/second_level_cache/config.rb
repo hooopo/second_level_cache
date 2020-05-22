@@ -11,6 +11,7 @@ module SecondLevelCache
       end
 
       def logger
+        ActiveSupport::Deprecation.warn("logger is deprecated and will be removed from SecondLevelCache 2.7.0")
         @logger ||= Rails.logger if defined?(Rails)
         @logger ||= Logger.new(STDOUT)
       end
