@@ -8,6 +8,6 @@ ActiveRecord::Base.connection.create_table(:accounts, force: true) do |t|
 end
 
 class Account < ApplicationRecord
-  second_level_cache expires_in: 3.days
+  second_level_cache expires_in: 3.days, unique_indexes: [:user_id]
   belongs_to :user, foreign_key: :user_id, inverse_of: :account
 end

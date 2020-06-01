@@ -31,8 +31,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = SecondLevelCache::VERSION
 
-  gem.add_runtime_dependency "activerecord", [">= 5.2", "< 7"]
-  gem.add_runtime_dependency "activesupport", [">= 5.2", "< 7"]
+  gem.add_runtime_dependency "activerecord", [">= 6", "< 7"]
+  gem.add_runtime_dependency "activesupport", [">= 6", "< 7"]
 
   gem.add_development_dependency "database_cleaner"
   gem.add_development_dependency "rake"
