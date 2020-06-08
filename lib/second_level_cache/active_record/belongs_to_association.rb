@@ -6,6 +6,9 @@ module SecondLevelCache
       module BelongsToAssociation
         def find_target
           return super unless klass.second_level_cache_enabled?
+          return super if klass.default_scopes.present? || reflection.scope
+          return super if reflection.active_record_primary_key.to_s != klass.primary_key
+
           cache_record = klass.read_second_level_cache(second_level_cache_key)
           if cache_record
             return cache_record.tap { |record| set_inverse_instance(record) }
