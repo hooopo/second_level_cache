@@ -6,7 +6,7 @@ module SecondLevelCache
       module HasOneAssociation
         def find_target
           return super unless klass.second_level_cache_enabled?
-          return super if reflection.scope
+          return super if klass.default_scopes.present? || reflection.scope
           # TODO: implement cache with has_one scope
 
           through = reflection.options[:through]

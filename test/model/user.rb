@@ -9,7 +9,6 @@ ActiveRecord::Base.connection.create_table(:users, force: true) do |t|
   t.integer :status, default: 0
   t.integer :books_count, default: 0
   t.integer :images_count, default: 0
-  t.datetime :deleted_at
   t.timestamps null: false, precision: 6
 end
 
@@ -29,7 +28,6 @@ end
 class User < ApplicationRecord
   CACHE_VERSION = 3
   second_level_cache(version: CACHE_VERSION, expires_in: 3.days)
-  acts_as_paranoid
 
   serialize :options, Array
   serialize :json_options, JSON if ::ActiveRecord::VERSION::STRING >= "4.1.0"
