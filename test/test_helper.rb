@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# TODO: use Minitest::Spec replace
+
 require "bundler/setup"
 require "minitest/autorun"
 require "active_support/test_case"

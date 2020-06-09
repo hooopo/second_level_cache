@@ -6,23 +6,10 @@ module SecondLevelCache
       module HasOneAssociation
         def find_target
           return super unless klass.second_level_cache_enabled?
-          return super if reflection.scope
-          # TODO: implement cache with has_one scope
-
           through = reflection.options[:through]
-          record  = if through
-            return super unless klass.reflections[through.to_s].klass.second_level_cache_enabled?
-            begin
-              reflection.klass.find(owner.send(through).read_attribute(reflection.foreign_key))
-            rescue StandardError
-              nil
-            end
-          else
-            uniq_keys = { reflection.foreign_key => owner[reflection.active_record_primary_key] }
-            uniq_keys[reflection.type] = owner.class.base_class.name if reflection.options[:as]
-            klass.fetch_by_uniq_keys(uniq_keys)
-          end
-
+          return super unless through
+          return super unless klass.reflect_on_association(through).klass.second_level_cache_enabled?
+          record = klass.find_by({ klass.primary_key => owner.send(through).read_attribute(reflection.foreign_key) })
           return nil unless record
           record.tap { |r| set_inverse_instance(r) }
         end

@@ -4,58 +4,40 @@ module SecondLevelCache
   module ActiveRecord
     module FetchByUniqKey
       def fetch_by_uniq_keys(where_values)
-        cache_key = cache_uniq_key(where_values)
-        obj_id = SecondLevelCache.cache_store.read(cache_key)
-
-        if obj_id
-          record = begin
-                     find(obj_id)
-                   rescue StandardError
-                     nil
-                   end
-        end
-        return record if record_attributes_equal_where_values?(record, where_values)
-        record = where(where_values).first
-        if record
-          SecondLevelCache.cache_store.write(cache_key, record.id)
-          record
-        else
-          SecondLevelCache.cache_store.delete(cache_key)
-          nil
-        end
+        where_values_keys = where_values.keys.map(&:to_s).sort
+        second_level_cache_options[:unique_indexes] |= [where_values_keys]
+        fetch_by_warning(:fetch_by_uniq_keys, :find_by, where_values_keys)
+        find_by(where_values)
       end
 
       def fetch_by_uniq_keys!(where_values)
-        fetch_by_uniq_keys(where_values) || raise(::ActiveRecord::RecordNotFound)
+        where_values_keys = where_values.keys.map(&:to_s).sort
+        second_level_cache_options[:unique_indexes] |= [where_values_keys]
+        fetch_by_warning(:fetch_by_uniq_keys!, :find_by!, where_values_keys)
+        find_by!(where_values)
       end
 
       def fetch_by_uniq_key(value, uniq_key_name)
-        # puts "[Deprecated] will remove in the future,
-        # use fetch_by_uniq_keys method instead."
-        fetch_by_uniq_keys(uniq_key_name => value)
+        second_level_cache_options[:unique_indexes] |= [[uniq_key_name]]
+        fetch_by_warning(:fetch_by_uniq_key, :find_by, uniq_key_name)
+        find_by(uniq_key_name => value)
       end
 
       def fetch_by_uniq_key!(value, uniq_key_name)
-        # puts "[Deprecated] will remove in the future,
-        # use fetch_by_uniq_keys! method instead."
-        fetch_by_uniq_key(value, uniq_key_name) || raise(::ActiveRecord::RecordNotFound)
+        second_level_cache_options[:unique_indexes] |= [[uniq_key_name]]
+        fetch_by_warning(:fetch_by_uniq_key!, :find_by!, uniq_key_name)
+        find_by!(uniq_key_name => value)
       end
 
-      private
-        def cache_uniq_key(where_values)
-          keys = where_values.collect do |k, v|
-            v = Digest::MD5.hexdigest(v) if v.respond_to?(:size) && v.size >= 32
-            [k, v].join("_")
-          end
-
-          ext_key = keys.join(",")
-          "uniq_key_#{name}_#{ext_key}"
-        end
-
-        def record_attributes_equal_where_values?(record, where_values)
-          # https://api.rubyonrails.org/classes/ActiveRecord/ModelSchema/ClassMethods.html#method-i-type_for_attribute
-          where_values.all? { |k, v| record&.read_attribute(k) == type_for_attribute(k).cast(v) }
-        end
+      private def fetch_by_warning(deprecated_method, instead_method, keys)
+        ActiveSupport::Deprecation.warn(
+          <<-WARNING.strip_heredoc
+            #{deprecated_method} is deprecated and will be removed from SecondLevelCache 3 !
+            You should to make #{keys} append to unique_indexes option value pass to second_level_cache method.
+            After that you can use #{instead_method} instead of #{deprecated_method}, it will also read cache first.
+          WARNING
+        )
+      end
     end
   end
 end

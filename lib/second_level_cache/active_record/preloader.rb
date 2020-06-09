@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# TODO: remove me after QueryCache implement contain single array cache
 module SecondLevelCache
   module ActiveRecord
     module Associations

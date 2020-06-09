@@ -53,7 +53,7 @@ class Namespace < ApplicationRecord
 end
 
 class ForkedUserLink < ApplicationRecord
-  second_level_cache version: 1, expires_in: 1.day
+  second_level_cache version: 1, expires_in: 1.day, unique_indexes: [:forked_to_user_id]
 
   belongs_to :forked_from_user, class_name: "User"
   belongs_to :forked_to_user, class_name: "User"
