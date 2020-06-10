@@ -10,7 +10,8 @@ module SecondLevelCache
         def records_for(ids, &block)
           return super unless klass.second_level_cache_enabled?
           return super unless reflection.is_a?(::ActiveRecord::Reflection::BelongsToReflection)
-          return super if klass.default_scopes.present?
+          return super if klass.default_scopes.present? || reflection.scope
+          return super if association_key_name.to_s != klass.primary_key
 
           map_cache_keys = ids.map { |id| klass.second_level_cache_key(id) }
           records_from_cache = ::SecondLevelCache.cache_store.read_multi(*map_cache_keys)

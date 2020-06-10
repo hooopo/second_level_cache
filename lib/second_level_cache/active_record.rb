@@ -11,7 +11,13 @@ require "second_level_cache/active_record/preloader"
 
 # http://api.rubyonrails.org/classes/ActiveSupport/LazyLoadHooks.html
 # ActiveSupport.run_load_hooks(:active_record, ActiveRecord::Base)
-ActiveSupport.on_load(:active_record) do
+ActiveSupport.on_load(:active_record, run_once: true) do
+  if (Bundler.definition.gem("paranoia") rescue false)
+    require "second_level_cache/adapter/paranoia"
+    include SecondLevelCache::Adapter::Paranoia::ActiveRecord
+    SecondLevelCache::Mixin.send(:prepend, SecondLevelCache::Adapter::Paranoia::Mixin)
+  end
+
   include SecondLevelCache::Mixin
   prepend SecondLevelCache::ActiveRecord::Base
   extend SecondLevelCache::ActiveRecord::FetchByUniqKey
