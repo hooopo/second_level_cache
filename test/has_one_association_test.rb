@@ -23,9 +23,7 @@ class HasOneAssociationTest < ActiveSupport::TestCase
 
     # If ForkedUserLink second_level_cache_enabled is true
     user.reload
-    assert_no_queries do
-      user.forked_from_user
-    end
+    assert_no_queries { user.forked_from_user }
 
     # If ForkedUserLink second_level_cache_enabled is false
     user.reload

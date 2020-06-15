@@ -7,6 +7,7 @@ require "second_level_cache/active_record/fetch_by_uniq_key"
 require "second_level_cache/active_record/query_cache"
 require "second_level_cache/active_record/persistence"
 require "second_level_cache/active_record/has_one_association"
+require "second_level_cache/active_record/has_one_through_association"
 require "second_level_cache/active_record/preloader"
 
 # http://api.rubyonrails.org/classes/ActiveSupport/LazyLoadHooks.html
@@ -21,9 +22,10 @@ ActiveSupport.on_load(:active_record, run_once: true) do
   include SecondLevelCache::Mixin
   prepend SecondLevelCache::ActiveRecord::Base
   extend SecondLevelCache::ActiveRecord::FetchByUniqKey
-  prepend SecondLevelCache::ActiveRecord::Persistence
+  include SecondLevelCache::ActiveRecord::Persistence
 
-  ActiveRecord::Associations::HasOneAssociation.send(:prepend, SecondLevelCache::ActiveRecord::Associations::HasOneAssociation)
+  ActiveRecord::Associations::HasOneAssociation.send(:include, SecondLevelCache::ActiveRecord::Associations::HasOneAssociation)
+  ActiveRecord::Associations::HasOneThroughAssociation.send(:include, SecondLevelCache::ActiveRecord::Associations::HasOneThroughAssociation)
   ActiveRecord::Relation.send(:prepend, SecondLevelCache::ActiveRecord::QueryCache)
   # Rails 5.2 has removed ActiveRecord::Associations::Preloader::BelongsTo
   # https://github.com/rails/rails/pull/31079
