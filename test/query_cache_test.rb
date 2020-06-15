@@ -78,7 +78,7 @@ class QueryCacheTest < ActiveSupport::TestCase
 
     # hit unique_indexes
     uniq_where_values_hash_key = User.where(@attributes).load.instance_variable_get(:@uniq_where_values_hash_key)
-    digest = User.second_level_cache_key("deleted_at=&email=#{@email}&name=#{@name}")
+    digest = User.second_level_cache_key("email=#{@email}&name=#{@name}")
     assert_equal uniq_where_values_hash_key, digest
   end
 

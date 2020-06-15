@@ -12,7 +12,7 @@ module SecondLevelCache
       module Mixin
         extend ActiveSupport::Concern
 
-        def write_second_level_cache
+        def write_second_level_cache(*args, &block)
           # Avoid rewrite cache again, when record has been soft deleted
           return if respond_to?(:deleted?) && send(:deleted?)
           super
