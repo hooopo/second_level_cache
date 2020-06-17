@@ -20,15 +20,25 @@ class HasOneAssociationTest < ActiveSupport::TestCase
     clean_user = user.reload
     assert_equal User, clean_user.forked_from_user.class
     assert_equal @user.id, user.forked_from_user.id
+
     # If ForkedUserLink second_level_cache_enabled is true
     user.reload
-    assert_no_queries do
-      user.forked_from_user
-    end
-    # IF ForkedUserLink second_level_cache_enabled is false
+    assert_no_queries { user.forked_from_user }
+
+    # If ForkedUserLink second_level_cache_enabled is false
     user.reload
     ForkedUserLink.without_second_level_cache do
       assert_queries(1) { user.forked_from_user }
+    end
+
+    # If association exists through option and reflection.active_record or reflection.source_reflection.active_record closed second_level_cache
+    begin
+      old = ForkedUserLink.instance_variable_get(:@second_level_cache_enabled)
+      ForkedUserLink.instance_variable_set(:@second_level_cache_enabled, false)
+      user.reload
+      assert_sql(/INNER\sJOIN\s\"forked_user_links\"/m) { @user.forked_from_user }
+    ensure
+      ForkedUserLink.instance_variable_set(:@second_level_cache_enabled, old)
     end
   end
 
