@@ -72,7 +72,7 @@ module SecondLevelCache
           digest = where_values_hash.map do |k, v|
             v = Digest::MD5.hexdigest(v) if v.respond_to?(:size) && v.size >= 32
             "#{k}=#{v}"
-          end.join("&")
+          end.sort.join("&")
           @uniq_where_values_hash_key = klass.second_level_cache_key(digest)
           SecondLevelCache.cache_store.read(@uniq_where_values_hash_key)
         end
