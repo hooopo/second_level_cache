@@ -42,6 +42,8 @@ class QueryCacheTest < ActiveSupport::TestCase
   def test_exec_queries_cachable?
     assert User.where(id: 1).send(:exec_queries_cachable?)
     assert User.where(id: 1).includes(:account).send(:exec_queries_cachable?)
+    assert_not User.where.not(id: 1).send(:exec_queries_cachable?)
+    assert_not User.where(id: 1).or(User.where(id: 2)).send(:exec_queries_cachable?)
     assert_not User.where(id: 1).includes(:account).where(accounts: { id: 1 }).send(:exec_queries_cachable?)
     assert_not User.where(id: 1).eager_load(:account).send(:exec_queries_cachable?)
     assert_not User.where(id: 1).includes(:account).references(:account).send(:exec_queries_cachable?)
@@ -80,6 +82,11 @@ class QueryCacheTest < ActiveSupport::TestCase
     uniq_where_values_hash_key = User.where(@attributes).load.instance_variable_get(:@uniq_where_values_hash_key)
     digest = User.second_level_cache_key("email=#{@email}&name=#{@name}")
     assert_equal uniq_where_values_hash_key, digest
+
+    # The order of the where_values_hash should not affect the cache
+    User.create(email: @email, name: @name)
+    User.where(email: @email, name: @name).load  # write unique index cache
+    assert_no_queries { User.where(name: @name, email: @email).load }
   end
 
   def test_where_values_match_cache?
