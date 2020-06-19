@@ -37,6 +37,12 @@ class QueryCacheTest < ActiveSupport::TestCase
     assert_equal query_user.object_id, query_user.books.first.user.object_id
     assert query_user.readonly?
     assert_not query_user.account.readonly?
+
+    User.where(email: create_user.email).load  # write about email index cache
+    assert_no_queries { User.where(email: create_user.email, status: create_user.status).load }
+    old_status = create_user.status
+    create_user.archived!
+    assert_nil User.where(email: create_user.email, status: old_status).first
   end
 
   def test_exec_queries_cachable?
@@ -79,9 +85,8 @@ class QueryCacheTest < ActiveSupport::TestCase
     assert_equal User.where(id: 1).send(:second_level_cache_id), 1
 
     # hit unique_indexes
-    uniq_where_values_hash_key = User.where(@attributes).load.instance_variable_get(:@uniq_where_values_hash_key)
-    digest = User.second_level_cache_key("email=#{@email}&name=#{@name}")
-    assert_equal uniq_where_values_hash_key, digest
+    uniq_key = User.where(@attributes).load.instance_variable_get(:@second_level_cache)[:uniq_key]
+    assert_equal uniq_key, User.second_level_cache_key("email=#{@email}")
 
     # The order of the where_values_hash should not affect the cache
     User.create(email: @email, name: @name)
@@ -102,22 +107,22 @@ class QueryCacheTest < ActiveSupport::TestCase
   end
 
   def test_write_second_level_cache
-    uniq_where_values_hash_key = nil
+    uniq_key = nil
 
     # write cache
     # write id cache
     user = User.create(@attributes)
     assert_equal User.read_second_level_cache(user.id), user
-    # write uniq_where_values_hash_key cache
-    uniq_where_values_hash_key = User.where(@attributes).load.instance_variable_get(:@uniq_where_values_hash_key)
-    assert_equal SecondLevelCache.cache_store.read(uniq_where_values_hash_key), user.id
+    # write uniq_key cache
+    uniq_key = User.where(@attributes).load.instance_variable_get(:@second_level_cache)[:uniq_key]
+    assert_equal SecondLevelCache.cache_store.read(uniq_key), user.id
 
     # delete cache
     # delete id cache
     user.destroy
     assert_nil User.read_second_level_cache(user.id)
-    # delete uniq_where_values_hash_key cache
+    # delete uniq_key cache
     User.where(@attributes).load
-    assert_nil SecondLevelCache.cache_store.read(uniq_where_values_hash_key)
+    assert_nil SecondLevelCache.cache_store.read(uniq_key)
   end
 end

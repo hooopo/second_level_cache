@@ -45,29 +45,25 @@ class FetchByUinqKeyTest < ActiveSupport::TestCase
   end
 
   def test_should_return_correct_when_destroy_old_record_and_create_same_new_record
-    savepoint do
-      uniq_key = { email: "#{Time.now.to_i}@foobar.com" }
-      old_user = User.create(uniq_key)
-      new_user = old_user.deep_dup
-      assert_equal old_user, User.fetch_by_uniq_keys(uniq_key)
-      old_user.destroy
+    uniq_key = { email: "#{Time.now.to_i}@foobar.com" }
+    old_user = User.create(uniq_key)
+    new_user = old_user.deep_dup
+    assert_equal old_user, User.fetch_by_uniq_keys(uniq_key)
+    old_user.destroy
 
-      # Dirty id cache should be removed
-      # assert_queries(2) { assert_nil User.fetch_by_uniq_keys(uniq_key) }
-      assert_queries(1) { assert_nil User.fetch_by_uniq_keys(uniq_key) }
+    # Dirty id cache should be removed
+    # assert_queries(2) { assert_nil User.fetch_by_uniq_keys(uniq_key) }
+    assert_queries(1) { assert_nil User.fetch_by_uniq_keys(uniq_key) }
 
-      new_user.save
-      assert_equal new_user, User.fetch_by_uniq_keys(uniq_key)
-    end
+    new_user.save
+    assert_equal new_user, User.fetch_by_uniq_keys(uniq_key)
   end
 
   def test_should_return_correct_when_old_record_modify_uniq_key_and_new_record_use_same_uniq_key
-    savepoint do
-      uniq_key = { email: @user.email }
-      assert_equal @user, User.fetch_by_uniq_keys(uniq_key)
-      @user.update_attribute(:email, "#{Time.now.to_i}@foobar.com")
-      new_user = User.create(uniq_key)
-      assert_equal new_user, User.fetch_by_uniq_keys(uniq_key)
-    end
+    uniq_key = { email: @user.email }
+    assert_equal @user, User.fetch_by_uniq_keys(uniq_key)
+    @user.update_attribute(:email, "#{Time.now.to_i}@foobar.com")
+    new_user = User.create(uniq_key)
+    assert_equal new_user, User.fetch_by_uniq_keys(uniq_key)
   end
 end

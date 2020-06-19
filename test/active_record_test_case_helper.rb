@@ -76,16 +76,6 @@ module ActiveRecordTestCaseHelper
     model.column_names.include?(column_name.to_s)
   end
 
-  def savepoint
-    if ActiveRecord::Base.connection.supports_savepoints?
-      ActiveRecord::Base.connection.begin_transaction(joinable: false)
-      yield
-      ActiveRecord::Base.connection.rollback_transaction
-    else
-      yield
-    end
-  end
-
   class SQLCounter
     class << self
       attr_accessor :ignored_sql, :log, :log_all
