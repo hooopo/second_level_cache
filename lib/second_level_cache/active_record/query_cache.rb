@@ -77,7 +77,7 @@ module SecondLevelCache
           return where_values_hash[primary_key] if where_values_hash.has_key?(primary_key)
 
           uniq_key = where_values_hash.slice(*@second_level_cache[:unique_indexes]).map do |k, v|
-            v = Digest::MD5.hexdigest(v) if v.respond_to?(:size) && v.size >= 32
+            v = Digest::SHA1.hexdigest(v).first(7) if v.respond_to?(:size) && v.size > 40
             "#{k}=#{v}"
           end.sort.join("&")
           @second_level_cache[:uniq_key] = klass.second_level_cache_key(uniq_key)

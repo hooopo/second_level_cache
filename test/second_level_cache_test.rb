@@ -8,8 +8,7 @@ class SecondLevelCacheTest < ActiveSupport::TestCase
   end
 
   def test_should_get_cache_key
-    attr_list = User.attribute_types.map { |name, type| "#{name}: #{type.type}" } * ", "
-    table_digest = Digest::MD5.hexdigest(attr_list)
+    table_digest = Digest::SHA1.hexdigest(User.base_class.inspect).first(7)
     refute_nil table_digest
     assert_equal "slc/users/#{@user.id}/#{User::CACHE_VERSION}/#{table_digest}", @user.second_level_cache_key
   end
