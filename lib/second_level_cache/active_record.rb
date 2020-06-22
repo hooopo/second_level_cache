@@ -3,7 +3,6 @@
 require "second_level_cache/mixin"
 require "second_level_cache/active_record/base"
 require "second_level_cache/active_record/core"
-require "second_level_cache/active_record/fetch_by_uniq_key"
 require "second_level_cache/active_record/query_cache"
 require "second_level_cache/active_record/persistence"
 require "second_level_cache/active_record/has_one_association"
@@ -21,7 +20,6 @@ ActiveSupport.on_load(:active_record, run_once: true) do
 
   include SecondLevelCache::Mixin
   prepend SecondLevelCache::ActiveRecord::Base
-  extend SecondLevelCache::ActiveRecord::FetchByUniqKey
   include SecondLevelCache::ActiveRecord::Persistence
 
   ActiveRecord::Associations::HasOneAssociation.send(:include, SecondLevelCache::ActiveRecord::Associations::HasOneAssociation)

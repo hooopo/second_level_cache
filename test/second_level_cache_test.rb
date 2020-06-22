@@ -10,7 +10,7 @@ class SecondLevelCacheTest < ActiveSupport::TestCase
   def test_should_get_cache_key
     table_digest = Digest::SHA1.hexdigest(User.base_class.inspect).first(7)
     refute_nil table_digest
-    assert_equal "slc/users/#{@user.id}/#{User::CACHE_VERSION}/#{table_digest}", @user.second_level_cache_key
+    assert_equal "slc/users/id=#{@user.id}/#{User::CACHE_VERSION}/#{table_digest}", @user.second_level_cache_key
   end
 
   def test_should_write_and_read_cache

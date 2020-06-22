@@ -34,6 +34,7 @@ require "model/paranoid"
 DatabaseCleaner[:active_record].strategy = :truncation
 
 SecondLevelCache.configure do |config|
+  config.legacy
   config.cache_store = ActiveSupport::Cache::MemoryStore.new
 end
 

@@ -5,16 +5,14 @@ module SecondLevelCache
     module QueryCache
       extend ActiveSupport::Concern
 
-      def initialize(*args, &block)
-        @second_level_cache = {}
-        super
-      end
-
       private
         def exec_queries(&block)
+          @second_level_cache_where_values_hash = where_values_hash
           return super unless exec_queries_cachable?
+          hit_hash = klass.second_level_cache_unique_indexes(@second_level_cache_where_values_hash)
+          return super if hit_hash.empty?
 
-          record = klass.read_second_level_cache(second_level_cache_id, &block)
+          record = klass.read_second_level_cache(hit_hash, &block)
           if record && where_values_match_cache?(record)
             @records = [record].freeze
             preload_associations(@records) unless skip_preloading_value
@@ -22,7 +20,7 @@ module SecondLevelCache
             @loaded = true
             @records
           else
-            super.tap { |records| write_second_level_cache(records) }
+            super.tap { |records| records.first&.write_second_level_cache }
           end
         end
 
@@ -50,14 +48,8 @@ module SecondLevelCache
 
         # TODO: implement contain single array cache
         def where_clause_cachable?
-          where_values_hash = self.send(:where_values_hash)
-          return false if where_clause.send(:predicates).map(&:present?).size != where_values_hash.size
-          return false if where_values_hash.any? { |k, v| v.is_a?(Array) }
-          klass.second_level_cache_options[:unique_indexes].any? do |unique_indexes|
-            if unique_indexes.all? { |index| where_values_hash.has_key?(index) }
-              @second_level_cache[:unique_indexes] = unique_indexes
-            end
-          end
+          where_clause.send(:predicates).map(&:present?).size == @second_level_cache_where_values_hash.size &&
+            @second_level_cache_where_values_hash.none? { |k, v| v.is_a?(Array) }
         end
 
         # def order_values_cachable?
@@ -72,25 +64,8 @@ module SecondLevelCache
         #   limit_value.to_i.in?(0..1)
         # end
 
-        def second_level_cache_id
-          where_values_hash = self.send(:where_values_hash)
-          return where_values_hash[primary_key] if where_values_hash.has_key?(primary_key)
-
-          uniq_key = where_values_hash.slice(*@second_level_cache[:unique_indexes]).map do |k, v|
-            v = Digest::SHA1.hexdigest(v).first(7) if v.respond_to?(:size) && v.size > 40
-            "#{k}=#{v}"
-          end.sort.join("&")
-          @second_level_cache[:uniq_key] = klass.second_level_cache_key(uniq_key)
-          SecondLevelCache.cache_store.read(@second_level_cache[:uniq_key])
-        end
-
         def where_values_match_cache?(record)
-          where_values_hash.all? { |k, v| record.read_attribute(k) == klass.type_for_attribute(k).cast(v) }
-        end
-
-        def write_second_level_cache(records)
-          return records.first.write_second_level_cache(@second_level_cache[:uniq_key]) if records.present?
-          SecondLevelCache.cache_store.delete(@second_level_cache[:uniq_key]) if @second_level_cache.has_key?(:uniq_key)
+          @second_level_cache_where_values_hash.all? { |k, v| record.read_attribute(k) == klass.type_for_attribute(k).cast(v) }
         end
     end
   end
