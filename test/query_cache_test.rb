@@ -4,10 +4,15 @@ require "test_helper"
 
 class QueryCacheTest < ActiveSupport::TestCase
   def setup
-    User.second_level_cache_options[:unique_indexes] = [["id"], ["email"], ["name", "email"]]
+    @old_second_level_cache_options = User.second_level_cache_options
+    User.second_level_cache(@old_second_level_cache_options.merge(unique_indexes: ["id", "email", ["name", "email"]]))
     @email = "#{Time.current.to_i}@foobar.com"
     @name = "foobar"
     @attributes = { email: @email, name: @name }
+  end
+
+  def teardown
+    User.second_level_cache(@old_second_level_cache_options)
   end
 
   def test_exec_queries
@@ -46,10 +51,10 @@ class QueryCacheTest < ActiveSupport::TestCase
   end
 
   def test_exec_queries_cachable?
-    assert User.where(id: 1).send(:exec_queries_cachable?)
-    assert User.where(id: 1).includes(:account).send(:exec_queries_cachable?)
-    assert_not User.where.not(id: 1).send(:exec_queries_cachable?)
-    assert_not User.where(id: 1).or(User.where(id: 2)).send(:exec_queries_cachable?)
+    assert User.where(id: 1).load.send(:exec_queries_cachable?)
+    assert User.where(id: 1).includes(:account).load.send(:exec_queries_cachable?)
+    assert_not User.where.not(id: 1).load.send(:exec_queries_cachable?)
+    assert_not User.where(id: 1).or(User.where(id: 2)).load.send(:exec_queries_cachable?)
     assert_not User.where(id: 1).includes(:account).where(accounts: { id: 1 }).send(:exec_queries_cachable?)
     assert_not User.where(id: 1).eager_load(:account).send(:exec_queries_cachable?)
     assert_not User.where(id: 1).includes(:account).references(:account).send(:exec_queries_cachable?)
@@ -71,58 +76,24 @@ class QueryCacheTest < ActiveSupport::TestCase
   end
 
   def test_where_clause_cachable?
-    assert_not User.where("email = #{@email}").send(:where_clause_cachable?)
-    assert_not User.where.not(email: @email).send(:where_clause_cachable?)
-    assert_not User.where(email: 1..10).send(:where_clause_cachable?)
-    assert_not User.where(email: []).send(:where_clause_cachable?)
-    assert_not User.where(name: @name).or(User.where(email: @email)).send(:where_clause_cachable?)
-    assert User.where(email: @email).send(:where_clause_cachable?)
-    assert User.where(@attributes).send(:where_clause_cachable?)
-  end
-
-  def test_second_level_cache_id
-    # hit primary key
-    assert_equal User.where(id: 1).send(:second_level_cache_id), 1
-
-    # hit unique_indexes
-    uniq_key = User.where(@attributes).load.instance_variable_get(:@second_level_cache)[:uniq_key]
-    assert_equal uniq_key, User.second_level_cache_key("email=#{@email}")
-
-    # The order of the where_values_hash should not affect the cache
-    User.create(email: @email, name: @name)
-    User.where(email: @email, name: @name).load  # write unique index cache
-    assert_no_queries { User.where(name: @name, email: @email).load }
+    assert_not User.where("email = '#{@email}'").load.send(:where_clause_cachable?)
+    assert_not User.where.not(email: @email).load.send(:where_clause_cachable?)
+    assert_not User.where(email: 1..10).load.send(:where_clause_cachable?)
+    assert_not User.where(email: []).load.send(:where_clause_cachable?)
+    assert_not User.where(name: @name).or(User.where(email: @email)).load.send(:where_clause_cachable?)
+    assert User.where(email: @email).load.send(:where_clause_cachable?)
+    assert User.where(@attributes).load.send(:where_clause_cachable?)
   end
 
   def test_where_values_match_cache?
     book = Book.new
     book.title = "foobar"
-    assert Book.where(title: :foobar).send(:where_values_match_cache?, book)
+    assert Book.where(title: :foobar).load.send(:where_values_match_cache?, book)
     book.discount_percentage = 60.00
-    assert Book.where(discount_percentage: "60").send(:where_values_match_cache?, book)
+    assert Book.where(discount_percentage: "60").load.send(:where_values_match_cache?, book)
     book.publish_date = Time.current.to_date
-    assert Book.where(publish_date: Time.current.to_date.to_s).send(:where_values_match_cache?, book)
+    assert Book.where(publish_date: Time.current.to_date.to_s).load.send(:where_values_match_cache?, book)
     book.title = nil
-    assert Book.where(title: nil).send(:where_values_match_cache?, book)
-  end
-
-  def test_write_second_level_cache
-    uniq_key = nil
-
-    # write cache
-    # write id cache
-    user = User.create(@attributes)
-    assert_equal User.read_second_level_cache(user.id), user
-    # write uniq_key cache
-    uniq_key = User.where(@attributes).load.instance_variable_get(:@second_level_cache)[:uniq_key]
-    assert_equal SecondLevelCache.cache_store.read(uniq_key), user.id
-
-    # delete cache
-    # delete id cache
-    user.destroy
-    assert_nil User.read_second_level_cache(user.id)
-    # delete uniq_key cache
-    User.where(@attributes).load
-    assert_nil SecondLevelCache.cache_store.read(uniq_key)
+    assert Book.where(title: nil).load.send(:where_values_match_cache?, book)
   end
 end

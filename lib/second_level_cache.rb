@@ -31,6 +31,6 @@ module SecondLevelCache
   end
 
   class << self
-    delegate :logger, :cache_store, :cache_key_prefix, to: Config
+    delegate :cache_store, :cache_key_prefix, to: Config
   end
 end

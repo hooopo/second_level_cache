@@ -3,21 +3,20 @@
 module SecondLevelCache
   class Config
     class << self
-      attr_writer :cache_store, :logger, :cache_key_prefix
+      attr_writer :cache_store, :cache_key_prefix
 
       def cache_store
         @cache_store ||= Rails.cache if defined?(Rails)
         @cache_store
       end
 
-      def logger
-        ActiveSupport::Deprecation.warn("logger is deprecated and will be removed from SecondLevelCache 2.7.0")
-        @logger ||= Rails.logger if defined?(Rails)
-        @logger ||= Logger.new(STDOUT)
-      end
-
       def cache_key_prefix
         @cache_key_prefix ||= "slc"
+      end
+
+      # This configuration must be on the first line
+      def legacy
+        require "second_level_cache/adapter/legacy"
       end
     end
   end
