@@ -17,10 +17,6 @@ module SecondLevelCache
         expire_second_level_cache
         super
       end
-
-      def touch(*names, **opts)
-        super.tap { update_second_level_cache }
-      end
     end
   end
 end
