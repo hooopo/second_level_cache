@@ -7,6 +7,27 @@ module SecondLevelCache
         extend ActiveSupport::Concern
         module ClassMethods
           delegate :logger, to: ::SecondLevelCache::Config
+
+          def without_second_level_cache
+            ActiveSupport::Deprecation.warn("without_second_level_cache is deprecated and will be removed in the future!")
+            old_cache_enabled = ::SecondLevelCache.cache_enabled?
+            ::SecondLevelCache.cache_enabled = false
+
+            yield
+          ensure
+            ::SecondLevelCache.cache_enabled = old_cache_enabled
+          end
+
+          def cache_enabled?
+            ActiveSupport::Deprecation.warn("cache_enabled? is deprecated and will be removed in the future!")
+            cache_enabled = Thread.current[:slc_cache_enabled]
+            cache_enabled.nil? ? true : cache_enabled
+          end
+
+          def cache_enabled=(cache_enabled)
+            ActiveSupport::Deprecation.warn("cache_enabled= is deprecated and will be removed in the future!")
+            Thread.current[:slc_cache_enabled] = cache_enabled
+          end
         end
       end
       ::SecondLevelCache.send(:include, ::SecondLevelCache::Adapter::Legacy::SecondLevelCache)
@@ -69,6 +90,21 @@ module SecondLevelCache
         extend ActiveSupport::Concern
         module ClassMethods
           delegate :logger, to: ::SecondLevelCache
+
+          def second_level_cache_enabled?
+            super && ::SecondLevelCache.cache_enabled?
+          end
+
+          def without_second_level_cache(&blk)
+            ActiveSupport::Deprecation.warn(
+              <<-WARNING.strip_heredoc
+                without_second_level_cache is deprecated and will be removed in the future!
+                You should call skip_query_cache, it can skip second_level_cache and ActiveRecord::QueryCache at the same time.
+                For more details, please see https://github.com/rails/rails/blob/v6.0.3.2/activerecord/lib/active_record/relation/query_methods.rb#L984
+              WARNING
+            )
+            ::SecondLevelCache.without_second_level_cache(&blk) if blk
+          end
 
           def second_level_cache_key(id)
             return super if id.is_a?(Hash)
