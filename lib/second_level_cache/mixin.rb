@@ -22,11 +22,7 @@ module SecondLevelCache
       end
 
       def second_level_cache_enabled?
-        @second_level_cache_enabled == true && SecondLevelCache.cache_enabled?
-      end
-
-      def without_second_level_cache(&blk)
-        SecondLevelCache.without_second_level_cache(&blk) if blk
+        !!@second_level_cache_enabled
       end
 
       def cache_version
