@@ -84,16 +84,4 @@ class QueryCacheTest < ActiveSupport::TestCase
     assert User.where(email: @email).load.send(:where_clause_cachable?)
     assert User.where(@attributes).load.send(:where_clause_cachable?)
   end
-
-  def test_where_values_match_cache?
-    book = Book.new
-    book.title = "foobar"
-    assert Book.where(title: :foobar).load.send(:where_values_match_cache?, book)
-    book.discount_percentage = 60.00
-    assert Book.where(discount_percentage: "60").load.send(:where_values_match_cache?, book)
-    book.publish_date = Time.current.to_date
-    assert Book.where(publish_date: Time.current.to_date.to_s).load.send(:where_values_match_cache?, book)
-    book.title = nil
-    assert Book.where(title: nil).load.send(:where_values_match_cache?, book)
-  end
 end

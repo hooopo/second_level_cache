@@ -17,7 +17,10 @@ module SecondLevelCache
         @second_level_cache_options[:unique_indexes] ||= []
         @second_level_cache_options[:unique_indexes].prepend(primary_key).map! do |indexes|
           Array.wrap(indexes).map(&:to_s).sort
-        end.uniq!
+        end
+        @second_level_cache_options[:unique_indexes].uniq!
+        @second_level_cache_options[:unique_indexes].sort_by!(&:size)
+
         include SecondLevelCache::ActiveRecord::Core
       end
 
@@ -29,7 +32,7 @@ module SecondLevelCache
         @cache_version ||= "#{second_level_cache_options[:version]}/#{Digest::SHA1.hexdigest(base_class.inspect).first(7)}"
       end
 
-      def second_level_cache_unique_indexes(where_values_hash)
+      def second_level_cache_unique_where_values_hash(where_values_hash)
         where_values_hash = where_values_hash.stringify_keys
         second_level_cache_options[:unique_indexes].any? do |indexes|
           if indexes.all? { |index| where_values_hash.has_key?(index) }
@@ -50,11 +53,19 @@ module SecondLevelCache
 
       def read_second_level_cache(where_values_hash, &block)
         return unless second_level_cache_enabled?
+        fit_hash = second_level_cache_unique_where_values_hash(where_values_hash)
+        return if fit_hash.empty?
 
-        entity = SecondLevelCache.cache_store.read(second_level_cache_key(where_values_hash))
+        entity = SecondLevelCache.cache_store.read(second_level_cache_key(fit_hash))
         return if entity.nil?
         entity = SecondLevelCache.cache_store.read(second_level_cache_key({ primary_key => entity })) unless entity.is_a?(Array)
-        RecordMarshal.load(entity, &block)
+        record = RecordMarshal.load(entity, &block)
+        record if record && verify_second_level_cache?(record, where_values_hash)
+      end
+
+      # FIXME: The cache should be verify before AR is instantiated
+      def verify_second_level_cache?(record, where_values_hash)
+        where_values_hash.all? { |k, v| record.read_attribute(k) == type_for_attribute(k).cast(v) }
       end
 
       def expire_second_level_cache(where_values_hash)

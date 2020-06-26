@@ -14,11 +14,11 @@ class MixinTest < ActiveSupport::TestCase
     User.second_level_cache(@old_second_level_cache_options)
   end
 
-  def test_second_level_cache_unique_indexes
-    assert_equal User.second_level_cache_unique_indexes(id: 1), { "id" => 1 }
-    assert_equal User.second_level_cache_unique_indexes(id: 1, email: "foobar@test.com"), { "id" => 1 }
-    assert_equal User.second_level_cache_unique_indexes(name: "foobar", email: "foobar@test.com"), { "email" => "foobar@test.com" }
-    assert_equal User.second_level_cache_unique_indexes(name: "foobar", status: :active), { "name" => "foobar", "status" => :active }
+  def test_second_level_cache_unique_where_values_hash
+    assert_equal User.second_level_cache_unique_where_values_hash(id: 1), { "id" => 1 }
+    assert_equal User.second_level_cache_unique_where_values_hash(id: 1, email: "foobar@test.com"), { "id" => 1 }
+    assert_equal User.second_level_cache_unique_where_values_hash(name: "foobar", email: "foobar@test.com"), { "email" => "foobar@test.com" }
+    assert_equal User.second_level_cache_unique_where_values_hash(name: "foobar", status: :active), { "name" => "foobar", "status" => :active }
   end
 
   def test_second_level_cache_key
@@ -31,7 +31,20 @@ class MixinTest < ActiveSupport::TestCase
   def test_read_second_level_cache
     assert_equal User.read_second_level_cache(id: @user.id), @user
     assert_equal User.read_second_level_cache(email: @user.email), @user
-    assert_nil User.read_second_level_cache(email: @user.email, name: @user.name)
+    assert_equal User.read_second_level_cache(email: @user.email, name: @user.name), @user
+    assert_nil User.read_second_level_cache(name: @user.name, name: "nonexistent")
+    assert_nil User.read_second_level_cache(name: @user.name, role: 0)
+  end
+
+  def test_verify_second_level_cache?
+    book = Book.new(title: "foobar")
+    assert Book.verify_second_level_cache?(book, title: :foobar)
+    book = Book.new(discount_percentage: 60.00)
+    assert Book.verify_second_level_cache?(book, discount_percentage: "60")
+    book = Book.new(publish_date: Time.current.to_date)
+    assert Book.verify_second_level_cache?(book, publish_date: Time.current.to_date.to_s)
+    book = Book.new(title: nil)
+    assert Book.verify_second_level_cache?(book, title: nil)
   end
 
   def test_expire_second_level_cache
