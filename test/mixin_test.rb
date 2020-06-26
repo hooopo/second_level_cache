@@ -54,8 +54,8 @@ class MixinTest < ActiveSupport::TestCase
     old_name = @user.name
     @user.update_columns(email: "changed@test.com", name: "changed")
     assert_nil User.read_second_level_cache(email: old_email)
+    assert_nil User.read_second_level_cache(name: old_name, status: @user.status)
     assert_equal User.read_second_level_cache(email: @user.email), @user
-    assert_equal User.read_second_level_cache(name: old_name, status: @user.status), @user
-    assert_nil User.read_second_level_cache(name: @user.name, status: @user.status), @user
+    assert_equal User.read_second_level_cache(name: @user.name, status: @user.status), @user
   end
 end
