@@ -9,19 +9,16 @@ module SecondLevelCache
         def exec_queries(&block)
           @second_level_cache_where_values_hash = where_values_hash
           return super unless exec_queries_cachable?
-          hit_hash = klass.second_level_cache_unique_indexes(@second_level_cache_where_values_hash)
-          return super if hit_hash.empty?
 
-          record = klass.read_second_level_cache(hit_hash, &block)
-          if record && where_values_match_cache?(record)
-            @records = [record].freeze
-            preload_associations(@records) unless skip_preloading_value
-            @records.each(&:readonly!) if readonly_value
-            @loaded = true
-            @records
-          else
-            super.tap { |records| records.first&.write_second_level_cache }
-          end
+          record = klass.read_second_level_cache(@second_level_cache_where_values_hash, &block)
+          # FIXME: The write_second_level_cache should only be calling when where_values_hash match unique index
+          return super.tap { |records| records.first&.write_second_level_cache } unless record
+
+          @records = [record].freeze
+          preload_associations(@records) unless skip_preloading_value
+          @records.each(&:readonly!) if readonly_value
+          @loaded = true
+          @records
         end
 
         # @see ActiveRecord::Relation::VALUE_METHODS
@@ -52,21 +49,17 @@ module SecondLevelCache
             @second_level_cache_where_values_hash.none? { |k, v| v.is_a?(Array) }
         end
 
-        # def order_values_cachable?
-        #   return true if order_values.empty?
-        #   return false unless order_values.one?
-        #   return true if order_values.first.in?(klass.column_names)
-        #   # return true if order_values.first.try(:expr).in?(klass.column_names)
-        #   order_values.first.try(:expr).try(:name).in?(klass.column_names)
-        # end
+      # def order_values_cachable?
+      #   return true if order_values.empty?
+      #   return false unless order_values.one?
+      #   return true if order_values.first.in?(klass.column_names)
+      #   # return true if order_values.first.try(:expr).in?(klass.column_names)
+      #   order_values.first.try(:expr).try(:name).in?(klass.column_names)
+      # end
 
-        # def limit_value_cachable?
-        #   limit_value.to_i.in?(0..1)
-        # end
-
-        def where_values_match_cache?(record)
-          @second_level_cache_where_values_hash.all? { |k, v| record.read_attribute(k) == klass.type_for_attribute(k).cast(v) }
-        end
+      # def limit_value_cachable?
+      #   limit_value.to_i.in?(0..1)
+      # end
     end
   end
 end

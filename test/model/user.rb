@@ -7,6 +7,7 @@ ActiveRecord::Base.connection.create_table(:users, force: true) do |t|
   t.string  :name, unique: true
   t.string  :email
   t.integer :status, default: 0
+  t.integer :role, default: 0
   t.integer :books_count, default: 0
   t.integer :images_count, default: 0
   t.timestamps null: false, precision: 6
