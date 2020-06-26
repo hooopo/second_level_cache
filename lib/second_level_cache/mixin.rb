@@ -98,16 +98,19 @@ module SecondLevelCache
       return unless klass.second_level_cache_enabled?
 
       previous_changes_keys = changes_hash.keys
+      delete_where_values_hash, update_where_values_hash = {}, {}
       hash = klass.second_level_cache_options[:unique_indexes].each_with_object({}) do |indexes, h|
-        delete_where_values_hash, update_where_values_hash = {}, {}
-        (indexes & previous_changes_keys).each do |changed_index|
-          changes = changes_hash[changed_index]
-          delete_where_values_hash[changed_index] = changes&.first || read_attribute(changed_index)
-          update_where_values_hash[changed_index] = changes&.last || read_attribute(changed_index)
+        next if (indexes & previous_changes_keys).empty?
+        indexes.each do |index|
+          changes = changes_hash[index]
+          delete_where_values_hash[index] = changes&.first || read_attribute(index)
+          update_where_values_hash[index] = changes&.last || read_attribute(index)
         end
         # TODO: implement Rails 6.1 delete_multi
-        SecondLevelCache.cache_store.delete(klass.second_level_cache_key(delete_where_values_hash)) if delete_where_values_hash.present?
-        h[klass.second_level_cache_key(update_where_values_hash)] = id if update_where_values_hash.present?
+        SecondLevelCache.cache_store.delete(klass.second_level_cache_key(delete_where_values_hash))
+        delete_where_values_hash.clear
+        h[klass.second_level_cache_key(update_where_values_hash)] = id
+        update_where_values_hash.clear
       end
       hash[second_level_cache_key(@primary_key)] = RecordMarshal.dump(self)
       SecondLevelCache.cache_store.write_multi(hash, expires_in: klass.second_level_cache_options[:expires_in])
