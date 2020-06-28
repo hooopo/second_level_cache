@@ -46,7 +46,7 @@ class User < ApplicationRecord
 end
 
 class Namespace < ApplicationRecord
-  second_level_cache version: 1, expires_in: 3.days
+  second_level_cache version: 1, expires_in: 3.days, unique_indexes: [[:kind, :user_id]]
 
   belongs_to :user
 end

@@ -79,8 +79,9 @@ class QueryCacheTest < ActiveSupport::TestCase
     assert_not User.where("email = '#{@email}'").load.send(:where_clause_cachable?)
     assert_not User.where.not(email: @email).load.send(:where_clause_cachable?)
     assert_not User.where(email: 1..10).load.send(:where_clause_cachable?)
-    assert_not User.where(email: []).load.send(:where_clause_cachable?)
     assert_not User.where(name: @name).or(User.where(email: @email)).load.send(:where_clause_cachable?)
+    assert_not User.where(email: [], id: []).load.send(:where_clause_cachable?)
+    assert User.where(email: []).load.send(:where_clause_cachable?)
     assert User.where(email: @email).load.send(:where_clause_cachable?)
     assert User.where(@attributes).load.send(:where_clause_cachable?)
   end
