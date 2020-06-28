@@ -12,4 +12,4 @@ module SecondLevelCache
   end
 end
 
-SecondLevelCache::LogSubscriber.attach_to :second_level_cache
+# SecondLevelCache::LogSubscriber.attach_to :second_level_cache

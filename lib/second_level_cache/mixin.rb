@@ -28,8 +28,30 @@ module SecondLevelCache
         !!@second_level_cache_enabled
       end
 
-      def cache_version
-        @cache_version ||= "#{second_level_cache_options[:version]}/#{Digest::SHA1.hexdigest(base_class.inspect).first(7)}"
+      def expire_second_level_cache(where_values_hash)
+        return unless second_level_cache_enabled?
+
+        read_second_level_cache(where_values_hash)&.expire_second_level_cache
+      end
+
+      def read_second_level_cache(where_values_hash, &block)
+        return unless second_level_cache_enabled?
+        where_values_hash = second_level_cache_cast_for_where_values_hash(where_values_hash)
+        hit_where_values_hash = second_level_cache_unique_where_values_hash(where_values_hash)
+        return if hit_where_values_hash.empty?
+        _read_second_level_cache(hit_where_values_hash, where_values_hash, &block)
+      end
+
+      def _read_second_level_cache(hit_where_values_hash, where_values_hash, &block)
+        cache_entity = SecondLevelCache.cache_store.read(second_level_cache_key(hit_where_values_hash))
+        return unless cache_entity
+        cache_entity = SecondLevelCache.cache_store.read(second_level_cache_key({ primary_key => cache_entity })) unless cache_entity.is_a?(Array)
+        record = RecordMarshal.load(cache_entity, &block)
+        record if record && verify_second_level_cache?(record, where_values_hash)
+      end
+
+      def second_level_cache_version
+        @second_level_cache_version ||= "#{second_level_cache_options[:version]}/#{Digest::SHA1.hexdigest(base_class.inspect).first(7)}"
       end
 
       def second_level_cache_unique_where_values_hash(where_values_hash)
@@ -48,30 +70,22 @@ module SecondLevelCache
           "#{k}=#{v}"
         end.sort.join("&")
 
-        "#{cache_key_prefix}/#{table_name}/#{uniq_key}/#{cache_version}"
+        "#{cache_key_prefix}/#{table_name}/#{uniq_key}/#{second_level_cache_version}"
       end
 
-      def read_second_level_cache(where_values_hash, &block)
-        return unless second_level_cache_enabled?
-        fit_hash = second_level_cache_unique_where_values_hash(where_values_hash)
-        return if fit_hash.empty?
-
-        entity = SecondLevelCache.cache_store.read(second_level_cache_key(fit_hash))
-        return if entity.nil?
-        entity = SecondLevelCache.cache_store.read(second_level_cache_key({ primary_key => entity })) unless entity.is_a?(Array)
-        record = RecordMarshal.load(entity, &block)
-        record if record && verify_second_level_cache?(record, where_values_hash)
+      def second_level_cache_cast_for_where_values_hash(where_values_hash)
+        where_values_hash.each do |k, v|
+          type = type_for_attribute(k)
+          where_values_hash[k] = v.is_a?(Array) ? v.map { |item| type.cast(item) } : type.cast(v)
+        end
+        where_values_hash
       end
 
       # FIXME: The cache should be verify before AR is instantiated
       def verify_second_level_cache?(record, where_values_hash)
-        where_values_hash.all? { |k, v| record.read_attribute(k) == type_for_attribute(k).cast(v) }
-      end
-
-      def expire_second_level_cache(where_values_hash)
-        return unless second_level_cache_enabled?
-
-        read_second_level_cache(where_values_hash)&.expire_second_level_cache
+        where_values_hash.all? do |k, v|
+          v.is_a?(Array) ? v.include?(record.read_attribute(k)) : v == record.read_attribute(k)
+        end
       end
     end
 
