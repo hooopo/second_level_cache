@@ -6,15 +6,16 @@ class FetchByUinqKeyTest < ActiveSupport::TestCase
   def setup
     @user = User.create name: "hooopo", email: "hoooopo@gmail.com"
     @post = Post.create slug: "foobar", topic_id: 2
+    @cache_prefix = SecondLevelCache.configure.cache_key_prefix
   end
 
   def test_cache_uniq_key
-    assert_equal User.send(:cache_uniq_key, name: "hooopo"), "uniq_key_User_name_hooopo"
-    assert_equal User.send(:cache_uniq_key, foo: 1, bar: 2), "uniq_key_User_foo_1,bar_2"
-    assert_equal User.send(:cache_uniq_key, foo: 1, bar: nil), "uniq_key_User_foo_1,bar_"
+    assert_equal User.send(:cache_uniq_key, name: "hooopo"), "#{@cache_prefix}/uniq_key_User_name_hooopo"
+    assert_equal User.send(:cache_uniq_key, foo: 1, bar: 2), "#{@cache_prefix}/uniq_key_User_foo_1,bar_2"
+    assert_equal User.send(:cache_uniq_key, foo: 1, bar: nil), "#{@cache_prefix}/uniq_key_User_foo_1,bar_"
     long_val = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    assert_equal User.send(:cache_uniq_key, foo: 1, bar: long_val), "uniq_key_User_foo_1,bar_#{Digest::MD5.hexdigest(long_val)}"
-    assert Contribution.send(:cache_uniq_key, user_id: 1, date: Time.current.to_date), "uniq_key_Contribution_user_id_1,date_#{Time.current.to_date}"
+    assert_equal User.send(:cache_uniq_key, foo: 1, bar: long_val), "#{@cache_prefix}/uniq_key_User_foo_1,bar_#{Digest::MD5.hexdigest(long_val)}"
+    assert Contribution.send(:cache_uniq_key, user_id: 1, date: Time.current.to_date), "#{@cache_prefix}/uniq_key_Contribution_user_id_1,date_#{Time.current.to_date}"
   end
 
   def test_record_attributes_equal_where_values

@@ -134,7 +134,7 @@ config.cache_store = [:dalli_store, APP_CONFIG["memcached_host"], { namespace: "
 ## Tips:
 
 * When you want to clear only second level cache apart from other cache for example fragment cache in cache store,
-you can only change the `cache_key_prefix`:
+you can only change the `cache_key_prefix` (default: `slc`):
 
 ```ruby
 SecondLevelCache.configure.cache_key_prefix = "slc1"
