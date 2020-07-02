@@ -1,3 +1,9 @@
+2.6.2
+-------
+
+- Fix activerecord association cache. (#109)
+- Fix fetch_by_uniq_key cache key with prefix. (#120)
+
 2.6.1
 -------
 
