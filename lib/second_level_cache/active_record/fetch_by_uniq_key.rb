@@ -49,7 +49,7 @@ module SecondLevelCache
           end
 
           ext_key = keys.join(",")
-          "uniq_key_#{name}_#{ext_key}"
+          "#{SecondLevelCache.configure.cache_key_prefix}/uniq_key_#{name}_#{ext_key}"
         end
 
         def record_attributes_equal_where_values?(record, where_values)
