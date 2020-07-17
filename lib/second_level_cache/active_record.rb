@@ -13,7 +13,7 @@ require "second_level_cache/active_record/preloader"
 # http://api.rubyonrails.org/classes/ActiveSupport/LazyLoadHooks.html
 # ActiveSupport.run_load_hooks(:active_record, ActiveRecord::Base)
 ActiveSupport.on_load(:active_record, run_once: true) do
-  if (Bundler.definition.dependencies.find{|x| x.name == 'paranoia'})
+  if Bundler.definition.dependencies.find { |x| x.name == "paranoia" }
     require "second_level_cache/adapter/paranoia"
     include SecondLevelCache::Adapter::Paranoia::ActiveRecord
     SecondLevelCache::Mixin.send(:prepend, SecondLevelCache::Adapter::Paranoia::Mixin)
