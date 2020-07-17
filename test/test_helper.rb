@@ -6,7 +6,6 @@ require "active_support/test_case"
 require "active_record_test_case_helper"
 require "database_cleaner"
 require "active_record"
-require "paranoia"
 require "pry"
 ActiveSupport.test_order = :sorted if ActiveSupport.respond_to?(:test_order=)
 # Force hook :active_record on_load event to make sure loader can work.
@@ -27,7 +26,7 @@ require "model/order_item"
 require "model/account"
 require "model/animal"
 require "model/contribution"
-require "model/paranoid"
+require "model/paranoid" if defined?(Paranoid)
 
 DatabaseCleaner[:active_record].strategy = :truncation
 
