@@ -30,7 +30,7 @@ class HasOneAssociationTest < ActiveSupport::TestCase
     ForkedUserLink.without_second_level_cache do
       assert_queries(1) { user.forked_from_user }
     end
-    #NoMethodError: undefined method `klass' for nil:NilClass  active_record/has_one_association.rb:14:in `find_target'
+    # NoMethodError: undefined method `klass' for nil:NilClass  active_record/has_one_association.rb:14:in `find_target'
     hotspot = Hotspot.create(summary: "summary")
     assert_equal hotspot.persisted?, true
     assert_nil hotspot.topic
