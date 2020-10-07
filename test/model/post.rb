@@ -17,6 +17,6 @@ class Post < ApplicationRecord
 end
 
 class Hotspot < ApplicationRecord
-	belongs_to :post, required: false
-	has_one :topic, through: :post
+  belongs_to :post, required: false
+  has_one :topic, through: :post
 end
