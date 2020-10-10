@@ -1,3 +1,13 @@
+2.6.4
+-------
+
+- Fix `undefined method klass` error for has_one through. (#123)
+
+2.6.3
+-------
+
+- Fix paranoia load error.
+
 2.6.2
 -------
 
