@@ -48,6 +48,13 @@ class FinderMethodsTest < ActiveSupport::TestCase
     assert_equal 2, @users.size
   end
 
+  def test_find_some_record_without_second_level_cache
+    User.without_second_level_cache do
+      @users = User.find(@user.id, @other_user.id)
+    end
+    assert_equal 2, @users.size
+  end
+
   def test_missing_id_will_raise_for_find_some
     assert_raises(ActiveRecord::RecordNotFound) do
       @users = User.find(@user.id, User.last.id + 10000)
