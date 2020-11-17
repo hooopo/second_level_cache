@@ -39,8 +39,8 @@ module SecondLevelCache
       end
 
       def find_some_with_second_level_cache(ids)
-        return find_some_without_second_level_cache(id) unless second_level_cache_enabled?
-        return find_some_without_second_level_cache(id) unless select_all_column?
+        return find_some_without_second_level_cache(ids) unless second_level_cache_enabled?
+        return find_some_without_second_level_cache(ids) unless select_all_column?
 
         if cachable?
           result = multi_read_from_cache(ids)
