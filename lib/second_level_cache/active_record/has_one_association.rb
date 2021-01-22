@@ -11,8 +11,7 @@ module SecondLevelCache
 
           through = reflection.options[:through]
           record  = if through
-            return super if klass.reflections[through.to_s].nil?
-            return super unless klass.reflections[through.to_s].klass.second_level_cache_enabled?
+            return super unless owner.class.reflections[through.to_s].klass.second_level_cache_enabled?
             begin
               reflection.klass.find(owner.send(through).read_attribute(reflection.foreign_key))
             rescue StandardError
