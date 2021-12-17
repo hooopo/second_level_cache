@@ -17,7 +17,8 @@ module SecondLevelCache
           return if respond_to?(:deleted?) && send(:deleted?)
           super
         end
-        alias update_second_level_cache write_second_level_cache
+
+        alias_method :update_second_level_cache, :write_second_level_cache
       end
     end
   end

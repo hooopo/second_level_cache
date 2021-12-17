@@ -3,6 +3,5 @@
 source "https://rubygems.org"
 
 gemspec
-gem "paranoia", "~> 2.4.2"
 gem "pry"
-gem "rails", "~> 6"
+gem "rails", "~> 7"
