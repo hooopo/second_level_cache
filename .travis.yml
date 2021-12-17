@@ -6,8 +6,9 @@ rvm:
 gemfile:
   - gemfiles/Gemfile-5-2
   - gemfiles/Gemfile-6-0
+  - gemfiles/Gemfile-6-1
   - gemfiles/Gemfile-edge
-  - gemfiles/Gemfile-6-0-paranoi
+  - gemfiles/Gemfile-6-0-paranoia
 matrix:
   allow_failures:
     - gemfile: gemfiles/Gemfile-edge
