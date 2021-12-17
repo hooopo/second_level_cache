@@ -1,3 +1,6 @@
+
+New version releases please visit https://github.com/hooopo/second_level_cache/releases
+
 2.6.4
 -------
 
