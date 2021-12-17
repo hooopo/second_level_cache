@@ -20,6 +20,7 @@ Gem::Specification.new do |gem|
 
   gem.files = Dir.glob("lib/**/*.rb") + [
     "README.md",
+    "LICENSE",
     "Rakefile",
     "Gemfile",
     "CHANGELOG.md",

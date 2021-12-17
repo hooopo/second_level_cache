@@ -2,8 +2,7 @@
 
 require "bundler/setup"
 require "minitest/autorun"
-require "active_support/isolated_execution_state"
-require "active_support/test_case"
+require "active_support/all"
 require "active_record_test_case_helper"
 require "database_cleaner"
 require "active_record"
