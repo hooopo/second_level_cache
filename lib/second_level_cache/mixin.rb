@@ -76,6 +76,7 @@ module SecondLevelCache
       expires_in = klass.second_level_cache_options[:expires_in]
       SecondLevelCache.cache_store.write(second_level_cache_key, marshal, expires_in: expires_in)
     end
-    alias update_second_level_cache write_second_level_cache
+
+    alias_method :update_second_level_cache, :write_second_level_cache
   end
 end

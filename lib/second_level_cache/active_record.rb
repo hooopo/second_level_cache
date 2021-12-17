@@ -8,7 +8,8 @@ require "second_level_cache/active_record/finder_methods"
 require "second_level_cache/active_record/persistence"
 require "second_level_cache/active_record/belongs_to_association"
 require "second_level_cache/active_record/has_one_association"
-require "second_level_cache/active_record/preloader"
+require "second_level_cache/active_record/preloader/association"
+require "second_level_cache/active_record/preloader/legacy"
 
 # http://api.rubyonrails.org/classes/ActiveSupport/LazyLoadHooks.html
 # ActiveSupport.run_load_hooks(:active_record, ActiveRecord::Base)
@@ -27,7 +28,15 @@ ActiveSupport.on_load(:active_record, run_once: true) do
   ActiveRecord::Associations::BelongsToAssociation.send(:prepend, SecondLevelCache::ActiveRecord::Associations::BelongsToAssociation)
   ActiveRecord::Associations::HasOneAssociation.send(:prepend, SecondLevelCache::ActiveRecord::Associations::HasOneAssociation)
   ActiveRecord::Relation.send(:prepend, SecondLevelCache::ActiveRecord::FinderMethods)
-  # Rails 5.2 has removed ActiveRecord::Associations::Preloader::BelongsTo
-  # https://github.com/rails/rails/pull/31079
-  ActiveRecord::Associations::Preloader::Association.send(:prepend, SecondLevelCache::ActiveRecord::Associations::Preloader)
+
+  # https://github.com/rails/rails/blob/6-0-stable/activerecord/lib/active_record/associations/preloader/association.rb#L117
+  if ::ActiveRecord.version < ::Gem::Version.new("7")
+    ActiveRecord::Associations::Preloader::Association.send(:prepend, SecondLevelCache::ActiveRecord::Associations::Preloader::Association::Legacy)
+  end
+
+  if ::ActiveRecord.version >= ::Gem::Version.new("7")
+    # https://github.com/rails/rails/blob/7-0-stable/activerecord/lib/active_record/associations/preloader/association.rb#L25
+    ActiveRecord::Associations::Preloader::Association.send(:prepend, SecondLevelCache::ActiveRecord::Associations::Preloader::Association)
+    ActiveRecord::Associations::Preloader::Association::LoaderQuery.send(:prepend, SecondLevelCache::ActiveRecord::Associations::Preloader::Association::LoaderQuery)
+  end
 end
