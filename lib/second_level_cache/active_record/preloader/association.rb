@@ -5,11 +5,14 @@ module SecondLevelCache
     module Associations
       module Preloader
         module Association
-          # In Rails 7, override load_query for assign self
+          # Override load_query method for add Association instance in arguments to LoaderQuery
+          # https://github.com/rails/rails/blob/7-0-stable/activerecord/lib/active_record/associations/preloader/association.rb#L148
           def loader_query
             ::ActiveRecord::Associations::Preloader::Association::LoaderQuery.new(self, scope, association_key_name)
           end
 
+          # Override load_records_for_keys for use SecondLevelCache before preload association
+          # https://github.com/rails/rails/blob/8f5b35b6107c28125b571b9842e248b13f804e5c/activerecord/lib/active_record/associations/preloader/association.rb#L7
           module LoaderQuery
             attr_reader :association
 

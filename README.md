@@ -1,7 +1,7 @@
 # SecondLevelCache
 
 [![Gem Version](https://badge.fury.io/rb/second_level_cache.svg)](http://badge.fury.io/rb/second_level_cache)
-[![Build Status](https://travis-ci.org/hooopo/second_level_cache.svg?branch=master)](https://travis-ci.org/hooopo/second_level_cache)
+[![build](https://github.com/hooopo/second_level_cache/actions/workflows/build.yml/badge.svg)](https://github.com/hooopo/second_level_cache/actions/workflows/build.yml)
 [![Code Climate](https://codeclimate.com/github/hooopo/second_level_cache.svg)](https://codeclimate.com/github/hooopo/second_level_cache)
 
 SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu, support ActiveRecord 4, ActiveRecord 5 and ActiveRecord 6.
@@ -10,10 +10,15 @@ Read-Through: Queries by ID, like `current_user.articles.find(params[:id])`, wil
 
 Write-Through: As objects are created, updated, and deleted, all of the caches are automatically kept up-to-date and coherent.
 
-
 ## Install
 
 In your gem file:
+
+ActiveRecord 7
+
+```ruby
+gem 'second_level_cache', '~> 2.7'
+```
 
 ActiveRecord 5.2 and 6.0:
 
@@ -97,9 +102,9 @@ User.select("id, name").find(1)
 
 ## Notice
 
-* SecondLevelCache cache by model name and id, so only find_one query will work.
-* Only equal conditions query WILL get cache; and SQL string query like `User.where("name = 'Hooopo'").find(1)` WILL NOT work.
-* SecondLevelCache sync cache after transaction commit:
+- SecondLevelCache cache by model name and id, so only find_one query will work.
+- Only equal conditions query WILL get cache; and SQL string query like `User.where("name = 'Hooopo'").find(1)` WILL NOT work.
+- SecondLevelCache sync cache after transaction commit:
 
 ```ruby
 # user and account's write_second_level_cache operation will invoke after the logger.
@@ -117,7 +122,7 @@ end # <- Cache write
 Rails.logger.info "info"
 ```
 
-* If you are using SecondLevelCache with database_cleaner, you should set cleaning strategy to `:truncation`:
+- If you are using SecondLevelCache with database_cleaner, you should set cleaning strategy to `:truncation`:
 
 ```ruby
 DatabaseCleaner.strategy = :truncation
@@ -133,15 +138,15 @@ config.cache_store = [:dalli_store, APP_CONFIG["memcached_host"], { namespace: "
 
 ## Tips:
 
-* When you want to clear only second level cache apart from other cache for example fragment cache in cache store,
-you can only change the `cache_key_prefix` (default: `slc`):
+- When you want to clear only second level cache apart from other cache for example fragment cache in cache store,
+  you can only change the `cache_key_prefix` (default: `slc`):
 
 ```ruby
 SecondLevelCache.configure.cache_key_prefix = "slc1"
 ```
 
-* SecondLevelCache was added model schema digest as cache version, this means when you add/remove/change columns, the caches of this Model will expires.
-* When your want change the model cache version by manualy, just add the `version` option like this:
+- SecondLevelCache was added model schema digest as cache version, this means when you add/remove/change columns, the caches of this Model will expires.
+- When your want change the model cache version by manualy, just add the `version` option like this:
 
 ```ruby
 class User < ActiveRecord::Base
@@ -149,7 +154,7 @@ class User < ActiveRecord::Base
 end
 ```
 
-* It provides a great feature, not hits db when fetching record via unique key (not primary key).
+- It provides a great feature, not hits db when fetching record via unique key (not primary key).
 
 ```ruby
 # this will fetch from cache
@@ -160,7 +165,7 @@ post = Post.fetch_by_uniq_keys(user_id: 2, slug: "foo")
 user = User.fetch_by_uniq_keys!(nick_name: "hooopo") # this will raise `ActiveRecord::RecordNotFound` Exception when nick name not exists.
 ```
 
-* You can use Rails's [Eager Loading](http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) feature as normal. Even better, second_level_cache will transform the `IN` query into a Rails.cache.multi_read operation. For example:
+- You can use Rails's [Eager Loading](http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) feature as normal. Even better, second_level_cache will transform the `IN` query into a Rails.cache.multi_read operation. For example:
 
 ```ruby
 Answer.includes(:question).limit(10).order("id DESC").each{|answer| answer.question.title}
@@ -171,8 +176,8 @@ Answer Load (0.2ms)  SELECT `answers`.* FROM `answers` ORDER BY id DESC LIMIT 10
 
 ## Original design by:
 
-* [chloerei](https://github.com/chloerei)
-* [hooopo](https://github.com/hooopo)
+- [chloerei](https://github.com/chloerei)
+- [hooopo](https://github.com/hooopo)
 
 ## Contributors
 

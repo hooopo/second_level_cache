@@ -43,12 +43,12 @@ module SecondLevelCache
 
               SecondLevelCache::RecordRelation.new(records_from_db + record_marshals)
             end
-          end
 
-          private
+            private
 
-          def write_cache(record)
-            record.write_second_level_cache
+            def write_cache(record)
+              record.write_second_level_cache
+            end
           end
         end
       end
