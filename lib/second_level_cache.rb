@@ -22,6 +22,9 @@ module SecondLevelCache
   end
 
   def self.cache_enabled?
+    if self.cache_store.is_a?(ActiveSupport::Cache::NullStore)
+      return false
+    end
     cache_enabled = Thread.current[:slc_cache_enabled]
     cache_enabled.nil? ? true : cache_enabled
   end
