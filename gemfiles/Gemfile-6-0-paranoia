@@ -1,6 +1,13 @@
-source 'https://rubygems.org'
+# frozen_string_literal: true
 
-gemspec path: '..'
-#gem "paranoia", "~> 2.4.2"
-gem "pry"
-gem 'rails', "~> 6.0.0"
+source "https://rubygems.org"
+
+gemspec path: ".."
+# Paranoia is intentionally not loaded in this Gemfile. The adapter is covered by Gemfile-6-0.
+gem "concurrent-ruby", "< 1.3.5"
+gem "database_cleaner", "~> 2.0.1"
+gem "pry", "~> 0.14.2"
+gem "rails", "~> 6.0.0"
+gem "rake", "< 13.3"
+gem "rubocop", "< 1.51"
+gem "sqlite3", "~> 1.4.0"

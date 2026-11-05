@@ -20,7 +20,8 @@ module SecondLevelCache
         return super unless cachable?
 
         id = id.id if ActiveRecord::Base == id
-        record = @klass.read_second_level_cache(id)
+        # Relation#klass, not @klass: Rails 7.2 renamed the ivar to @model and aliased klass.
+        record = klass.read_second_level_cache(id)
         return record if record && where_values_match_cache?(record)
 
         record = super
@@ -45,7 +46,7 @@ module SecondLevelCache
         return super unless cachable?
         # only have primary_key condition in where
         if where_values_hash.length == 1 && where_values_hash.key?(primary_key)
-          record = @klass.read_second_level_cache(where_values_hash[primary_key])
+          record = klass.read_second_level_cache(where_values_hash[primary_key])
           return record if record
         end
 
@@ -67,7 +68,7 @@ module SecondLevelCache
             order_values_can_cache? &&
             readonly_value.blank? &&
             joins_values.blank? &&
-            !@klass.locking_enabled? &&
+            !klass.locking_enabled? &&
             where_clause_predicates_all_equality?
         end
 

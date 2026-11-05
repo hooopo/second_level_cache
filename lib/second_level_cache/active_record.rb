@@ -17,7 +17,10 @@ ActiveSupport.on_load(:active_record, run_once: true) do
   if Bundler.definition.dependencies.find { |x| x.name == "paranoia" }
     require "second_level_cache/adapter/paranoia"
     include SecondLevelCache::Adapter::Paranoia::ActiveRecord
-    SecondLevelCache::Mixin.send(:prepend, SecondLevelCache::Adapter::Paranoia::Mixin)
+    # Prepend on the model class. Rails 6.1+ Concern#prepend_features does not
+    # really prepend when the target is another Concern, so prepending onto
+    # SecondLevelCache::Mixin left the soft-delete guard behind Mixin#write.
+    prepend SecondLevelCache::Adapter::Paranoia::Mixin
   end
 
   include SecondLevelCache::Mixin

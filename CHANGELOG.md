@@ -1,6 +1,14 @@
 
 New version releases please visit https://github.com/hooopo/second_level_cache/releases
 
+2.8.0
+-------
+
+- Support Rails 7.2 and Rails 8. Active Record 8 calls `find_target(async:)` when loading belongs_to and has_one associations; the previous parameterless overrides raised `ArgumentError` (hooopo/second_level_cache#135). Synchronous reads still use the second-level cache. `async: true` delegates to Active Record so the returned Promise is unchanged.
+- Read cached records through `Relation#klass`. Rails 7.2 renamed the internal `@klass` instance variable to `@model`.
+- Keep Active Record `>= 6.0`. CI runs Rails 6.0, 6.1, 7.0, 7.2, 8.0, and 8.1.
+- Prepend the Paranoia soft-delete guard onto the model. On Rails 6.1 and later, prepending one `ActiveSupport::Concern` onto another does not install the override, so a soft-deleted record was written back to the cache.
+
 2.6.4
 -------
 

@@ -8,19 +8,29 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby: 3.0
+          - ruby: "3.3"
             gemfile: Gemfile
-          - ruby: 2.7
+          - ruby: "3.2"
+            gemfile: gemfiles/Gemfile-8-0
+          - ruby: "3.2"
+            gemfile: gemfiles/Gemfile-7-2
+          - ruby: "3.0"
+            gemfile: gemfiles/Gemfile-7-0
+          - ruby: "2.7"
             gemfile: gemfiles/Gemfile-6-1
-          - ruby: 2.7
-            gemfile: gemfiles/Gemfile-6-0-paranoia
-          - ruby: 2.6
+          - ruby: "2.7"
             gemfile: gemfiles/Gemfile-6-0
+          - ruby: "2.6"
+            gemfile: gemfiles/Gemfile-6-0-paranoia
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
       USE_OFFICIAL_GEM_SOURCE: 1
+      # Rails <= 7.0 requires sqlite3 ~> 1.4. That release passes a VALUE where
+      # sqlite3_exec expects void*. GCC 14 (ubuntu-latest) promotes those
+      # long-standing warnings to errors. The ABI is unchanged.
+      BUNDLE_BUILD__SQLITE3: '--with-cflags="-Wno-error=incompatible-pointer-types -Wno-error=int-conversion"'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}

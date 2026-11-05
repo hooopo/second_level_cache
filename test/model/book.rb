@@ -7,7 +7,7 @@ ActiveRecord::Base.connection.create_table(:books, force: true) do |t|
   t.decimal :discount_percentage, precision: 5, scale: 2
   t.integer :images_count, default: 0
   t.date    :publish_date
-  t.boolean :normal, default: true, nil: false
+  t.boolean :normal, default: true, null: false
 end
 
 class Book < ApplicationRecord

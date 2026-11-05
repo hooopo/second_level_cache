@@ -1,10 +1,12 @@
 # SecondLevelCache
 
 [![Gem Version](https://badge.fury.io/rb/second_level_cache.svg)](http://badge.fury.io/rb/second_level_cache)
-[![build](https://github.com/hooopo/second_level_cache/actions/workflows/build.yml/badge.svg)](https://github.com/hooopo/second_level_cache/actions/workflows/build.yml)
+[![build](https://github.com/moioo/second_level_cache/actions/workflows/build.yml/badge.svg)](https://github.com/moioo/second_level_cache/actions/workflows/build.yml)
 [![Code Climate](https://codeclimate.com/github/hooopo/second_level_cache.svg)](https://codeclimate.com/github/hooopo/second_level_cache)
 
-SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu, support ActiveRecord 4, ActiveRecord 5 and ActiveRecord 6.
+SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu, for ActiveRecord 6, 7, and 8.
+
+Rails 8 ships [Solid Cache](https://github.com/rails/solid_cache) as a cache *store*. It does not replace Active Record second-level caching (read-through / write-through by id), which is what this gem does. The two can be used together: point `config.cache_store` at Solid Cache, Memcached, or Redis, and keep `second_level_cache` on the models.
 
 Read-Through: Queries by ID, like `current_user.articles.find(params[:id])`, will first look in cache store and then look in the database for the results of that query. If there is a cache miss, it will populate the cache.
 
@@ -14,13 +16,19 @@ Write-Through: As objects are created, updated, and deleted, all of the caches a
 
 In your gem file:
 
-ActiveRecord 7
+ActiveRecord 6.0 through 8.x
 
 ```ruby
-gem 'second_level_cache', '~> 2.7'
+gem 'second_level_cache', '~> 2.8'
 ```
 
-ActiveRecord 5.2 and 6.0:
+ActiveRecord 7.0 and 7.1 with the 2.7 line:
+
+```ruby
+gem 'second_level_cache', '~> 2.7.1'
+```
+
+ActiveRecord 5.2 and 6.0 with the 2.6 line:
 
 ```ruby
 gem 'second_level_cache', '~> 2.6.3'

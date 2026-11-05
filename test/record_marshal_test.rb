@@ -25,15 +25,17 @@ class RecordMarshalTest < ActiveSupport::TestCase
     dumped = RecordMarshal.dump(@user)
     assert dumped.is_a?(Array)
     assert_equal "User", dumped[0]
-    assert_equal dumped[1], ActiveRecord::Base.connection.select_all(User.where(id: @user.id)).first
+    # Dump the pre-cast attributes. select_all row types diverge across sqlite3
+    # and Rails versions (integers vs strings, Time vs timestamp strings).
+    assert_equal @user.attributes_before_type_cast, dumped[1]
+    assert_equal @user, User.instantiate(dumped[1])
   end
 
   def test_should_load_active_record_object
     @user.write_second_level_cache
     assert_equal @user, User.read_second_level_cache(@user.id)
     assert_equal Array, User.read_second_level_cache(@user.id).options.class
-    assert_equal Array, User.read_second_level_cache(@user.id).reload.options.class
-    assert_equal User.read_second_level_cache(@user.id).changed?, false
+    assert_equal false, User.read_second_level_cache(@user.id).changed?
     assert_equal [1, 2], User.read_second_level_cache(@user.id).options
     assert_equal @extras, User.read_second_level_cache(@user.id).extras
     assert_equal "Hello world", User.read_second_level_cache(@user.id).tagline
@@ -44,6 +46,8 @@ class RecordMarshalTest < ActiveSupport::TestCase
       assert_equal @json_options, result.json_options
     end
     assert User.read_second_level_cache(@user.id).persisted?
+    # reload expires the second-level cache, so this stays last.
+    assert_equal Array, User.read_second_level_cache(@user.id).reload.options.class
   end
 
   def test_should_load_nil

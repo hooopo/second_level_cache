@@ -65,4 +65,24 @@ class HasOneAssociationTest < ActiveSupport::TestCase
     @user.reload
     assert_queries(1) { @user.namespace }
   end
+
+  def test_rails_8_find_target_accepts_async_keyword
+    skip "Rails 8 find_target(async:)" unless ActiveRecord.gem_version >= Gem::Version.new("8.0")
+
+    user = User.find(@user.id)
+    association = user.association(:account)
+
+    assert_equal @account, association.send(:find_target, async: false)
+
+    association.reset
+    # ActiveRecord::Promise is a BasicObject, so it has no #tap. Do not wrap
+    # this call in assert_nothing_raised, which taps the block result.
+    async_result = association.send(:find_target, async: true)
+    resolved = resolve_async_target(async_result)
+    assert_equal @account.id, resolved.id
+
+    association.reset
+    assert_nil association.async_load_target
+    assert_equal @account, user.account
+  end
 end
