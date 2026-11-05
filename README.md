@@ -1,7 +1,7 @@
 # SecondLevelCache
 
 [![Gem Version](https://badge.fury.io/rb/second_level_cache.svg)](http://badge.fury.io/rb/second_level_cache)
-[![build](https://github.com/moioo/second_level_cache/actions/workflows/build.yml/badge.svg)](https://github.com/moioo/second_level_cache/actions/workflows/build.yml)
+[![build](https://github.com/hooopo/second_level_cache/actions/workflows/build.yml/badge.svg)](https://github.com/hooopo/second_level_cache/actions/workflows/build.yml)
 [![Code Climate](https://codeclimate.com/github/hooopo/second_level_cache.svg)](https://codeclimate.com/github/hooopo/second_level_cache)
 
 SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu, for ActiveRecord 6, 7, and 8.

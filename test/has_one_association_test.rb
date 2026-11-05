@@ -72,7 +72,23 @@ class HasOneAssociationTest < ActiveSupport::TestCase
     user = User.find(@user.id)
     association = user.association(:account)
 
+    # create_account writes the id cache; the first read also fills the
+    # has_one uniq-key cache. A later synchronous find_target must not query.
+    user.account
+    association.reset
+    assert_no_queries do
+      assert_equal @account, association.send(:find_target, async: false)
+    end
+
+    association.reset
+    @account.expire_second_level_cache
+    assert_nil Account.read_second_level_cache(@account.id)
     assert_equal @account, association.send(:find_target, async: false)
+    assert_not_nil Account.read_second_level_cache(@account.id)
+    association.reset
+    assert_no_queries do
+      assert_equal @account, association.send(:find_target, async: false)
+    end
 
     association.reset
     # ActiveRecord::Promise is a BasicObject, so it has no #tap. Do not wrap
