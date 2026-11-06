@@ -3,7 +3,8 @@
 source "https://rubygems.org"
 
 gemspec path: ".."
-# Paranoia is intentionally not loaded in this Gemfile. The adapter is covered by Gemfile-6-0.
+# Paranoia is intentionally not installed here. The adapter is covered by
+# Gemfile-6-0, Gemfile-6-1, Gemfile-7-0, Gemfile-7-2, Gemfile-8-0, and the root Gemfile.
 gem "concurrent-ruby", "< 1.3.5"
 gem "database_cleaner", "~> 2.0.1"
 gem "pry", "~> 0.14.2"

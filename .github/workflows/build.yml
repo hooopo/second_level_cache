@@ -21,7 +21,7 @@ jobs:
           - ruby: "2.7"
             gemfile: gemfiles/Gemfile-6-0
           - ruby: "2.6"
-            gemfile: gemfiles/Gemfile-6-0-paranoia
+            gemfile: gemfiles/Gemfile-6-0-without-paranoia
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
       USE_OFFICIAL_GEM_SOURCE: 1
