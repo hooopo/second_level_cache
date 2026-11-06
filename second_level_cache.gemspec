@@ -7,9 +7,10 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 Gem::Specification.new do |gem|
   gem.authors = ["Hooopo"]
   gem.email = ["hoooopo@gmail.com"]
-  gem.description = "Write Through and Read Through caching library inspired by CacheMoney and cache_fu, support  ActiveRecord 4."
+  gem.description = "Write-through and read-through caching library inspired by CacheMoney and cache_fu, for ActiveRecord 6, 7, and 8."
   gem.summary = <<-SUMMARY
-  SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu, support only Rails3 and ActiveRecord.
+  SecondLevelCache is a write-through and read-through caching library inspired by Cache Money and cache_fu.
+  It supports ActiveRecord 6.0 through 8.x. Solid Cache is a cache store and does not replace this layer.
 
   Read-Through: Queries by ID, like current_user.articles.find(params[:id]), will first look in cache store and then look in the database for the results of that query. If there is a cache miss, it will populate the cache.
 
@@ -32,11 +33,10 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version = SecondLevelCache::VERSION
 
-  gem.add_runtime_dependency "activerecord", ">= 6.0"
-  gem.add_runtime_dependency "activesupport", ">= 6.0"
+  gem.add_dependency "activerecord", ">= 6.0"
+  gem.add_dependency "activesupport", ">= 6.0"
 
   gem.add_development_dependency "database_cleaner"
   gem.add_development_dependency "rake"
   gem.add_development_dependency "rubocop"
-  gem.add_development_dependency "sqlite3", "> 1.4"
 end

@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gemspec path: ".."
+gem "paranoia", "~> 3.1.0"
+gem "pry", "~> 0.14.2"
+gem "rails", "~> 7.2.0"
+gem "sqlite3", "~> 2.1"

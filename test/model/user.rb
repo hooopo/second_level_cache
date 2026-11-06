@@ -4,7 +4,7 @@ ActiveRecord::Base.connection.create_table(:users, force: true) do |t|
   t.text    :options
   t.text    :json_options
   t.text    :extras
-  t.string  :name, unique: true
+  t.string  :name
   t.string  :email
   t.integer :status, default: 0
   t.integer :books_count, default: 0
@@ -29,8 +29,14 @@ class User < ApplicationRecord
   CACHE_VERSION = 3
   second_level_cache(version: CACHE_VERSION, expires_in: 3.days)
 
-  serialize :options, Array
-  serialize :json_options, JSON if ::ActiveRecord::VERSION::STRING >= "4.1.0"
+  # Positional serialize coders were removed in Rails 7.2.
+  if ActiveRecord.gem_version >= Gem::Version.new("7.1")
+    serialize :options, type: Array
+    serialize :json_options, coder: JSON
+  else
+    serialize :options, Array
+    serialize :json_options, JSON
+  end
   store :extras, accessors: %i[tagline gender]
 
   has_one  :account, inverse_of: :user
@@ -41,7 +47,12 @@ class User < ApplicationRecord
   has_many :books
   has_many :images, as: :imagable
 
-  enum status: %i[active archived]
+  # Keyword enum definitions were removed in Rails 8.0.
+  if ActiveRecord.gem_version >= Gem::Version.new("7.0")
+    enum :status, %i[active archived]
+  else
+    enum status: %i[active archived]
+  end
 end
 
 class Namespace < ApplicationRecord

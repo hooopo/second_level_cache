@@ -63,6 +63,15 @@ module ActiveRecordTestCaseHelper
     assert_queries(0, options, &block)
   end
 
+  # Rails 8 async association loads return a Promise (or an already-loaded record
+  # when the async executor is not configured).
+  def resolve_async_target(result)
+    return result unless result.respond_to?(:value)
+    return result if result.is_a?(ActiveRecord::Base)
+
+    result.value
+  end
+
   def assert_column(model, column_name, msg = nil)
     assert exists_column?(model, column_name), msg
   end
@@ -105,7 +114,8 @@ module ActiveRecordTestCaseHelper
     oracle_ignored     = [/^select .*nextval/i, /^SAVEPOINT/, /^ROLLBACK TO/, /^\s*select .* from all_triggers/im, /^\s*select .* from all_constraints/im, /^\s*select .* from all_tab_cols/im]
     mysql_ignored      = [/^SHOW TABLES/i, /^SHOW FULL FIELDS/, /^SHOW CREATE TABLE /i, /^SHOW VARIABLES /]
     postgresql_ignored = [/^\s*select\b.*\bfrom\b.*pg_namespace\b/im, /^\s*select tablename\b.*from pg_tables\b/im, /^\s*select\b.*\battname\b.*\bfrom\b.*\bpg_attribute\b/im, /^SHOW search_path/i]
-    sqlite3_ignored =    [/^\s*SELECT name\b.*\bFROM sqlite_master/im]
+    # Rails 8.0 loads table definitions with `SELECT sql FROM sqlite_master`.
+    sqlite3_ignored =    [/sqlite_(?:temp_)?master/i]
 
     [oracle_ignored, mysql_ignored, postgresql_ignored, sqlite3_ignored].each do |db_ignored_sql|
       ignored_sql.concat db_ignored_sql

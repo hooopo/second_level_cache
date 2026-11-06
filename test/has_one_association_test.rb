@@ -65,4 +65,40 @@ class HasOneAssociationTest < ActiveSupport::TestCase
     @user.reload
     assert_queries(1) { @user.namespace }
   end
+
+  def test_rails_8_find_target_accepts_async_keyword
+    skip "Rails 8 find_target(async:)" unless ActiveRecord.gem_version >= Gem::Version.new("8.0")
+
+    user = User.find(@user.id)
+    association = user.association(:account)
+
+    # create_account writes the id cache; the first read also fills the
+    # has_one uniq-key cache. A later synchronous find_target must not query.
+    user.account
+    association.reset
+    assert_no_queries do
+      assert_equal @account, association.send(:find_target, async: false)
+    end
+
+    association.reset
+    @account.expire_second_level_cache
+    assert_nil Account.read_second_level_cache(@account.id)
+    assert_equal @account, association.send(:find_target, async: false)
+    assert_not_nil Account.read_second_level_cache(@account.id)
+    association.reset
+    assert_no_queries do
+      assert_equal @account, association.send(:find_target, async: false)
+    end
+
+    association.reset
+    # ActiveRecord::Promise is a BasicObject, so it has no #tap. Do not wrap
+    # this call in assert_nothing_raised, which taps the block result.
+    async_result = association.send(:find_target, async: true)
+    resolved = resolve_async_target(async_result)
+    assert_equal @account.id, resolved.id
+
+    association.reset
+    assert_nil association.async_load_target
+    assert_equal @account, user.account
+  end
 end

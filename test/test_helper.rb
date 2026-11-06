@@ -15,6 +15,19 @@ require "second_level_cache"
 
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
 
+# Psych safe_load (Rails 6.0 + current Ruby) rejects HashWithIndifferentAccess
+# unless it is explicitly permitted. `store` columns dump that class.
+if ActiveRecord::Base.respond_to?(:yaml_column_permitted_classes)
+  ActiveRecord::Base.yaml_column_permitted_classes =
+    Array(ActiveRecord::Base.yaml_column_permitted_classes) | [
+      Symbol,
+      ActiveSupport::HashWithIndifferentAccess,
+      Time,
+      Date,
+      DateTime
+    ]
+end
+
 require "model/application_record"
 require "model/user"
 require "model/book"
@@ -26,7 +39,10 @@ require "model/order_item"
 require "model/account"
 require "model/animal"
 require "model/contribution"
-require "model/paranoid" if defined?(Paranoid)
+if Bundler.definition.dependencies.any? { |dependency| dependency.name == "paranoia" }
+  require "paranoia"
+  require "model/paranoid"
+end
 
 DatabaseCleaner[:active_record].strategy = :truncation
 
